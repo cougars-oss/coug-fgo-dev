@@ -21,6 +21,7 @@ Usage:
 
 COLOR_MAP = {
     "FGO": "tab:green",
+    "FGO (TM)": "tab:blue",
     "Truth": "k",
     "EKF": "tab:red",
     "UKF": "tab:orange",
@@ -369,12 +370,14 @@ def main():
     odom_topics = {
         "EKF": f"{auv}/odometry/global_ekf",
         "UKF": f"{auv}/odometry/global_ukf",
+        "FGO (TM)": f"{auv}/odometry/global_tm",
         "FGO": f"{auv}/odometry/global",
         "Truth": f"{auv}/odometry/truth",
     }
 
     vel_topics = {
         "Truth": f"{auv}/VelocitySensor",
+        "FGO (TM)": f"{auv}/factor_graph_node/velocity_tm",
         "FGO": f"{auv}/factor_graph_node/velocity",
     }
 
@@ -384,6 +387,7 @@ def main():
 
     bias_topics = {
         "Truth": f"{auv}/IMUSensorBias",
+        "FGO (TM)": f"{auv}/factor_graph_node/imu_bias_tm",
         "FGO": f"{auv}/factor_graph_node/imu_bias",
     }
 

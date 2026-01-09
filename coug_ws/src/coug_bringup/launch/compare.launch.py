@@ -81,7 +81,7 @@ def launch_setup(context, *args, **kwargs):
     if play_bag_str:
         actions.append(
             ExecuteProcess(
-                cmd=["ros2", "bag", "play", play_bag_str, "--clock"],
+                cmd=["ros2", "bag", "play", play_bag_str],
             )
         )
 

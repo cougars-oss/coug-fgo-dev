@@ -920,7 +920,7 @@ void FactorGraphNode::addPreintegratedDvlFactor(
   const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs,
   const std::deque<sensor_msgs::msg::Imu::SharedPtr> & imu_msgs, double target_time)
 {
-  if (!have_imu_to_dvl_tf_ || !dvl_preintegrator_) {return;}
+  if (!have_imu_to_dvl_tf_ || !dvl_preintegrator_ || dvl_msgs.empty()) {return;}
 
   double last_dvl_time = prev_time_;
   std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> unused_dvl_msgs;
