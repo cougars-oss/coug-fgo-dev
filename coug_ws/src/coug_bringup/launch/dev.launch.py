@@ -33,6 +33,7 @@ def launch_setup(context, *args, **kwargs):
     urdf_file = LaunchConfiguration("urdf_file")
     num_agents = LaunchConfiguration("num_agents")
     bag_path = LaunchConfiguration("bag_path")
+    compare = LaunchConfiguration("compare")
 
     num_agents_int = int(context.perform_substitution(num_agents))
     bag_path_str = context.perform_substitution(bag_path)
@@ -76,6 +77,7 @@ def launch_setup(context, *args, **kwargs):
                 "auv_ns": auv_ns,
                 # Only allow the first agent to set the origin
                 "set_origin": "true" if i == 0 else "false",
+                "compare": compare,
             }.items(),
         )
 
@@ -89,14 +91,13 @@ def launch_setup(context, *args, **kwargs):
             }.items(),
         )
 
-        agent_group = GroupAction(
-            actions=[
-                PushRosNamespace(auv_ns),
-                auv_launch,
-                bridge_launch,
-            ]
-        )
-        actions.append(agent_group)
+        agent_actions = [
+            PushRosNamespace(auv_ns),
+            auv_launch,
+            bridge_launch,
+        ]
+
+        actions.append(GroupAction(actions=agent_actions))
 
     return actions
 
@@ -123,6 +124,11 @@ def generate_launch_description():
                 "bag_path",
                 default_value="",
                 description="Path to record rosbag (if empty, no recording)",
+            ),
+            DeclareLaunchArgument(
+                "compare",
+                default_value="false",
+                description="Launch additional localization nodes if true",
             ),
             OpaqueFunction(function=launch_setup),
         ]

@@ -28,6 +28,7 @@ def generate_launch_description():
     )
     auv_ns = LaunchConfiguration("auv_ns", default="auv0")
     set_origin = LaunchConfiguration("set_origin", default="true")
+    compare = LaunchConfiguration("compare", default="false")
 
     coug_des_dir = get_package_share_directory("coug_description")
     coug_des_launch_dir = os.path.join(coug_des_dir, "launch")
@@ -67,6 +68,7 @@ def generate_launch_description():
             "use_sim_time": use_sim_time,
             "auv_ns": auv_ns,
             "set_origin": set_origin,
+            "compare": compare,
         }.items(),
     )
 
@@ -108,6 +110,13 @@ def generate_launch_description():
             "set_origin",
             default_value="true",
             description="Whether to set the origin (true) or subscribe to it (false)",
+        )
+    )
+    ld.add_action(
+        DeclareLaunchArgument(
+            "compare",
+            default_value="false",
+            description="Launch additional localization nodes if true",
         )
     )
 

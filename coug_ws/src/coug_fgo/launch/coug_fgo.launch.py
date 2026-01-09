@@ -17,6 +17,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
@@ -62,6 +63,11 @@ def generate_launch_description():
                 default_value="true",
                 description="Whether to set the origin (true) or subscribe to it (false)",
             ),
+            DeclareLaunchArgument(
+                "compare",
+                default_value="false",
+                description="Launch additional localization nodes if true",
+            ),
             Node(
                 package="coug_fgo",
                 executable="factor_graph",
@@ -73,6 +79,31 @@ def generate_launch_description():
                         "map_frame": "map",
                         "odom_frame": odom_frame,  # Namespacing for multiple agents
                         "base_frame": base_frame,  # Namespacing for multiple agents
+                    },
+                ],
+            ),
+            # TURTLMap-based config for real-time comparison
+            Node(
+                package="coug_fgo",
+                executable="factor_graph",
+                name="factor_graph_node",
+                namespace="tm",
+                condition=IfCondition(LaunchConfiguration("compare")),
+                parameters=[
+                    params_file,
+                    {
+                        "use_sim_time": use_sim_time,
+                        "map_frame": "map",
+                        "odom_frame": odom_frame,
+                        "base_frame": base_frame,
+
+                        "imu_topic": ["/", auv_ns, "/imu/data"],
+                        "gps_odom_topic": ["/", auv_ns, "/odometry/gps"],
+                        "depth_odom_topic": ["/", auv_ns, "/odometry/depth"],
+                        "heading_topic": ["/", auv_ns, "/imu/heading"],
+                        "dvl_topic": ["/", auv_ns, "/dvl/data"],
+                        "publish_global_tf": False,
+                        "experimental.enable_dvl_preintegration": True,
                     },
                 ],
             ),

@@ -3,6 +3,7 @@
 #
 # Launches FGO localization for HoloOcean development
 # Use the '-b' flag to launch the BlueROV2
+# Use the '-c' flag to launch comparison localization nodes
 # Use the '-m' flag to launch multiple CougUVs
 # Use the '-r' flag to record a rosbag
 
@@ -26,11 +27,15 @@ source ~/coug_ws/install/setup.bash
 URDF="urdf/couguv_holoocean.urdf.xacro"
 AGENTS=1
 BAG_PATH=""
+COMPARE="false"
 
-while getopts ":bmr:" opt; do
+while getopts ":bcmr:" opt; do
     case $opt in
         b)
             URDF="urdf/bluerov2_holoocean/bluerov2_holoocean.urdf.xacro"
+            ;;
+        c)
+            COMPARE="true"
             ;;
         m)
             AGENTS=2
@@ -53,7 +58,7 @@ while getopts ":bmr:" opt; do
     esac
 done
 
-ARGS=("urdf_file:=$URDF" "num_agents:=$AGENTS")
+ARGS=("urdf_file:=$URDF" "num_agents:=$AGENTS" "compare:=$COMPARE")
 if [ -n "$BAG_PATH" ]; then
     ARGS+=("bag_path:=$BAG_PATH")
 fi
