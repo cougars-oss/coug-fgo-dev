@@ -23,7 +23,7 @@
 
   - Install Docker Engine by following the instructions [here](https://docs.docker.com/engine/install/ubuntu/). Make sure to follow the post-installation steps to enable Docker commands without `sudo`.
 
-- Set up SSH keys for GitHub by following the instructions [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+- Set up GitHub SSH keys by following the instructions [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
 
 - Open a new terminal and clone the `coug_fgo_dev` repository.
 
