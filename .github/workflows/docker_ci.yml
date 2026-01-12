@@ -69,8 +69,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: snelsondurrant/cougars:gtsam
-          cache-from: type=gha,scope=gtsam
-          cache-to: type=gha,mode=max,scope=gtsam
+          cache-from: type=registry,ref=snelsondurrant/cougars:buildcache-gtsam
+          cache-to: type=registry,ref=snelsondurrant/cougars:buildcache-gtsam,mode=max
 
   build-cougars:
     needs: [changes, build-gtsam]
@@ -100,5 +100,5 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: snelsondurrant/cougars:latest
-          cache-from: type=gha,scope=cougars
-          cache-to: type=gha,mode=max,scope=cougars
+          cache-from: type=registry,ref=snelsondurrant/cougars:buildcache-latest
+          cache-to: type=registry,ref=snelsondurrant/cougars:buildcache-latest,mode=max
