@@ -116,6 +116,6 @@ plot.traj(ax, plot_mode, truth_ref, style="--", color="black", label=TRUTH_TOPIC
 plot.trajectories(ax, aligned_trajectories, plot_mode)
 
 plot_path = OUTPUT_DIR / "trajectories.png"
-plt.savefig(plot_path)
+plt.savefig(plot_path, dpi=300)
 print(f"Plot saved to: {plot_path.resolve()}")
 display(fig)
