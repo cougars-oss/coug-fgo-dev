@@ -22,43 +22,48 @@ on:
 
 jobs:
   build-test:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        runner: [ubuntu-latest, ubuntu-24.04-arm]
-    runs-on: ${{ matrix.runner }}
-    container:
-      image: snelsondurrant/cougars:latest
-      options: --user root
+        platform: [linux/amd64, linux/arm64]
     steps:
       - uses: actions/checkout@v4
+      - name: Set up QEMU
+        if: matrix.platform == 'linux/arm64'
+        uses: docker/setup-qemu-action@v3
       - name: Cache ccache
         uses: actions/cache@v4
         with:
           path: coug_ws/.ccache
-          key: ccache-${{ runner.os }}-${{ matrix.runner }}-${{ github.sha }}
+          key: ccache-${{ runner.os }}-${{ matrix.platform }}-${{ github.sha }}
           restore-keys: |
-            ccache-${{ runner.os }}-${{ matrix.runner }}-
-      - name: Install ccache
-        run: apt update && apt install -y ccache
-      - name: Fix permissions
+            ccache-${{ runner.os }}-${{ matrix.platform }}-
+      - name: Create CI Script
         run: |
+          cat << 'EOF' > ci_script.sh
+          #!/bin/bash
+          set -e
           mkdir -p coug_ws/.ccache
           chown -R frostlab-docker:frostlab-docker .
-      - name: Save package list
-        run: |
+          apt update && apt install -y ccache
+
           su frostlab-docker -c "source /opt/ros/humble/setup.bash && colcon list --names-only --base-paths coug_ws/src > coug_ws/packages_to_test.txt"
-      - name: Install ROS dependencies
-        run: |
           su frostlab-docker -c "vcs import coug_ws/src < coug_ws/src/cougars.repos"
           su frostlab-docker -c "rosdep update"
           apt update
           su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
-      - name: Build workspace
-        shell: bash
-        run: |
-          su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && export CCACHE_DIR=\$(pwd)/.ccache && colcon build --cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
-      - name: Run tests
-        shell: bash
-        run: |
+
+          su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && export CCACHE_DIR=$(pwd)/.ccache && colcon build --cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
           su frostlab-docker -c 'source /opt/ros/humble/setup.bash && cd coug_ws && colcon test --packages-select $(cat packages_to_test.txt) && colcon test-result --verbose'
+          EOF
+          chmod +x ci_script.sh
+      - name: Run CI
+        run: |
+          docker run --rm \
+            --platform ${{ matrix.platform }} \
+            --user root \
+            -v ${{ github.workspace }}:/github/workspace \
+            -w /github/workspace \
+            snelsondurrant/cougars:latest \
+            ./ci_script.sh
