@@ -9,7 +9,7 @@
 
   <depend>coug_description</depend>
   <depend>coug_localization</depend>
-  <depend>coug_gui</depend>
+  <depend condition="$ROS_BUILD_ARCH == 'amd64'">coug_gui</depend>
   <depend>coug_fgo</depend>
   <depend>coug_navigation</depend>
   <depend>holoocean_bridge</depend>

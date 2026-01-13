@@ -20,10 +20,9 @@ function printError {
     echo -e "\033[0m\033[31m[ERROR] $1\033[0m"
 }
 
-# Mapproxy doesn't work on ARM architectures
 PROFILES=""
 arch=$(uname -m)
-if [[ "$arch" != "aarch64" && "$arch" != "arm64" ]]; then
+if [[ "$arch" == "amd64" ]]; then
 	PROFILES="--profile mapproxy"
 fi
 

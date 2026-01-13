@@ -21,6 +21,14 @@ endif()
 project(coug_gui
   LANGUAGES CXX)
 
+# Skip builds on incompatible architectures
+if(NOT "$ENV{ROS_BUILD_ARCH}" STREQUAL "amd64")
+  message(STATUS "Skipping coug_gui build on $ENV{ROS_BUILD_ARCH}")
+  find_package(ament_cmake REQUIRED)
+  ament_package()
+  return()
+endif()
+
 find_package(ament_cmake REQUIRED)
 find_package(ament_index_cpp REQUIRED)
 find_package(cv_bridge REQUIRED)

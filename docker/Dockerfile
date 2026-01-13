@@ -17,6 +17,9 @@ FROM snelsondurrant/cougars:gtsam
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 
+# ROS_BUILD_ARCH is used to skip building architecture-incompatible packages
+ENV ROS_BUILD_ARCH=$TARGETARCH
+
 #################################
 # IMPORTANT DOCUMENTATION NOTE! #
 #################################
@@ -38,15 +41,6 @@ RUN apt update && apt install -y --no-install-recommends \
     ros-humble-joy ros-humble-teleop-twist-joy ros-humble-teleop-twist-keyboard ros-humble-topic-tools \
     && rm -rf /var/lib/apt/lists/*
 
-# Install architecture-specific ROS packages
-RUN if [ "$TARGETARCH" = "amd64" ]; then \
-    apt update && apt install -y --no-install-recommends \
-    # Mapviz package dependencies - Nelson Durrant, Jan 2026
-    # Can't use rosdep because of ARM architecture incompatibility
-    ros-humble-mapviz ros-humble-mapviz-plugins ros-humble-tile-map \
-    && rm -rf /var/lib/apt/lists/*; \
-    fi
-
 RUN mkdir -p /home/frostlab-docker/coug_ws/src && chown -R frostlab-docker:frostlab-docker /home/frostlab-docker/coug_ws
 WORKDIR /home/frostlab-docker/coug_ws/src
 COPY --chown=frostlab-docker:frostlab-docker coug_ws/src .
@@ -64,7 +58,7 @@ ENV PATH="$PATH:/home/frostlab-docker/.local/bin"
 RUN vcs import . < cougars.repos \
     && rosdep update \
     && sudo apt update \
-    && rosdep install --from-paths . --ignore-src -r -y \
+    && rosdep install --from-paths . --ignore-src -y \
     && sudo rm -rf /var/lib/apt/lists/* \
     && sudo rm -rf ./*
 

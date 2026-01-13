@@ -19,8 +19,9 @@
   <depend>image_transport</depend>
   <depend>libopencv-dev</depend>
   <depend>map_msgs</depend>
-  <!-- Fix for ARM architecture installs -->
-  <!-- <depend>mapviz</depend> -->
+  <depend condition="$ROS_BUILD_ARCH == 'amd64'">mapviz</depend>
+  <depend condition="$ROS_BUILD_ARCH == 'amd64'">mapviz_plugins</depend>
+  <depend condition="$ROS_BUILD_ARCH == 'amd64'">tile_map</depend>
   <depend>marti_common_msgs</depend>
   <depend>marti_nav_msgs</depend>
   <depend>marti_sensor_msgs</depend>
