@@ -20,9 +20,6 @@ ARG TARGETARCH
 # ROS_BUILD_ARCH is used to skip building architecture-incompatible packages
 ENV ROS_BUILD_ARCH=$TARGETARCH
 
-# Set default RMW implementation to CycloneDDS
-ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
-
 #################################
 # IMPORTANT DOCUMENTATION NOTE! #
 #################################

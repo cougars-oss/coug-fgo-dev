@@ -61,7 +61,7 @@ jobs:
           apt update
           su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
 
-          su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && export CCACHE_DIR=/github/workspace/coug_ws/.ccache && export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime && ccache -z && colcon build --symlink-install --cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache && ccache -s"
+          su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && export CCACHE_DIR=/github/workspace/coug_ws/.ccache && export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime && ccache -z && colcon build --cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache && ccache -s"
           su frostlab-docker -c 'source /opt/ros/humble/setup.bash && cd coug_ws && colcon test --event-handlers console_direct+ --packages-select $(cat packages_to_test.txt) && colcon test-result --verbose'
           EOF
           chmod +x ci_script.sh
