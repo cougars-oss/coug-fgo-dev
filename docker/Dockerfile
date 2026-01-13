@@ -61,6 +61,7 @@ ENV PATH="$PATH:/home/frostlab-docker/.local/bin"
 
 # Install custom ROS package dependencies (rosdep)
 RUN vcs import . < cougars.repos \
+    && git submodule update --init --recursive \
     && rosdep update \
     && sudo apt update \
     && rosdep install --from-paths . --ignore-src -y \

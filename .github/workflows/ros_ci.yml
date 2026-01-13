@@ -56,6 +56,7 @@ jobs:
 
           su frostlab-docker -c "source /opt/ros/humble/setup.bash && colcon list --names-only --base-paths coug_ws/src > coug_ws/packages_to_test.txt"
           su frostlab-docker -c "vcs import coug_ws/src < coug_ws/src/cougars.repos"
+          su frostlab-docker -c "cd coug_ws/src && git submodule update --init --recursive"
           su frostlab-docker -c "rosdep update"
           apt update
           su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
