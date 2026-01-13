@@ -22,7 +22,11 @@ on:
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
     container:
       image: snelsondurrant/cougars:latest
       options: --user root
@@ -32,9 +36,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: coug_ws/.ccache
-          key: ccache-${{ runner.os }}-${{ github.sha }}
+          key: ccache-${{ runner.os }}-${{ matrix.runner }}-${{ github.sha }}
           restore-keys: |
-            ccache-${{ runner.os }}-
+            ccache-${{ runner.os }}-${{ matrix.runner }}-
       - name: Install ccache
         run: apt update && apt install -y ccache
       - name: Fix permissions
