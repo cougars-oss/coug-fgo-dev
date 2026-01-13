@@ -56,8 +56,6 @@ jobs:
 
           su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && export CCACHE_DIR=$(pwd)/.ccache && export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime && ccache -z && colcon build --cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache && ccache -s"
           su frostlab-docker -c 'source /opt/ros/humble/setup.bash && cd coug_ws && colcon test --packages-select $(cat packages_to_test.txt) && colcon test-result --verbose'
-
-          chmod -R 777 coug_ws/.ccache
           EOF
           chmod +x ci_script.sh
       - name: Run Build/Test Script
@@ -69,3 +67,6 @@ jobs:
             -w /github/workspace \
             snelsondurrant/cougars:latest \
             ./ci_script.sh
+      - name: Fix Permissions
+        if: always()
+        run: sudo chown -R $USER:$USER .
