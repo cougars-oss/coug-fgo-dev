@@ -26,13 +26,14 @@ from evo.core.metrics import PoseRelation
 
 # %%
 # Configuration
-BAG_PATH = "../../bags/dvl_dropout_com_mag"
+BAG_PATH = "../../bags/bag_name"
 TRUTH_TOPIC = "/auv0/odometry/truth"
 ESTIMATE_TOPICS = [
     "/auv0/odometry/global",
     "/auv0/odometry/global_tm",
     "/auv0/odometry/global_ekf",
     "/auv0/odometry/global_ukf",
+    "/auv0/odometry/global_iekf",
 ]
 OUTPUT_DIR = Path(BAG_PATH)
 print(f"Saving results to: {OUTPUT_DIR.resolve()}")
@@ -51,9 +52,6 @@ def load_trajectories(bag_path, truth_topic, estimate_topics):
                     
                     traj_ref_synced, traj_est_synced = sync.associate_trajectories(traj_ref, traj_est, max_diff=0.1)
                     traj_est_aligned = copy.deepcopy(traj_est_synced)
-
-                    # If reference frames are the same, no alignment needed
-                    # traj_est_aligned.align(traj_ref_synced, correct_scale=False, correct_only_scale=False)
                     
                     trajectories[est_topic] = traj_est_aligned
                     

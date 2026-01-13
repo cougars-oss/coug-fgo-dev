@@ -1,5 +1,9 @@
 repositories:
+  dvl-a50:
+    type: git
+    url: https://github.com/paagutie/dvl-a50.git
+    version: master
   dvl_msgs:
     type: git
-    url: https://github.com/gt-marine-robotics-group/dvl_msgs.git
-    version: main
+    url: https://github.com/paagutie/dvl_msgs.git
+    version: master

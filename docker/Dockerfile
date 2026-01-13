@@ -20,6 +20,9 @@ ARG TARGETARCH
 # ROS_BUILD_ARCH is used to skip building architecture-incompatible packages
 ENV ROS_BUILD_ARCH=$TARGETARCH
 
+# Set default RMW implementation to CycloneDDS
+ENV RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+
 #################################
 # IMPORTANT DOCUMENTATION NOTE! #
 #################################
@@ -35,6 +38,8 @@ ENV ROS_BUILD_ARCH=$TARGETARCH
 # Install ROS packages
 USER root
 RUN apt update && apt install -y --no-install-recommends \
+    # ROS 2 middleware implementations - Nelson Durrant, Jan 2026
+    ros-humble-rmw-cyclonedds-cpp ros-humble-rmw-zenoh-cpp \
     # Helpful ROS GUI tools - Nelson Durrant, Jan 2026
     ros-humble-rqt* ros-humble-plotjuggler-ros \
     # Drive the AUV with a joystick or keyboard - Nelson Durrant, Jan 2026
