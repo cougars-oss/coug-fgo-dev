@@ -1,7 +1,7 @@
 ### PR Checklist:
 - [ ] A brief summary of the PR is provided.
 - [ ] Appropriate tests and documentation are added.
-- [ ] The changes build correctly: `colcon build`.
+- [ ] The changes build correctly: `colcon build --symlink-install`.
 - [ ] The changes pass all tests and linting: `colcon test`.
 
 --

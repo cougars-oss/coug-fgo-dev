@@ -48,7 +48,7 @@
 - Open a new terminal, enter the `cougars-ct` container using `./compose.sh`, build the `coug_ws` workspace, and launch the development stack using `./dev_launch.sh`.
 
   ```bash
-  cd ~/coug_ws && colcon build
+  cd ~/coug_ws && colcon build --symlink-install
   cd ~/scripts && ./dev_launch.sh
   ```
 
