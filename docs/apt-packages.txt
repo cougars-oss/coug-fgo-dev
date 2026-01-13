@@ -1,7 +1,8 @@
-texlive-science
+texlive-latex-base
 texlive-latex-extra
 texlive-extra-utils
-latexmk
+texlive-science
 texlive-publishers
+latexmk
 cm-super
 dvipng

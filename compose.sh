@@ -45,6 +45,12 @@ case $1 in
 		# Wait for './entrypoint.sh' to finish
 		while [ "$(docker exec cougars-ct ps -p 1 -o uid= | tr -d ' ')" != "$HOST_UID" ]; do sleep 1; done
 
+		# Install vcs-defined external packages
+		docker exec -it --user frostlab-docker -w /home/frostlab-docker/coug_ws/src cougars-ct \
+			bash -c "vcs import . < cougars.repos"
+		docker exec -it --user frostlab-docker -w /home/frostlab-docker/coug_ws/src cougars-ct \
+			vcs custom --git --args submodule update --init --recursive
+
 		# Check if a 'coug_dev' tmux session already exists
 		if [ "$(docker exec -it --user frostlab-docker -e HOME=/home/frostlab-docker cougars-ct \
 			tmux list-sessions | grep coug_dev)" == "" ]; then
