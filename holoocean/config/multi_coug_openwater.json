@@ -127,7 +127,7 @@
                     "socket": "COM",
                     "Hz": 1,
                     "configuration": {
-                        "Sigma": 2.5,
+                        "Sigma": 0.2,
                         "Depth": 0.5,
                         "DepthSigma": 0.1
                     },
