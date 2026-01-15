@@ -37,7 +37,7 @@
 
   <!-- Function to generate fins -->
   <xacro:macro name="fin_macro" params="prefix rpy_str">
-    <joint name="${prefix}_fin_joint" type="revolute"> <parent link="com_link"/>
+    <joint name="${prefix}_fin_joint" type="revolute"> <parent link="base_link"/>
       <child link="${prefix}_fin_link"/>
       <origin xyz="${-fin_offset} 0 0" rpy="${rpy_str}"/>
       <axis xyz="0 0 1"/>
@@ -55,16 +55,8 @@
       </link>
   </xacro:macro>
 
-  <!-- Account for HoloOcean COM offset -->
-  <link name="base_link"/>
-  <joint name="com_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="com_link"/>
-    <origin xyz="0.1 0 0.1" rpy="0 0 0"/>
-  </joint>
-
   <!-- Main AUV body -->
-  <link name="com_link">
+  <link name="base_link">
     <visual>
       <origin xyz="0 0 0" rpy="0 ${pi/2} 0"/>
       <geometry>
@@ -76,7 +68,7 @@
 
   <!-- Handle -->
   <joint name="handle_joint" type="fixed">
-    <parent link="com_link"/>
+    <parent link="base_link"/>
     <child link="handle_link"/>
     <origin xyz="0 0 ${base_radius}" rpy="0 0 0"/>
   </joint>
@@ -92,7 +84,7 @@
 
   <!-- Weight tray -->
   <joint name="tray_joint" type="fixed">
-    <parent link="com_link"/>
+    <parent link="base_link"/>
     <child link="tray_link"/>
     <origin xyz="0 0 -${base_radius}" rpy="0 0 0"/>
   </joint>
@@ -108,7 +100,7 @@
 
   <!-- Front hull -->
   <joint name="hull_joint" type="fixed">
-    <parent link="com_link"/>
+    <parent link="base_link"/>
     <child link="hull_link"/>
     <origin xyz="${(base_length-2*base_radius)/2} 0 0" rpy="0 0 0"/>
   </joint>
@@ -124,7 +116,7 @@
 
   <!-- Thruster -->
   <joint name="thruster_joint" type="fixed">
-    <parent link="com_link"/>
+    <parent link="base_link"/>
     <child link="thruster_link"/>
      <origin xyz="${-(base_length-2*base_radius)/2} 0 0" rpy="0 0 0"/>
   </joint>
@@ -144,6 +136,14 @@
   <xacro:fin_macro prefix="right" rpy_str="${-pi*2/3} 0 0"/>
 
   <!-- NOTE: These are exact HoloOcean socket locations as of 2.0.1 -->
+
+  <!-- COM -->
+  <joint name="com_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="com_link"/>
+    <origin xyz="0.0 0 0.0" rpy="0 0 0"/>
+  </joint>
+  <link name="com_link"/>
   
   <!-- IMUSocket -->
   <joint name="imu_joint" type="fixed">

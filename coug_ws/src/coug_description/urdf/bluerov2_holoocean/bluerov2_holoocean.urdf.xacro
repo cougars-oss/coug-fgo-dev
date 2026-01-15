@@ -13,16 +13,8 @@
   <xacro:property name="iyy" value="0.17" />
   <xacro:property name="izz" value="0.12" />
 
-  <!-- Fix for matching CougUV URDF -->
-  <link name="base_link"/>
-  <joint name="com_joint" type="fixed">
-    <parent link="base_link"/>
-    <child link="com_link"/>
-    <origin xyz="0 0 0" rpy="0 0 0"/>
-  </joint>
-
   <!-- Main BlueROV2 body -->
-  <link name="com_link">
+  <link name="base_link">
     <visual>
       <geometry>
         <mesh filename="package://coug_description/urdf/bluerov2_holoocean/meshes/bluerov2.dae" scale="0.025 0.025 0.025"/>
@@ -31,6 +23,14 @@
   </link>
 
   <!-- NOTE: These are exact HoloOcean socket locations as of 2.0.1 -->
+
+  <!-- COM -->
+  <joint name="com_joint" type="fixed">
+    <parent link="base_link"/>
+    <child link="com_link"/>
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+  </joint>
+  <link name="com_link"/>
 
   <!-- IMUSocket -->
   <joint name="imu_joint" type="fixed">
