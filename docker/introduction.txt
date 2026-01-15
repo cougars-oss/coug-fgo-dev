@@ -1,4 +1,6 @@
 
+-- 🌊 CoUGARs FGO Development --
+
 Helpful tips:
  - Check out https://tmuxcheatsheet.com/.
  - Use 'Ctrl+b d' to detach (or 'Ctrl+d' to discard).
