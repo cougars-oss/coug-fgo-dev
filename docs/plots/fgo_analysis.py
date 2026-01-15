@@ -25,16 +25,25 @@ from evo.core import sync, metrics
 from evo.core.metrics import PoseRelation
 
 # %%
-# Configuration
-BAG_PATH = "../../bags/name"
-TRUTH_TOPIC = "/auv0/odometry/truth"
-ESTIMATE_TOPICS = [
-    "/auv0/odometry/global",
-    "/auv0/odometry/global_tm",
-    "/auv0/odometry/global_ekf",
-    "/auv0/odometry/global_ukf",
-    "/auv0/odometry/global_iekf",
+BAG_PATH = "../../bags/single"
+
+AGENT_NAMES = ["auv0", "auv1", "auv2"]
+TRUTH_SUBTOPIC = "/odometry/truth"
+ESTIMATE_SUBTOPICS = [
+    "/odometry/global",
+    "/odometry/global_tm",
+    "/odometry/global_ekf",
+    "/odometry/global_ukf",
+    "/odometry/global_iekf",
 ]
+
+AGENTS = {}
+for agent in AGENT_NAMES:
+    AGENTS[agent] = {
+        "truth": f"/{agent}{TRUTH_SUBTOPIC}",
+        "estimates": [f"/{agent}{sub}" for sub in ESTIMATE_SUBTOPICS]
+    }
+
 OUTPUT_DIR = Path(BAG_PATH)
 print(f"Saving results to: {OUTPUT_DIR.resolve()}")
 
@@ -42,9 +51,13 @@ print(f"Saving results to: {OUTPUT_DIR.resolve()}")
 # %%
 def load_trajectories(bag_path, truth_topic, estimate_topics):
     data_pairs = {}
+    traj_ref_raw = None
     try:
         with Reader(bag_path) as reader:
-            traj_ref_raw = file_interface.read_bag_trajectory(reader, truth_topic)
+            try:
+                traj_ref_raw = file_interface.read_bag_trajectory(reader, truth_topic)
+            except Exception as e:
+                 return {}, None
 
             for est_topic in estimate_topics:
                 try:
@@ -91,14 +104,24 @@ def calculate_metrics(data_pairs):
 
 
 # %%
-trajectory_pairs, truth_ref_raw = load_trajectories(BAG_PATH, TRUTH_TOPIC, ESTIMATE_TOPICS)
-df_metrics = calculate_metrics(trajectory_pairs)
+all_trajectory_pairs = {}
+all_truth_refs = {}
 
-# %%
-csv_path = OUTPUT_DIR / "metrics.csv"
-df_metrics.to_csv(csv_path)
-print(f"Metrics saved to: {csv_path}")
-display(df_metrics)
+for agent_name, topics in AGENTS.items():
+    pairs, ref = load_trajectories(BAG_PATH, topics["truth"], topics["estimates"])
+    if pairs:
+        all_trajectory_pairs[agent_name] = pairs
+        all_truth_refs[agent_name] = ref
+    else:
+        print(f"No data found for {agent_name}")
+
+for agent_name, pairs in all_trajectory_pairs.items():
+    df_metrics = calculate_metrics(pairs)
+    
+    csv_path = OUTPUT_DIR / f"metrics_{agent_name}.csv"
+    df_metrics.to_csv(csv_path)
+    print(f"Metrics saved to: {csv_path}")
+    display(df_metrics)
 
 # %%
 settings.SETTINGS.plot_seaborn_style = "whitegrid"
@@ -111,14 +134,17 @@ plot_mode = plot.PlotMode.xy
 # plot_mode = plot.PlotMode.yz
 # plot_mode = plot.PlotMode.xyz
 
-fig = plt.figure(figsize=(10, 8))
-ax = plot.prepare_axis(fig, plot_mode)
+for agent_name, pairs in all_trajectory_pairs.items():
+    truth_ref_raw = all_truth_refs[agent_name]
+    
+    fig = plt.figure(figsize=(10, 8))
+    ax = plot.prepare_axis(fig, plot_mode)
 
-plot.traj(ax, plot_mode, truth_ref_raw, style="--", color="black", label=TRUTH_TOPIC)
-est_trajectories = {k: v[1] for k, v in trajectory_pairs.items()}
-plot.trajectories(ax, est_trajectories, plot_mode)
+    plot.traj(ax, plot_mode, truth_ref_raw, style="--", color="black", label=AGENTS[agent_name]["truth"])
+    est_trajectories = {k: v[1] for k, v in pairs.items()}
+    plot.trajectories(ax, est_trajectories, plot_mode)
 
-plot_path = OUTPUT_DIR / "trajectories.png"
-plt.savefig(plot_path, dpi=300)
-print(f"Plot saved to: {plot_path.resolve()}")
-display(fig)
+    plot_path = OUTPUT_DIR / f"trajectories_{agent_name}.png"
+    plt.savefig(plot_path, dpi=300)
+    print(f"Plot saved to: {plot_path.resolve()}")
+    display(fig)

@@ -31,6 +31,12 @@
     two_d_mode: false
     publish_tf: false # Published by FGO instead
 
+    initial_state: [0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
+
     process_noise_covariance: [
       # X, Y, Z
       1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,   0.0,   0.0,
@@ -100,6 +106,12 @@
     two_d_mode: false
     publish_tf: false # Published by FGO instead
 
+    initial_state: [0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
+
     process_noise_covariance: [
       # X, Y, Z
       1e-9, 0.0,  0.0,  0.0,  0.0,  0.0,  0.0,    0.0,    0.0,    0.0,     0.0,     0.0,     0.0,   0.0,   0.0,
@@ -162,3 +174,35 @@
     imu0_queue_size: 2
     imu0_differential: false
     imu0_relative: false # Absolute heading in the map frame.
+
+/auv1/ekf_filter_node_map:
+  ros__parameters:
+    initial_state: [0.0, 20.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
+
+/auv2/ekf_filter_node_map:
+  ros__parameters:
+    initial_state: [0.0, 40.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
+
+/auv1/ukf_filter_node_map:
+  ros__parameters:
+    initial_state: [0.0, 20.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
+
+/auv2/ukf_filter_node_map:
+  ros__parameters:
+    initial_state: [0.0, 40.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0,
+                    0.0, 0.0, 0.0]
