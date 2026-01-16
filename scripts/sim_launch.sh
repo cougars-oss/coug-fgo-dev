@@ -46,8 +46,14 @@ while getopts ":bcmr:" opt; do
 done
 
 if [ -n "$BAG_PATH" ] && [ -d "$BAG_PATH" ]; then
-    printError "Bag directory already exists: $BAG_PATH"
-    exit 1
+    printWarning "Bag directory already exists: $BAG_PATH"
+    read -p "Do you want to overwrite it? (y/n) " -n 1 -r
+    echo 
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        rm -rf "$BAG_PATH"
+    else
+        exit 1
+    fi
 fi
 
 ARGS=("urdf_file:=$URDF" "num_agents:=$AGENTS" "compare:=$COMPARE")
@@ -55,4 +61,9 @@ if [ -n "$BAG_PATH" ]; then
     ARGS+=("bag_path:=$BAG_PATH")
 fi
 
-ros2 launch coug_bringup dev.launch.py "${ARGS[@]}"
+if [ -n "$BAG_PATH" ]; then
+    ros2 launch coug_bringup dev.launch.py "${ARGS[@]}" 2>&1 | tee /tmp/temp_launch.log
+    mv /tmp/temp_launch.log "$BAG_PATH/launch.log"
+else
+    ros2 launch coug_bringup dev.launch.py "${ARGS[@]}"
+fi
