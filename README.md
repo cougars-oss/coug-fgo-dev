@@ -3,7 +3,9 @@
 [![ROS CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml)
 [![Docker CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml)
 
-[**Get Started**](#get-started) | [**Contributing**](#contributing) | [**Attribution and Publications**](#attribution-and-publications)
+[**Get Started**](#get-started) | [**Contributing**](#contributing) | [**Publications**](#publications)
+
+CoUGARS is a low-cost, configurable AUV platform designed for multi-agent autonomy research by the [Field Robotic Systems Lab (FRoSt Lab)](https://frostlab.byu.edu) at [Brigham Young University](https://byu.edu).
 
 --
 
@@ -68,69 +70,69 @@
 
 --
 
-## Attribution and Publications
+## Publications
 
 Please cite our relevant publications if you find CoUGARs useful for your research:
 
 ### CoUGARs
 ```bibtex
 @misc{durrant2025lowcostmultiagentfleetacoustic,
-      title={Low-cost Multi-agent Fleet for Acoustic Cooperative Localization Research}, 
-      author={Nelson Durrant and Braden Meyers and Matthew McMurray and Clayton Smith and Brighton Anderson and Tristan Hodgins and Kalliyan Velasco and Joshua G. Mangelson},
-      year={2025},
-      eprint={2511.08822},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2511.08822}, 
+  title={Low-cost Multi-agent Fleet for Acoustic Cooperative Localization Research}, 
+  author={Nelson Durrant and Braden Meyers and Matthew McMurray and Clayton Smith and Brighton Anderson and Tristan Hodgins and Kalliyan Velasco and Joshua G. Mangelson},
+  year={2025},
+  eprint={2511.08822},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2511.08822}, 
 }
 ```
 
 ### HoloOcean-ROS
 ```bibtex
 @misc{meyers2025testingevaluationunderwatervehicle,
-      title={Testing and Evaluation of Underwater Vehicle Using Hardware-In-The-Loop Simulation with HoloOcean}, 
-      author={Braden Meyers and Joshua G. Mangelson},
-      year={2025},
-      eprint={2511.07687},
-      archivePrefix={arXiv},
-      primaryClass={cs.RO},
-      url={https://arxiv.org/abs/2511.07687}, 
+  title={Testing and Evaluation of Underwater Vehicle Using Hardware-In-The-Loop Simulation with HoloOcean}, 
+  author={Braden Meyers and Joshua G. Mangelson},
+  year={2025},
+  eprint={2511.07687},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2511.07687}, 
 }
 ```
 
 ### HoloOcean (General Use)
 ```bibtex
-@inproceedings{Potokar22icra,
-  author = {E. Potokar and S. Ashford and M. Kaess and J. Mangelson},
-  title = {Holo{O}cean: An Underwater Robotics Simulator},
-  booktitle = {Proc. IEEE Intl. Conf. on Robotics and Automation, ICRA},
-  address = {Philadelphia, PA, USA},
-  month = {May},
-  year = {2022}
+@inproceedings{potokar2022holooceanunderwaterroboticssim,
+  author={E. Potokar and S. Ashford and M. Kaess and J. Mangelson},
+  title={Holo{O}cean: An Underwater Robotics Simulator},
+  booktitle={Proc. IEEE Intl. Conf. on Robotics and Automation, ICRA},
+  address={Philadelphia, PA, USA},
+  month={May},
+  year={2022}
 }
 ```
 
 ### Sonar Simulation
 ```bibtex
-@inproceedings{Potokar22iros,
-  author = {E. Potokar and K. Lay and K. Norman and D. Benham and T. Neilsen and M. Kaess and J. Mangelson},
-  title = {Holo{O}cean: Realistic Sonar Simulation},
-  booktitle = {Proc. IEEE/RSJ Intl. Conf. Intelligent Robots and Systems, IROS},
-  address = {Kyoto, Japan},
-  month = {Oct},
-  year = {2022}
+@inproceedings{potokar2022holooceanrealisticsonarsim,
+  author={E. Potokar and K. Lay and K. Norman and D. Benham and T. Neilsen and M. Kaess and J. Mangelson},
+  title={Holo{O}cean: Realistic Sonar Simulation},
+  booktitle={Proc. IEEE/RSJ Intl. Conf. Intelligent Robots and Systems, IROS},
+  address={Kyoto, Japan},
+  month={Oct},
+  year={2022}
 }
 ```
 
 ### HoloOcean 2.0 (Features)
 ```bibtex
 @misc{romrell2025previewholoocean20,
-   title={A Preview of HoloOcean 2.0}, 
-   author={Blake Romrell and Abigail Austin and Braden Meyers and Ryan Anderson and Carter Noh and Joshua G. Mangelson},
-   year={2025},
-   eprint={2510.06160},
-   archivePrefix={arXiv},
-   primaryClass={cs.RO},
-   url={https://arxiv.org/abs/2510.06160}, 
+  title={A Preview of HoloOcean 2.0}, 
+  author={Blake Romrell and Abigail Austin and Braden Meyers and Ryan Anderson and Carter Noh and Joshua G. Mangelson},
+  year={2025},
+  eprint={2510.06160},
+  archivePrefix={arXiv},
+  primaryClass={cs.RO},
+  url={https://arxiv.org/abs/2510.06160}, 
 }
 ```
