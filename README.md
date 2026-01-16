@@ -1,4 +1,4 @@
-# 🌊 CoUGARs: Configurable Underwater Group of Autonomous Robots
+# 🌊 CoUGARs FGO Development
 
 [![ROS CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml)
 [![Docker CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml)
