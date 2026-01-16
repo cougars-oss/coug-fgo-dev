@@ -119,23 +119,23 @@
       # TURTLMap-based DVL preintegration implementation
       enable_dvl_preintegration: false
 
-  navsat_preprocessor_node:
-    ros__parameters:
-      # --- Node Settings ---
-      origin_pub_rate: 1.0 # [Hz] Rate at which to publish the GPS origin.
+/**/navsat_preprocessor_node:
+  ros__parameters:
+    # --- Node Settings ---
+    origin_pub_rate: 1.0 # [Hz] Rate at which to publish the GPS origin.
 
-      # --- ROS Topics and Frames ---
-      input_topic: "gps/fix"
-      odom_output_topic: "odometry/gps"
-      origin_output_topic: "/origin"
+    # --- ROS Topics and Frames ---
+    input_topic: "gps/fix"
+    odom_output_topic: "odometry/gps"
+    origin_output_topic: "/origin"
 
-      map_frame: "map" # Global, non-drifting world frame
+    map_frame: "map" # Global, non-drifting world frame
 
-      use_parameter_origin: true
-      parameter_origin:
-        latitude: 40.33940
-        longitude: -111.90721
-        altitude: 1412.0
+    use_parameter_origin: true
+    parameter_origin:
+      latitude: 40.33940
+      longitude: -111.90721
+      altitude: 1412.0
 
 /auv0/**:
   ros__parameters:
