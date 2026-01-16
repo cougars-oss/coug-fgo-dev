@@ -1,29 +1,18 @@
 #!/bin/bash
 # Created by Nelson Durrant, Jan 2026
 #
-# Launches FGO localization for HoloOcean development
+# Launches the CoUGARs simulation stack
 #
 # Usage:
-#   ./scripts/dev_launch.sh [-b] [-c] [-m] [-r <bag_name>]
+#   ./scripts/sim_launch.sh [-b] [-c] [-m] [-r <bag_name>]
 #
 # Arguments:
-#   -b: Launch the BlueROV2 model (default: CougUV)
-#   -c: Launch comparison localization nodes
-#   -m: Launch multiple CougUV agents
+#   -b: Launch the BlueROV2 scenario (default: CougUV)
+#   -c: Launch alternative localization methods for comparison
+#   -m: Launch multi-agent CougUV scenario
 #   -r <bag_name>: Record a rosbag to ~/bags/<bag_name>
 
-function printInfo {
-    echo -e "\033[0m\033[36m[INFO] $1\033[0m"
-}
-
-function printWarning {
-    echo -e "\033[0m\033[33m[WARNING] $1\033[0m"
-}
-
-function printError {
-    echo -e "\033[0m\033[31m[ERROR] $1\033[0m"
-}
-
+source $(dirname "$(readlink -f "$0")")/common.sh
 source ~/coug_ws/install/setup.bash
 
 URDF="urdf/couguv_holoocean.urdf.xacro"

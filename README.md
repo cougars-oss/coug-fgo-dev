@@ -45,11 +45,11 @@
   cd coug_fgo_dev/holoocean && ./compose.sh
   ```
 
-- Open a new terminal, enter the `cougars-ct` container using `./compose.sh`, build the `coug_ws` workspace, and launch the development stack using `./dev_launch.sh`.
+- Open a new terminal, enter the `cougars-ct` container using `./compose.sh`, build the `coug_ws` workspace, and launch the simulation stack using `./sim_launch.sh`.
 
   ```bash
   cd ~/coug_ws && colcon build --symlink-install
-  cd ~/scripts && ./dev_launch.sh
+  cd ~/scripts && ./sim_launch.sh
   ```
 
 --
