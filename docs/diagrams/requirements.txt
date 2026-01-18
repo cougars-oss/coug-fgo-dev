@@ -1,2 +1,2 @@
-matplotlib
 daft-pgm
+matplotlib

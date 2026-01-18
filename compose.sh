@@ -59,6 +59,7 @@ case $1 in
         fi
         
         # Attach to the 'coug_dev' tmux session
+        printInfo "Attaching to 'coug_dev' tmux session..."
         docker exec -it --user frostlab-docker -e HOME=/home/frostlab-docker cougars-ct tmux attach -t coug_dev
     ;;
 esac

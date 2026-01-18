@@ -1,5 +1,5 @@
 
--- 🌊 CoUGARs: Configurable Underwater Group of Autonomous Robots --
+-- 🌊 CoUGARs FGO Development Container --
 
 Helpful tips:
  - Check out https://tmuxcheatsheet.com/.

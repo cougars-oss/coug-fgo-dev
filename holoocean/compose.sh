@@ -30,7 +30,7 @@ case $1 in
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
 
-        printWarning "Starting the holoocean-ct container..."
+        printInfo "Loading the holoocean-ct container..."
         docker compose -f "$SCRIPT_DIR/docker/docker-compose.yaml" up -d
 
         PARAMS_FILE="/home/ue4/config/coug_holoocean_params.yaml"
@@ -50,6 +50,7 @@ case $1 in
             esac
         done
 
+        printInfo "Launching the configured scenario in HoloOcean..."
         docker exec -it --user ue4 -e HOME=/home/ue4 -e RMW_FASTRTPS_USE_QOS_FROM_XML=1 \
             -e FASTRTPS_DEFAULT_PROFILES_FILE=/home/ue4/config/fastdds.xml holoocean-ct /bin/bash -c \
             "source ~/ros2_ws/install/setup.bash && ros2 run holoocean_main holoocean_node --ros-args \
