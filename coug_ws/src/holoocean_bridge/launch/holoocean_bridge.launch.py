@@ -28,7 +28,7 @@ def generate_launch_description():
     main_agent = LaunchConfiguration("main_agent", default="true")
 
     pkg_share = get_package_share_directory("holoocean_bridge")
-    params_file = os.path.join(pkg_share, "config", "bridge_params.yaml")
+    params_file = os.path.join(pkg_share, "config", "holoocean_bridge_params.yaml")
 
     base_link_frame = PythonExpression(
         [

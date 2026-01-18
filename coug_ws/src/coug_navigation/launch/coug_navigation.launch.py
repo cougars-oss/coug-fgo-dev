@@ -25,7 +25,7 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time", default="false")
 
     pkg_share = get_package_share_directory("coug_navigation")
-    params_file = os.path.join(pkg_share, "config", "navigation_params.yaml")
+    params_file = os.path.join(pkg_share, "config", "coug_navigation_params.yaml")
 
     return LaunchDescription(
         [

@@ -26,7 +26,7 @@ def generate_launch_description():
     auv_ns = LaunchConfiguration("auv_ns", default="auv0")
 
     pkg_share = get_package_share_directory("coug_localization")
-    params_file = os.path.join(pkg_share, "config", "localization_params.yaml")
+    params_file = os.path.join(pkg_share, "config", "coug_localization_params.yaml")
 
     odom_frame = PythonExpression(
         ["'", auv_ns, "/odom' if '", auv_ns, "' != '' else 'odom'"]

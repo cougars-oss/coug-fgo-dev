@@ -15,6 +15,8 @@ SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPT_DIR/../../scripts/common.sh"
 source "$SCRIPT_DIR/../../.venv/bin/activate"
 
+evo_config reset
+
 if [ "$#" -ne 1 ]; then
     printError "Usage: $0 <bag_name>"
     exit 1

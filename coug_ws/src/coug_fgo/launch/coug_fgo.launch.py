@@ -28,7 +28,7 @@ def generate_launch_description():
     set_origin = LaunchConfiguration("set_origin", default="true")
 
     pkg_share = get_package_share_directory("coug_fgo")
-    params_file = os.path.join(pkg_share, "config", "fgo_params.yaml")
+    params_file = os.path.join(pkg_share, "config", "coug_fgo_params.yaml")
 
     odom_frame = PythonExpression(
         ["'", auv_ns, "/odom' if '", auv_ns, "' != '' else 'odom'"]
