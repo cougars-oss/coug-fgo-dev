@@ -3,7 +3,7 @@
 [![ROS CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros_ci.yml)
 [![Docker CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml)
 
-[**Get Started**](#get-started) | [**Contributing**](#contributing) | [**Publications**](#publications)
+[**Get Started**](#get-started) | [**Contributing**](#contributing) | [**Citation**](#citation)
 
 CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autonomy research by the [Field Robotic Systems Lab (FRoSt Lab)](https://frostlab.byu.edu) at [Brigham Young University](https://byu.edu).
 
@@ -11,26 +11,24 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
 
 ## Get Started
 
-> Per the official HoloOcean (and HoloOcean-ROS) documentation, your computer must have several gigabytes of storage available, 64-bit Linux or Windows, and a competent NVIDIA GPU.
+> **Prerequisites:** Several gigabytes of storage, 64-bit Linux or Windows, and a competent NVIDIA GPU.
 
 - Install Docker and set up the Linux development environment.
 
   **Linux (Recommended):**
 
-  - Install Docker Engine by following the instructions [here](https://docs.docker.com/engine/install/ubuntu/). Make sure to follow the post-installation steps to enable Docker commands without `sudo`.
+  - Install [Docker Engine](https://docs.docker.com/engine/install/ubuntu/).
 
   **Windows:**
 
-  - Install WSL2 by following the instructions [here](https://docs.microsoft.com/en-us/windows/wsl/install).
+  - Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install).
 
-  - Install Docker Desktop by following the instructions [here](https://docs.docker.com/desktop/), and enable the WSL2 backend by following the instructions [here](https://docs.docker.com/desktop/windows/wsl/).
-
-- Set up GitHub SSH keys by following the instructions [here](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent).
+  - Install [Docker Desktop](https://docs.docker.com/desktop/) and enable the [WSL2 backend](https://docs.docker.com/desktop/windows/wsl/).
 
 - Open a new terminal and clone the `coug_fgo_dev` repository.
 
   ```bash
-  git clone git@github.com:snelsondurrant/coug_fgo_dev.git
+  git clone https://github.com/snelsondurrant/coug_fgo_dev.git
   ```
 
 - Enter the repository and run `./compose.sh` to pull the latest image from Docker Hub and launch the `cougars-ct` container.
@@ -39,21 +37,35 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
   cd coug_fgo_dev && ./compose.sh
   ```
 
-- Detatch from the container using `Ctrl+b d` and follow the instructions [here](https://github.com/byu-holoocean/holoocean-ros/tree/main/docker) to build a runtime Docker image for `holoocean-ros`. When prompted to run `./build_container.sh`, specify the branch `nelson/fgo-dev` using `./build_container.sh -b nelson/fgo-dev`.
+- Choose a development workflow:
 
-- When finished, launch HoloOcean in the `holoocean-ct` container using `./compose.sh`.
+  **Simulation (HoloOcean):**
 
-  ```bash
-  cd coug_fgo_dev/holoocean && ./compose.sh
-  ```
+  - Detatch from the container using `Ctrl+b d` and build a [runtime image](https://github.com/byu-holoocean/holoocean-ros/tree/main/docker) for `holoocean-ros`. When prompted to run `./build_container.sh`, specify the branch `nelson/fgo-dev` using `./build_container.sh -b nelson/fgo-dev`.
+  
+  - When finished, launch HoloOcean in the `holoocean-ct` container using `./holoocean/compose.sh`.
+  
+    ```bash
+    cd coug_fgo_dev && ./holoocean/compose.sh
+    ```
+  
+  - Open a new terminal, enter the `cougars-ct` container using `./compose.sh`, build the `coug_ws` workspace, and launch the simulation stack using `./sim_launch.sh`.
+  
+    ```bash
+    cd ~/coug_ws && colcon build --symlink-install
+    cd ~/scripts && ./sim_launch.sh
+    ```
 
-- Open a new terminal, enter the `cougars-ct` container using `./compose.sh`, build the `coug_ws` workspace, and launch the simulation stack using `./sim_launch.sh`.
+  **Recorded Data (`rosbag2`):**
 
-  ```bash
-  cd ~/coug_ws && colcon build --symlink-install
-  cd ~/scripts && ./sim_launch.sh
-  ```
+  - On your host machine, copy your `rosbag2` bag into the `bags` folder at the root of the repository.
 
+  - Inside of the `cougars-ct` container, build the `coug_ws` workspace and launch the development stack using `./bag_launch.sh <bag_name>`. Provide the name of your bag as the script argument.
+  
+    ```bash
+    cd ~/coug_ws && colcon build --symlink-install
+    cd ~/scripts && ./bag_launch.sh <bag_name>
+    ```
 --
 
 ## Contributing
@@ -72,7 +84,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
 
 --
 
-## Publications
+## Citation
 
 Please cite our relevant publications if you find this repository useful for your research:
 
