@@ -65,6 +65,9 @@ fi
 if [ -n "$BAG_PATH" ]; then
     ros2 launch coug_bringup dev.launch.py "${ARGS[@]}" 2>&1 | tee /tmp/temp_launch.log
     mv /tmp/temp_launch.log "$BAG_PATH/launch.log"
+
+    mkdir -p "$BAG_PATH/config"
+    find ~/coug_ws/install -type f -path "*/config/*" -exec cp {} "$BAG_PATH/config/" \;
 else
     ros2 launch coug_bringup dev.launch.py "${ARGS[@]}"
 fi
