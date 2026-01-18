@@ -43,6 +43,7 @@ SETTINGS.plot_seaborn_style = "whitegrid"
 SETTINGS.plot_usetex = True
 
 apply_settings(SETTINGS)
+sns.set_context("paper")
 
 
 def load_data(bags_dir):
@@ -125,7 +126,7 @@ def generate_plots(data_map, output_dir):
             plt.xlabel("")
 
             save_path = output_dir / f"{plot_type}_{suffix}.png"
-            plt.savefig(save_path, dpi=300)
+            plt.savefig(save_path, dpi=300, bbox_inches="tight")
             print(f"Saved {save_path}")
             plt.close()
 
