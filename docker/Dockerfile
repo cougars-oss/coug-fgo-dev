@@ -17,6 +17,8 @@ FROM snelsondurrant/cougars:gtsam
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 
+ENV RCLUTILS_COLORIZED_OUTPUT=1
+
 # ROS_BUILD_ARCH is used to skip building architecture-incompatible packages
 ENV ROS_BUILD_ARCH=$TARGETARCH
 
@@ -65,7 +67,6 @@ WORKDIR /home/frostlab-docker
 # Set up automatic sourcing
 RUN echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc \
     && echo "source /home/frostlab-docker/coug_ws/install/setup.bash" >> ~/.bashrc \
-    && echo "export RCUTILS_COLORIZED_OUTPUT=1" >> ~/.bashrc \
     && touch ~/.hushlogin
 
 CMD ["bash"]
