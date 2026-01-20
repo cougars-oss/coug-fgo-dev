@@ -123,6 +123,7 @@
   ros__parameters:
     # --- Node Settings ---
     origin_pub_rate: 1.0 # [Hz] Rate at which to publish the GPS origin.
+    initialization_duration: 10.0 # [s] Time duration to average GPS data before setting origin.
 
     # --- ROS Topics and Frames ---
     input_topic: "gps/fix"

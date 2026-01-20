@@ -93,12 +93,21 @@ private:
   /// The UTM coordinates of the origin.
   geodesy::UTMPoint origin_utm_;
 
+  /// Flag indicating if we are currently collecting samples for averaging.
+  bool collecting_samples_ = false;
+  /// Start time of the collection period.
+  double start_collection_time_ = 0.0;
+  /// Buffer for GPS samples.
+  std::vector<sensor_msgs::msg::NavSatFix> gps_samples_;
+
   // --- Parameters ---
   /// If true, this node establishes and publishes the origin.
   /// If false, it subscribes to an external origin topic.
   bool set_origin_;
   /// The local ENU map frame ID.
   std::string map_frame_;
+  /// Duration to average GPS measurements before setting origin.
+  double initialization_duration_;
 };
 
 }  // namespace coug_fgo

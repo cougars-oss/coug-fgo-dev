@@ -43,6 +43,7 @@ NavsatPreprocessorNode::NavsatPreprocessorNode()
     declare_parameter<std::string>("odom_output_topic", "odometry/gps");
   std::string origin_topic =
     declare_parameter<std::string>("origin_topic", "/origin");
+  initialization_duration_ = declare_parameter<double>("initialization_duration", 10.0);
   map_frame_ = declare_parameter<std::string>("map_frame", "map");
 
   bool use_parameter_origin = declare_parameter<bool>("use_parameter_origin", false);
@@ -139,21 +140,58 @@ void NavsatPreprocessorNode::navsatCallback(const sensor_msgs::msg::NavSatFix::S
       return;
     }
 
+    if (!collecting_samples_) {
+      collecting_samples_ = true;
+      start_collection_time_ = this->get_clock()->now().seconds();
+      gps_samples_.clear();
+      RCLCPP_INFO(
+        get_logger(), "Starting GPS origin averaging (%.1fs)...",
+        initialization_duration_);
+    }
+
+    gps_samples_.push_back(*msg);
+
+    double elapsed = this->get_clock()->now().seconds() - start_collection_time_;
+    if (elapsed < initialization_duration_) {
+      RCLCPP_INFO_THROTTLE(
+        get_logger(), *get_clock(), 500,
+        "Averaging GPS data (%.2fs / %.2fs)...", elapsed,
+        initialization_duration_);
+      return;
+    }
+
+    // Compute average
+    double lat_sum = 0.0;
+    double lon_sum = 0.0;
+    double alt_sum = 0.0;
+    for (const auto & sample : gps_samples_) {
+      lat_sum += sample.latitude;
+      lon_sum += sample.longitude;
+      alt_sum += sample.altitude;
+    }
+    double n = static_cast<double>(gps_samples_.size());
+
     try {
       geographic_msgs::msg::GeoPoint pt;
-      pt.latitude = msg->latitude;
-      pt.longitude = msg->longitude;
-      pt.altitude = msg->altitude;
+      pt.latitude = lat_sum / n;
+      pt.longitude = lon_sum / n;
+      pt.altitude = alt_sum / n;
       origin_utm_ = geodesy::UTMPoint(pt);
-      origin_navsat_ = *msg;
+
+      origin_navsat_ = gps_samples_.back();
+      origin_navsat_.latitude = pt.latitude;
+      origin_navsat_.longitude = pt.longitude;
+      origin_navsat_.altitude = pt.altitude;
       origin_set_ = true;
 
       RCLCPP_INFO(
-        get_logger(), "GPS Origin Set: Lat %.6f, Lon %.6f (UTM Zone %d%c)",
-        origin_navsat_.latitude, origin_navsat_.longitude, origin_utm_.zone,
+        get_logger(),
+        "GPS Origin Set (Averaged %d samples): Lat %.6f, Lon %.6f (UTM Zone %d%c)",
+        (int)n, origin_navsat_.latitude, origin_navsat_.longitude, origin_utm_.zone,
         origin_utm_.band);
     } catch (const std::exception & e) {
       RCLCPP_ERROR(get_logger(), "Origin set failed: %s", e.what());
+      collecting_samples_ = false;
     }
     return;
   }
