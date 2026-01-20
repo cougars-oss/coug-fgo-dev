@@ -62,7 +62,7 @@
     depth:
       use_parameter_covariance: false
       parameter_covariance:
-        position_z_noise_sigma: 0.2 # [m] Depth sensor Z-position uncertainty sigma.
+        position_z_noise_sigma: 0.02 # [m] Depth sensor Z-position uncertainty sigma.
       robust_kernel: "None"
       robust_k: 1.345
 
@@ -71,7 +71,7 @@
       constrain_yaw_only: true
       use_parameter_covariance: false
       parameter_covariance:
-        magnetic_field_noise_sigma: 0.006 # [normalized] Magnetic field uncertainty sigma.
+        magnetic_field_noise_sigma: 0.003 # [normalized] Magnetic field uncertainty sigma.
       # Normalized Magnetic Field Vector (Local Earth Field)
       # Provo, Utah (X=20,843.1 nT, Y=3,894.9 nT, Z=45,873.1 nT, F=50,536.6 nT)
       reference_field: [0.41, 0.08, 0.91] # [normalized]
@@ -127,9 +127,7 @@
     # --- ROS Topics and Frames ---
     input_topic: "gps/fix"
     odom_output_topic: "odometry/gps"
-    origin_output_topic: "/origin"
-
-    map_frame: "map" # Global, non-drifting world frame
+    origin_topic: "/origin"
 
     use_parameter_origin: true
     parameter_origin:

@@ -107,14 +107,14 @@ void FactorGraphNode::loadParameters()
   gps_params_.position_noise_sigma =
     declare_parameter<double>("gps.parameter_covariance.position_noise_sigma", 0.2);
   gps_params_.altitude_noise_sigma =
-    declare_parameter<double>("gps.parameter_covariance.altitude_noise_sigma", 5.0);
+    declare_parameter<double>("gps.parameter_covariance.altitude_noise_sigma", 0.4);
   gps_params_.robust_kernel = declare_parameter<std::string>("gps.robust_kernel", "None");
   gps_params_.robust_k = declare_parameter<double>("gps.robust_k", 1.345);
 
   depth_params_.use_parameter_covariance =
     declare_parameter<bool>("depth.use_parameter_covariance", false);
   depth_params_.position_z_noise_sigma =
-    declare_parameter<double>("depth.parameter_covariance.position_z_noise_sigma", 0.2);
+    declare_parameter<double>("depth.parameter_covariance.position_z_noise_sigma", 0.02);
   depth_params_.robust_kernel = declare_parameter<std::string>("depth.robust_kernel", "None");
   depth_params_.robust_k = declare_parameter<double>("depth.robust_k", 1.345);
 
@@ -123,7 +123,7 @@ void FactorGraphNode::loadParameters()
   mag_params_.use_parameter_covariance =
     declare_parameter<bool>("mag.use_parameter_covariance", false);
   mag_params_.magnetic_field_noise_sigma =
-    declare_parameter<double>("mag.parameter_covariance.magnetic_field_noise_sigma", 0.006);
+    declare_parameter<double>("mag.parameter_covariance.magnetic_field_noise_sigma", 0.003);
   mag_params_.reference_field =
     declare_parameter<std::vector<double>>("mag.reference_field", {0.41, 0.08, 0.91});
   mag_params_.robust_kernel = declare_parameter<std::string>("mag.robust_kernel", "None");

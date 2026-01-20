@@ -128,7 +128,7 @@ def generate_launch_description():
                 name="gps_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": base_link_frame},
+                    {"use_sim_time": use_sim_time, "frame_id": com_link_frame},
                 ],
             ),
             Node(

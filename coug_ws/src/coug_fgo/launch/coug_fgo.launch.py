@@ -108,7 +108,11 @@ def generate_launch_description():
                 name="navsat_preprocessor_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "set_origin": set_origin},
+                    {
+                        "use_sim_time": use_sim_time,
+                        "map_frame": "map",
+                        "set_origin": set_origin,
+                    },
                 ],
             ),
             # TODO: Replace this with the IEKF

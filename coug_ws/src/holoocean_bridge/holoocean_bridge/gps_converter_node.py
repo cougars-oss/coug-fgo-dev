@@ -32,13 +32,13 @@ class GpsConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/GPSSensor")
         self.declare_parameter("output_topic", "gps/fix")
-        self.declare_parameter("frame_id", "base_link")
+        self.declare_parameter("frame_id", "com_link")
         self.declare_parameter("origin_latitude", 40.23890)
         self.declare_parameter("origin_longitude", -111.74212)
         self.declare_parameter("origin_altitude", 1412.0)
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("position_noise_sigma", 0.2)
-        self.declare_parameter("altitude_noise_sigma", 5.0)
+        self.declare_parameter("altitude_noise_sigma", 0.4)
 
         input_topic = (
             self.get_parameter("input_topic").get_parameter_value().string_value

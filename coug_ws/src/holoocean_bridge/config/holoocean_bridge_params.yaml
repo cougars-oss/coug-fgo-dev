@@ -19,7 +19,7 @@
 
       override_covariance: true
       position_noise_sigma: 0.2 # [m] Standard deviation of GPS position measurements.
-      altitude_noise_sigma: 5.0 # [m] Standard deviation of GPS altitude measurements.
+      altitude_noise_sigma: 0.4 # [m] Standard deviation of GPS altitude measurements.
 
   depth_converter_node:
     ros__parameters:
@@ -27,7 +27,7 @@
       output_topic: "odometry/depth"
 
       override_covariance: true
-      noise_sigma: 0.2 # [m] Standard deviation of depth measurements.
+      noise_sigma: 0.02 # [m] Standard deviation of depth measurements.
 
   ahrs_converter_node:
     ros__parameters:
@@ -81,4 +81,4 @@
       output_topic: "imu/mag"
 
       override_covariance: true
-      noise_sigma: 0.006 # [normalized] Standard deviation of magnetometer measurements.
+      noise_sigma: 0.003 # [normalized] Standard deviation of magnetometer measurements.

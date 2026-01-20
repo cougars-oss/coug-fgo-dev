@@ -41,8 +41,8 @@ NavsatPreprocessorNode::NavsatPreprocessorNode()
   std::string input_topic = declare_parameter<std::string>("input_topic", "gps/fix");
   std::string odom_output_topic =
     declare_parameter<std::string>("odom_output_topic", "odometry/gps");
-  std::string origin_output_topic =
-    declare_parameter<std::string>("origin_output_topic", "/origin");
+  std::string origin_topic =
+    declare_parameter<std::string>("origin_topic", "/origin");
   map_frame_ = declare_parameter<std::string>("map_frame", "map");
 
   bool use_parameter_origin = declare_parameter<bool>("use_parameter_origin", false);
@@ -55,10 +55,10 @@ NavsatPreprocessorNode::NavsatPreprocessorNode()
   odom_pub_ = create_publisher<nav_msgs::msg::Odometry>(odom_output_topic, 10);
 
   if (set_origin_) {
-    origin_pub_ = create_publisher<sensor_msgs::msg::NavSatFix>(origin_output_topic, 10);
+    origin_pub_ = create_publisher<sensor_msgs::msg::NavSatFix>(origin_topic, 10);
   } else {
     origin_sub_ = create_subscription<sensor_msgs::msg::NavSatFix>(
-      origin_output_topic, 10,
+      origin_topic, 10,
       [this](const sensor_msgs::msg::NavSatFix::SharedPtr msg) {originCallback(msg);});
   }
 

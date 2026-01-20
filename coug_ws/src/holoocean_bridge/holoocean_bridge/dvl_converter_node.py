@@ -30,7 +30,7 @@ class DvlConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/DVLSensorVelocity")
         self.declare_parameter("output_topic", "dvl/data")
-        self.declare_parameter("frame_id", "base_link")
+        self.declare_parameter("frame_id", "dvl_link")
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("noise_sigma", 0.02)
         self.declare_parameter("simulate_dropout", False)
