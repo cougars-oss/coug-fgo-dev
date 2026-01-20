@@ -28,10 +28,10 @@ NAME_MAPPING = {
 }
 
 METRICS_CONFIG = [
-    ("metrics_ape_trans.csv", "APE Translation [m]", "ape_trans"),
-    ("metrics_ape_rot.csv", "APE Rotation [deg]", "ape_rot"),
-    ("metrics_rpe_trans.csv", "RPE Translation [m/m]", "rpe_trans"),
-    ("metrics_rpe_rot.csv", "RPE Rotation [deg/m]", "rpe_rot"),
+    ("metrics_ape_trans.csv", "APE Translation RMSE (m)", "ape_trans"),
+    ("metrics_ape_rot.csv", "APE Rotation RMSE (deg)", "ape_rot"),
+    ("metrics_rpe_trans.csv", "RPE Translation RMSE (m/m)", "rpe_trans"),
+    ("metrics_rpe_rot.csv", "RPE Rotation RMSE (deg/m)", "rpe_rot"),
 ]
 
 from evo.tools.settings import SETTINGS

@@ -39,6 +39,40 @@ plot.apply_settings(SETTINGS)
 sns.set_context("paper")
 
 
+def add_start_end_markers(
+    ax,
+    traj,
+    start_symbol="o",
+    start_color="black",
+    end_symbol="x",
+    end_color="black",
+    alpha=1.0,
+):
+    if traj.num_poses == 0:
+        return
+    start = traj.positions_xyz[0]
+    end = traj.positions_xyz[-1]
+
+    # Assume XY mode
+    x_idx, y_idx = 0, 1
+
+    start_coords = [start[x_idx], start[y_idx]]
+    end_coords = [end[x_idx], end[y_idx]]
+
+    ax.scatter(
+        *start_coords,
+        marker=start_symbol,
+        color=start_color,
+        alpha=alpha,
+    )
+    ax.scatter(
+        *end_coords,
+        marker=end_symbol,
+        color=end_color,
+        alpha=alpha,
+    )
+
+
 def load_trajectories(evo_agent_dir):
     est_trajs = {}
     gt_traj = None
@@ -96,6 +130,8 @@ def plot_auv(evo_agent_dir, output_dir, auv_name):
 
     fig = plt.figure(figsize=SETTINGS.plot_figsize)
     ax = plot.prepare_axis(fig, plot.PlotMode.xy)
+    ax.set_xlabel("$x$ (m)")
+    ax.set_ylabel("$y$ (m)")
 
     plot.traj(
         ax,
@@ -104,6 +140,12 @@ def plot_auv(evo_agent_dir, output_dir, auv_name):
         style="--",
         color=COLORS["Truth"],
         label="Truth",
+    )
+    add_start_end_markers(
+        ax,
+        gt_traj,
+        start_color=COLORS["Truth"],
+        end_color=COLORS["Truth"],
     )
 
     for algo in ALGORITHMS:
@@ -116,6 +158,13 @@ def plot_auv(evo_agent_dir, output_dir, auv_name):
                 color=COLORS[algo],
                 alpha=0.8,
                 label=algo,
+            )
+            add_start_end_markers(
+                ax,
+                est_trajs[algo],
+                start_color=COLORS[algo],
+                end_color=COLORS[algo],
+                alpha=0.8,
             )
 
     ax.set_title("")
