@@ -1,5 +1,5 @@
 
--- 🌊 CoUGARs FGO Development Container --
+-- 🌊 CoUGARs FGO Development --
 
 Helpful tips:
  - Check out https://tmuxcheatsheet.com/.

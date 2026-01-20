@@ -17,12 +17,15 @@ source "$SCRIPT_DIR/scripts/common.sh"
 
 PROFILES=""
 arch=$(uname -m)
-if [[ "$arch" == "amd64" ]]; then
+if [[ "$arch" == "x86_64" ]]; then
     PROFILES="--profile mapproxy"
 fi
 
 case $1 in
     "down")
+        if [[ "$arch" == "x86_64" ]]; then
+            printWarning "Stopping the mapproxy-ct container..."
+        fi
         printWarning "Stopping the cougars-ct container..."
         docker compose -f "$SCRIPT_DIR/docker/docker-compose.yaml" $PROFILES down
         ;;
@@ -34,6 +37,9 @@ case $1 in
         export HOST_UID=$(id -u)
         export HOST_GID=$(id -g)
 
+        if [[ "$arch" == "x86_64" ]]; then
+            printInfo "Loading the mapproxy-ct container..."
+        fi
         printInfo "Loading the cougars-ct container..."
         docker compose -f "$SCRIPT_DIR/docker/docker-compose.yaml" $PROFILES up -d
 
