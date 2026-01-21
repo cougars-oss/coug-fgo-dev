@@ -20,6 +20,7 @@ on:
     paths:
       - ".github/workflows/docker_ci.yml"
       - "docker/Dockerfile"
+      - "docker/entrypoint.sh"
       - "docker/gtsam/Dockerfile"
       - "coug_ws/src/cougars.repos"
       - "coug_ws/src/**/package.xml"
@@ -42,6 +43,7 @@ jobs:
             cougars:
               - '.github/workflows/docker_ci.yml'
               - 'docker/Dockerfile'
+              - 'docker/entrypoint.sh'
               - 'coug_ws/src/cougars.repos'
               - 'coug_ws/src/**/package.xml'
 

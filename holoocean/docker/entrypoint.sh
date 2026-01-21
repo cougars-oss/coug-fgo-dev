@@ -23,4 +23,4 @@ fi
 
 chown -R $USERNAME:$USERNAME /home/$USERNAME
 
-exec gosu $USERNAME /bin/bash
+exec "$@"

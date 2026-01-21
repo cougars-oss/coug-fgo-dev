@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-services: 
- holoocean:
+services:
+  holoocean:
     image: frostlab/holoocean:2.0-runtime-ubuntu22.04-cuda12.4-ros
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
     container_name: holoocean-ct
@@ -40,4 +40,5 @@ services:
     stdin_open: true
     tty: true
     restart: always
-    entrypoint: ["/entrypoint.sh"]
+    entrypoint: [ "/entrypoint.sh" ]
+    command: [ "gosu", "ue4", "/bin/bash" ]

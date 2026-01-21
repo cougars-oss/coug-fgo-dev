@@ -74,4 +74,4 @@ USER frostlab-docker
 WORKDIR /home/frostlab-docker
 
 ENTRYPOINT ["/entrypoint.sh"]
-CMD ["bash"]
+CMD ["gosu", "frostlab-docker", "/bin/bash"]
