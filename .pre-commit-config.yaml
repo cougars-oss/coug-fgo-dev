@@ -13,7 +13,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_uncrustify --reformat "$@"' --
         language: system
         files: ^coug_ws/src/.*\.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cxx|cu)$
@@ -24,7 +23,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_cpplint "$@"' --
         language: system
         files: ^coug_ws/src/.*\.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cxx|cu)$
@@ -34,7 +32,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           export AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1 &&
           ament_cppcheck "$@"' --
         language: system
@@ -46,7 +43,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_flake8 "$@"' --
         language: system
         files: ^coug_ws/src/.*\.py$
@@ -58,7 +54,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_pep257 "$@"' --
         language: system
         files: ^coug_ws/src/.*\.py$
@@ -70,7 +65,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_lint_cmake "$@"' --
         language: system
         files: CMakeLists\.txt$
@@ -80,7 +74,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_xmllint "$@"' --
         language: system
         files: ^coug_ws/src/.*\.xml$
@@ -91,7 +84,6 @@ repos:
         entry: >
           docker exec cougars-ct bash -c
           'source /opt/ros/humble/setup.bash &&
-          source /home/frostlab-docker/coug_ws/install/setup.bash &&
           ament_copyright "$@"' --
         language: system
         files: ^coug_ws/src/

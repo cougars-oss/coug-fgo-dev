@@ -23,6 +23,8 @@ from launch.actions import (
     OpaqueFunction,
     RegisterEventHandler,
     EmitEvent,
+    LogInfo,
+    TimerAction,
 )
 from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
@@ -34,6 +36,7 @@ from launch_ros.actions import PushRosNamespace, Node
 def launch_setup(context, *args, **kwargs):
 
     use_sim_time = LaunchConfiguration("use_sim_time")
+    start_delay = LaunchConfiguration("start_delay")
     urdf_file = LaunchConfiguration("urdf_file")
     auv_ns = LaunchConfiguration("auv_ns")
     play_bag_path = LaunchConfiguration("play_bag_path")
@@ -47,7 +50,8 @@ def launch_setup(context, *args, **kwargs):
     coug_bringup_dir = get_package_share_directory("coug_bringup")
     coug_bringup_launch_dir = os.path.join(coug_bringup_dir, "launch")
 
-    actions = []
+    immediate_actions = []
+    delayed_actions = []
 
     if play_bag_path_str:
         play_process = ExecuteProcess(
@@ -62,19 +66,22 @@ def launch_setup(context, *args, **kwargs):
                 "/tf_static:=/tf_static_discard",
             ],
         )
-        actions.append(play_process)
+        immediate_actions.append(play_process)
 
-        actions.append(
+        immediate_actions.append(
             RegisterEventHandler(
                 event_handler=OnProcessExit(
                     target_action=play_process,
-                    on_exit=[EmitEvent(event=Shutdown(reason="Bag playback finished"))],
+                    on_exit=[
+                        LogInfo(msg="Bag playback finished, shutting down..."),
+                        EmitEvent(event=Shutdown(reason="Bag playback finished")),
+                    ],
                 )
             )
         )
 
         # TODO: Remove this when BlueROV TF is fixed
-        actions.append(
+        delayed_actions.append(
             Node(
                 package="tf2_ros",
                 executable="static_transform_publisher",
@@ -102,7 +109,7 @@ def launch_setup(context, *args, **kwargs):
         )
 
     if record_bag_path_str:
-        actions.append(
+        immediate_actions.append(
             ExecuteProcess(
                 cmd=[
                     "ros2",
@@ -117,7 +124,7 @@ def launch_setup(context, *args, **kwargs):
             )
         )
 
-    actions.append(
+    delayed_actions.append(
         IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
                 os.path.join(coug_bringup_launch_dir, "base.launch.py")
@@ -148,9 +155,11 @@ def launch_setup(context, *args, **kwargs):
         auv_launch,
     ]
 
-    actions.append(GroupAction(actions=agent_actions))
+    delayed_actions.append(GroupAction(actions=agent_actions))
 
-    return actions
+    immediate_actions.append(TimerAction(period=start_delay, actions=delayed_actions))
+
+    return immediate_actions
 
 
 def generate_launch_description():
@@ -160,6 +169,11 @@ def generate_launch_description():
                 "use_sim_time",
                 default_value="true",
                 description="Use simulation (rosbag) clock if true",
+            ),
+            DeclareLaunchArgument(
+                "start_delay",
+                default_value="5.0",
+                description="Delay in seconds before starting the processing nodes",
             ),
             DeclareLaunchArgument(
                 "urdf_file",

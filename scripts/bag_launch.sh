@@ -4,11 +4,12 @@
 # Launches the CoUGARs development stack for a rosbag
 #
 # Usage:
-#   ./scripts/bag_launch.sh <bag_name> [-c] [-r <bag_name>]
+#   ./scripts/bag_launch.sh <bag_name> [-c] [-d <seconds>] [-r <bag_name>]
 #
 # Arguments:
 #   <bag_name>: Name of the rosbag to play (required)
 #   -c: Launch alternative localization methods for comparison
+#   -d <seconds>: Delay before starting nodes (default: 5.0)
 #   -r <bag_name>: Record a rosbag to ~/bags/<bag_name>
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
@@ -16,7 +17,7 @@ source "$SCRIPT_DIR/common.sh"
 source ~/coug_ws/install/setup.bash
 
 if [ -z "$1" ]; then
-    printError "Usage: $0 <bag_name> [-c] [-r <bag_name>]"
+    printError "Usage: $0 <bag_name> [-c] [-d <seconds>] [-r <bag_name>]"
     exit 1
 fi
 
@@ -30,11 +31,15 @@ fi
 
 RECORD_BAG_PATH=""
 COMPARE="false"
+DELAY="5.0"
 
-while getopts ":cr:" opt; do
+while getopts ":cd:r:" opt; do
     case $opt in
         c)
             COMPARE="true"
+            ;;
+        d)
+            DELAY="$OPTARG"
             ;;
         r)
             RECORD_BAG_PATH="$HOME/bags/$OPTARG"
@@ -57,7 +62,7 @@ if [ -n "$RECORD_BAG_PATH" ] && [ -d "$RECORD_BAG_PATH" ]; then
     fi
 fi
 
-ARGS=("compare:=$COMPARE" "play_bag_path:=$PLAY_BAG_PATH")
+ARGS=("compare:=$COMPARE" "play_bag_path:=$PLAY_BAG_PATH" "start_delay:=$DELAY")
 if [ -n "$RECORD_BAG_PATH" ]; then
     ARGS+=("record_bag_path:=$RECORD_BAG_PATH")
 fi
