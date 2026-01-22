@@ -28,67 +28,66 @@ on:
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        platform: [linux/amd64, linux/arm64]
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    container:
+      image: snelsondurrant/cougars:latest
+      options: --user root
     steps:
       - uses: actions/checkout@v4
-      - name: Set up QEMU
-        if: matrix.platform == 'linux/arm64'
-        uses: docker/setup-qemu-action@v3
       - name: Cache ccache
         uses: actions/cache@v4
         with:
           path: coug_ws/.ccache
-          key: ccache-${{ runner.os }}-${{ matrix.platform }}-${{ github.sha }}
+          key: ccache-${{ runner.os }}-${{ matrix.runner }}-${{ github.sha }}
           restore-keys: |
-            ccache-${{ runner.os }}-${{ matrix.platform }}-
-      - name: Create Build/Test Script
+            ccache-${{ runner.os }}-${{ matrix.runner }}-
+      - name: Install ccache
+        run: apt update && apt install -y ccache
+      - name: Fix permissions
         run: |
-          cat << 'EOF' > ci_script.sh
-          #!/bin/bash
-          set -e
           mkdir -p coug_ws/.ccache
           chown -R frostlab-docker:frostlab-docker .
-          apt update && apt install -y ccache ros-humble-rcutils ros-humble-std-srvs
-          
-          su frostlab-docker -c "source /opt/ros/humble/setup.bash && colcon list --names-only --base-paths coug_ws/src > coug_ws/packages_to_test.txt"
-          su frostlab-docker -c "vcs import coug_ws/src < coug_ws/src/cougars.repos"
-          su frostlab-docker -c "cd coug_ws/src && vcs custom --git --args submodule update --init --recursive"
-          su frostlab-docker -c "rosdep update"
-          su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
-
-          # Diagnostics
-          echo "Architecture: $(uname -m)"
-          find /opt/ros/humble -name librcutils.so || echo "librcutils.so NOT FOUND"
-
-          # Build - use ccache only for amd64 to avoid architecture contamination
-          BUILD_ARGS=""
-          if [[ "$(uname -m)" == "x86_64" ]]; then
-            export CCACHE_DIR=/github/workspace/coug_ws/.ccache
-            ccache -z
-            BUILD_ARGS="--cmake-args -DCMAKE_C_COMPILER_LAUNCHER=ccache -DCMAKE_CXX_COMPILER_LAUNCHER=ccache"
-          fi
-          
-          su frostlab-docker -c "source /opt/ros/humble/setup.bash && cd coug_ws && colcon build $BUILD_ARGS"
-          
-          if [[ "$(uname -m)" == "x86_64" ]]; then
-            ccache -s
-          fi
-          su frostlab-docker -c 'source /opt/ros/humble/setup.bash && cd coug_ws && colcon test --event-handlers console_direct+ --packages-select $(cat packages_to_test.txt) && colcon test-result --verbose'
-          EOF
-          chmod +x ci_script.sh
-      - name: Run Build/Test Script
+      - name: Save package list
         run: |
-          docker run --rm \
-            --platform ${{ matrix.platform }} \
-            --user root \
-            -v ${{ github.workspace }}:/github/workspace \
-            -w /github/workspace \
-            snelsondurrant/cougars:latest \
-            ./ci_script.sh
-      - name: Fix File Permissions
-        if: always()
-        run: sudo chown -R $USER:$USER .
+          su frostlab-docker << 'EOF'
+          source /opt/ros/humble/setup.bash
+          colcon list --names-only --base-paths coug_ws/src > coug_ws/packages_to_test.txt
+          EOF
+      - name: Install ROS dependencies
+        run: |
+          su frostlab-docker << 'EOF'
+          vcs import coug_ws/src < coug_ws/src/cougars.repos
+          cd coug_ws/src && vcs custom --git --args submodule update --init --recursive
+          rosdep update
+          EOF
+          apt update
+          su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
+      - name: Build workspace
+        run: |
+          su frostlab-docker << 'EOF'
+          source /opt/ros/humble/setup.bash
+          cd coug_ws
+          rm -rf build/ install/ log/
+          export CCACHE_DIR=$(pwd)/.ccache
+          export CCACHE_SLOPPINESS=include_file_ctime,include_file_mtime
+          ccache -z
+          colcon build \
+            --cmake-args \
+            -DCMAKE_C_COMPILER_LAUNCHER=ccache \
+            -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+          ccache -s
+          EOF
+      - name: Run tests
+        run: |
+          su frostlab-docker << 'EOF'
+          source /opt/ros/humble/setup.bash
+          cd coug_ws
+          colcon test \
+            --packages-select $(cat packages_to_test.txt) \
+            --event-handlers console_direct+
+          colcon test-result --verbose
+          EOF
