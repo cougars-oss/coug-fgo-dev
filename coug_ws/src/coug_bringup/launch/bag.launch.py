@@ -29,7 +29,7 @@ from launch.event_handlers import OnProcessExit
 from launch.events import Shutdown
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
-from launch_ros.actions import PushRosNamespace, Node
+from launch_ros.actions import PushRosNamespace
 
 
 def launch_setup(context, *args, **kwargs):
