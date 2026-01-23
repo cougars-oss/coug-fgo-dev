@@ -1252,16 +1252,16 @@ void FactorGraphNode::publishGlobalOdom(
 
   if (publish_pose_cov_) {
     gtsam::Pose3 T_base_dvl = toGtsam(dvl_to_base_tf_.transform);
-    
-    // Account for DVL lever arm 
+
+    // Account for DVL lever arm
     gtsam::Matrix Ad = T_base_dvl.AdjointMap();
     gtsam::Matrix cov_base = Ad * pose_covariance * Ad.transpose();
-    
-    gtsam::Rot3 R_map_base = current_pose.rotation(); 
+
+    gtsam::Rot3 R_map_base = current_pose.rotation();
     gtsam::Matrix66 Rot = gtsam::Matrix66::Zero();
     Rot.block<3, 3>(0, 0) = R_map_base.matrix();
     Rot.block<3, 3>(3, 3) = R_map_base.matrix();
-    
+
     cov_to_pub = Rot * cov_base * Rot.transpose();
 
     // Numerical stability adjustments
