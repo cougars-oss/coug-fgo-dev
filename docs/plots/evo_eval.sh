@@ -4,20 +4,21 @@
 # Generates APE/RPE benchmark metrics for FGO evaluation
 #
 # Usage:
-#   ./evo_eval.sh <bag_name> [-a] [-o] [-2]
+#   ./evo_eval.sh <bag_name> [-n <N>] [-a] [-o] [-2]
 #
 # Arguments:
 #   <bag_name>: Evaluate ../../bags/<bag_name> (required)
 #   -a: Align trajectories using Umeyama's method (best fit)
 #   -o: Align trajectories using the first pose (origin)
 #   -2: Project trajectories to the 2D plane (xy)
+#   -n: Number of poses to use for alignment (default: all)
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPT_DIR/../../scripts/common.sh"
 source "$SCRIPT_DIR/../../.venv/bin/activate"
 
 if [ -z "$1" ]; then
-    printError "Usage: $0 <bag_name> [-a] [-o] [-2]"
+    printError "Usage: $0 <bag_name> [-n <N>] [-a] [-o] [-2]"
     exit 1
 fi
 
@@ -39,8 +40,9 @@ fi
 ALIGN=""
 ALIGN_ORIGIN=""
 TWO_D=""
+N_TO_ALIGN=""
 
-while getopts ":ao2" opt; do
+while getopts ":n:ao2" opt; do
     case $opt in
         a)
             ALIGN="--align"
@@ -51,6 +53,10 @@ while getopts ":ao2" opt; do
         2)
             TWO_D="--project_to_plane xy"
             ;;
+        n)
+            N_TO_ALIGN="--n_to_align $OPTARG"
+            ALIGN="--align"
+            ;;
         \?)
             printError "Invalid option: -$OPTARG" >&2
             exit 1
@@ -58,7 +64,7 @@ while getopts ":ao2" opt; do
     esac
 done
 
-EVO_ARGS="$ALIGN $ALIGN_ORIGIN $TWO_D"
+EVO_ARGS="$ALIGN $ALIGN_ORIGIN $TWO_D $N_TO_ALIGN"
 
 # evo_config reset
 evo_config set save_traj_in_zip true
