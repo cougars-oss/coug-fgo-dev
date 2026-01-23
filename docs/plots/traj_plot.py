@@ -66,12 +66,14 @@ def add_start_end_markers(
         marker=start_symbol,
         color=start_color,
         alpha=alpha,
+        zorder=10,
     )
     ax.scatter(
         *end_coords,
         marker=end_symbol,
         color=end_color,
         alpha=alpha,
+        zorder=10,
     )
 
 
@@ -135,6 +137,23 @@ def plot_auv(evo_agent_dir, output_dir, auv_name):
     ax.set_xlabel("$x$ (m)")
     ax.set_ylabel("$y$ (m)")
 
+    for algo in ALGORITHMS:
+        if algo in est_trajs:
+            plot.traj(
+                ax,
+                plot.PlotMode.xy,
+                est_trajs[algo],
+                style="-",
+                color=COLORS[algo],
+                label=algo,
+            )
+            add_start_end_markers(
+                ax,
+                est_trajs[algo],
+                start_color=COLORS[algo],
+                end_color=COLORS[algo],
+            )
+
     plot.traj(
         ax,
         plot.PlotMode.xy,
@@ -149,25 +168,6 @@ def plot_auv(evo_agent_dir, output_dir, auv_name):
         start_color=COLORS["Truth"],
         end_color=COLORS["Truth"],
     )
-
-    for algo in ALGORITHMS:
-        if algo in est_trajs:
-            plot.traj(
-                ax,
-                plot.PlotMode.xy,
-                est_trajs[algo],
-                style="-",
-                color=COLORS[algo],
-                alpha=0.8,
-                label=algo,
-            )
-            add_start_end_markers(
-                ax,
-                est_trajs[algo],
-                start_color=COLORS[algo],
-                end_color=COLORS[algo],
-                alpha=0.8,
-            )
 
     ax.set_title("")
     plt.legend(frameon=True)
