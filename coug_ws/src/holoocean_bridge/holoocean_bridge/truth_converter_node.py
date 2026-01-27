@@ -35,8 +35,9 @@ class TruthConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/DynamicsSensorOdom")
         self.declare_parameter("output_topic", "odometry/truth")
-        self.declare_parameter("com_frame_id", "com_link")
-        self.declare_parameter("child_frame_id", "base_link")
+        self.declare_parameter("com_frame", "com_link")
+        self.declare_parameter("base_frame", "base_link")
+        self.declare_parameter("map_frame", "map")
         self.declare_parameter("publish_tf", False)
 
         input_topic = (
@@ -45,11 +46,14 @@ class TruthConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.com_frame_id = (
-            self.get_parameter("com_frame_id").get_parameter_value().string_value
+        self.com_frame = (
+            self.get_parameter("com_frame").get_parameter_value().string_value
         )
-        self.child_frame_id = (
-            self.get_parameter("child_frame_id").get_parameter_value().string_value
+        self.base_frame = (
+            self.get_parameter("base_frame").get_parameter_value().string_value
+        )
+        self.map_frame = (
+            self.get_parameter("map_frame").get_parameter_value().string_value
         )
 
         self.publisher = self.create_publisher(Odometry, output_topic, 10)
@@ -79,30 +83,30 @@ class TruthConverterNode(Node):
 
         try:
             p_com_in_map = self.tf_buffer.transform(
-                p_com_in_holo, "map", timeout=rclpy.duration.Duration(seconds=0.1)
+                p_com_in_holo, self.map_frame, timeout=rclpy.duration.Duration(seconds=0.1)
             )
         except Exception:
             self.get_logger().error(
-                f"Could not transform pose from {msg.header.frame_id} to map",
+                f"Could not transform pose from {msg.header.frame_id} to {self.map_frame}",
                 throttle_duration_sec=1.0,
             )
             return
 
         try:
             t_com_base = self.tf_buffer.lookup_transform(
-                self.com_frame_id, self.child_frame_id, rclpy.time.Time()
+                self.com_frame, self.base_frame, rclpy.time.Time()
             )
         except Exception:
             self.get_logger().error(
-                f"Could not find transform from {self.com_frame_id} "
-                f"to {self.child_frame_id}",
+                f"Could not find transform from {self.com_frame} "
+                f"to {self.base_frame}",
                 throttle_duration_sec=1.0,
             )
             return
 
         t_map_com = TransformStamped()
         t_map_com.header = p_com_in_map.header
-        t_map_com.child_frame_id = self.com_frame_id
+        t_map_com.child_frame_id = self.com_frame
         t_map_com.transform.translation.x = p_com_in_map.pose.position.x
         t_map_com.transform.translation.y = p_com_in_map.pose.position.y
         t_map_com.transform.translation.z = p_com_in_map.pose.position.z
@@ -118,8 +122,8 @@ class TruthConverterNode(Node):
 
         odom_msg = Odometry()
         odom_msg.header = msg.header
-        odom_msg.header.frame_id = "map"
-        odom_msg.child_frame_id = self.child_frame_id
+        odom_msg.header.frame_id = self.map_frame
+        odom_msg.child_frame_id = self.base_frame
         odom_msg.pose.pose = p_base_in_map
         odom_msg.pose.covariance = msg.pose.covariance
         odom_msg.twist.covariance = msg.twist.covariance
@@ -129,8 +133,8 @@ class TruthConverterNode(Node):
         if self.get_parameter("publish_tf").get_parameter_value().bool_value:
             t = TransformStamped()
             t.header.stamp = msg.header.stamp
-            t.header.frame_id = "map"
-            t.child_frame_id = self.child_frame_id
+            t.header.frame_id = self.map_frame
+            t.child_frame_id = self.base_frame
             t.transform.translation.x = p_base_in_map.position.x
             t.transform.translation.y = p_base_in_map.position.y
             t.transform.translation.z = p_base_in_map.position.z

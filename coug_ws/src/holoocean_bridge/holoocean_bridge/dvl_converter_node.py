@@ -30,7 +30,7 @@ class DvlConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/DVLSensorVelocity")
         self.declare_parameter("output_topic", "dvl/twist")
-        self.declare_parameter("frame_id", "dvl_link")
+        self.declare_parameter("dvl_frame", "dvl_link")
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("noise_sigma", 0.02)
         self.declare_parameter("simulate_dropout", False)
@@ -43,8 +43,8 @@ class DvlConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.frame_id = (
-            self.get_parameter("frame_id").get_parameter_value().string_value
+        self.dvl_frame = (
+            self.get_parameter("dvl_frame").get_parameter_value().string_value
         )
         self.override_covariance = (
             self.get_parameter("override_covariance").get_parameter_value().bool_value
@@ -90,7 +90,7 @@ class DvlConverterNode(Node):
                 )
                 return
 
-        msg.header.frame_id = self.frame_id
+        msg.header.frame_id = self.dvl_frame
         if self.override_covariance:
             covariance = self.noise_sigma * self.noise_sigma
             msg.twist.covariance[0] = covariance  # Vx

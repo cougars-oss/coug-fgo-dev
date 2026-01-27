@@ -30,7 +30,7 @@ class MagConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/MagnetometerSensor")
         self.declare_parameter("output_topic", "imu/mag")
-        self.declare_parameter("frame_id", "imu_link")
+        self.declare_parameter("mag_frame", "imu_link")
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("noise_sigma", 0.003)
 
@@ -40,8 +40,8 @@ class MagConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.frame_id = (
-            self.get_parameter("frame_id").get_parameter_value().string_value
+        self.mag_frame = (
+            self.get_parameter("mag_frame").get_parameter_value().string_value
         )
         self.override_covariance = (
             self.get_parameter("override_covariance").get_parameter_value().bool_value
@@ -65,7 +65,7 @@ class MagConverterNode(Node):
 
         :param msg: MagneticField message.
         """
-        msg.header.frame_id = self.frame_id
+        msg.header.frame_id = self.mag_frame
         if self.override_covariance:
             variance = self.noise_sigma * self.noise_sigma
 

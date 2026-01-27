@@ -32,7 +32,7 @@ class GpsConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/GPSSensor")
         self.declare_parameter("output_topic", "gps/fix")
-        self.declare_parameter("frame_id", "com_link")
+        self.declare_parameter("gps_frame", "com_link")
         self.declare_parameter("origin_latitude", 40.23890)
         self.declare_parameter("origin_longitude", -111.74212)
         self.declare_parameter("origin_altitude", 1412.0)
@@ -46,8 +46,8 @@ class GpsConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.frame_id = (
-            self.get_parameter("frame_id").get_parameter_value().string_value
+        self.gps_frame = (
+            self.get_parameter("gps_frame").get_parameter_value().string_value
         )
         self.origin_lat = (
             self.get_parameter("origin_latitude").get_parameter_value().double_value
@@ -89,7 +89,7 @@ class GpsConverterNode(Node):
         """
         navsat_msg = NavSatFix()
         navsat_msg.header = msg.header
-        navsat_msg.header.frame_id = self.frame_id
+        navsat_msg.header.frame_id = self.gps_frame
         navsat_msg.status.status = navsat_msg.status.STATUS_FIX
         navsat_msg.status.service = navsat_msg.status.SERVICE_GPS
 

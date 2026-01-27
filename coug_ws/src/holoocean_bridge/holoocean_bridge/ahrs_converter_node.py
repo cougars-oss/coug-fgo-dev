@@ -33,7 +33,7 @@ class AhrsConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/RotationSensor")
         self.declare_parameter("output_topic", "imu/ahrs")
-        self.declare_parameter("frame_id", "modem_link")
+        self.declare_parameter("ahrs_frame", "modem_link")
         self.declare_parameter("yaw_noise_sigma", 0.01745)
         self.declare_parameter("roll_pitch_noise_sigma", 0.00349)
 
@@ -43,8 +43,8 @@ class AhrsConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.frame_id = (
-            self.get_parameter("frame_id").get_parameter_value().string_value
+        self.ahrs_frame = (
+            self.get_parameter("ahrs_frame").get_parameter_value().string_value
         )
         self.yaw_noise_sigma = (
             self.get_parameter("yaw_noise_sigma").get_parameter_value().double_value
@@ -96,7 +96,7 @@ class AhrsConverterNode(Node):
         """
         imu_msg = Imu()
         imu_msg.header.stamp = msg.header.stamp
-        imu_msg.header.frame_id = self.frame_id
+        imu_msg.header.frame_id = self.ahrs_frame
 
         roll_deg = msg.vector.x
         pitch_deg = msg.vector.y

@@ -119,7 +119,11 @@ def generate_launch_description():
                 name="depth_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "child_frame_id": depth_link_frame},
+                    {
+                        "use_sim_time": use_sim_time,
+                        "depth_frame": depth_link_frame,
+                        "map_frame": "map",
+                    },
                 ],
             ),
             Node(
@@ -128,7 +132,7 @@ def generate_launch_description():
                 name="gps_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": com_link_frame},
+                    {"use_sim_time": use_sim_time, "gps_frame": com_link_frame},
                 ],
             ),
             Node(
@@ -146,7 +150,7 @@ def generate_launch_description():
                 name="dvl_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": dvl_link_frame},
+                    {"use_sim_time": use_sim_time, "dvl_frame": dvl_link_frame},
                 ],
             ),
             Node(
@@ -155,7 +159,7 @@ def generate_launch_description():
                 name="ahrs_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": modem_link_frame},
+                    {"use_sim_time": use_sim_time, "ahrs_frame": modem_link_frame},
                 ],
             ),
             Node(
@@ -172,8 +176,9 @@ def generate_launch_description():
                     params_file,
                     {
                         "use_sim_time": use_sim_time,
-                        "com_frame_id": com_link_frame,
-                        "child_frame_id": base_link_frame,
+                        "com_frame": com_link_frame,
+                        "base_frame": base_link_frame,
+                        "map_frame": "map",
                     },
                 ],
             ),
@@ -192,7 +197,7 @@ def generate_launch_description():
                 name="imu_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": imu_link_frame},
+                    {"use_sim_time": use_sim_time, "imu_frame": imu_link_frame},
                 ],
             ),
             Node(
@@ -201,7 +206,7 @@ def generate_launch_description():
                 name="mag_converter_node",
                 parameters=[
                     params_file,
-                    {"use_sim_time": use_sim_time, "frame_id": imu_link_frame},
+                    {"use_sim_time": use_sim_time, "mag_frame": imu_link_frame},
                 ],
             ),
             # Set this to the starting position of the main AUV in HoloOcean

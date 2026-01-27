@@ -30,7 +30,7 @@ class ImuConverterNode(Node):
 
         self.declare_parameter("input_topic", "auv0/IMUSensor")
         self.declare_parameter("output_topic", "imu/data")
-        self.declare_parameter("frame_id", "imu_link")
+        self.declare_parameter("imu_frame", "imu_link")
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("accel_noise_sigma", 0.0078)
         self.declare_parameter("gyro_noise_sigma", 0.0012)
@@ -41,8 +41,8 @@ class ImuConverterNode(Node):
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
         )
-        self.frame_id = (
-            self.get_parameter("frame_id").get_parameter_value().string_value
+        self.imu_frame = (
+            self.get_parameter("imu_frame").get_parameter_value().string_value
         )
         self.override_covariance = (
             self.get_parameter("override_covariance").get_parameter_value().bool_value
@@ -69,7 +69,7 @@ class ImuConverterNode(Node):
 
         :param msg: Imu message containing IMU data.
         """
-        msg.header.frame_id = self.frame_id
+        msg.header.frame_id = self.imu_frame
         if self.override_covariance:
             accel_covariance = self.accel_noise_sigma * self.accel_noise_sigma
             gyro_covariance = self.gyro_noise_sigma * self.gyro_noise_sigma

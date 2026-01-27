@@ -20,6 +20,7 @@
   <depend>tf2_geometry_msgs</depend>
   <depend>python3-numpy</depend>
   <depend>python3-scipy</depend>
+  <!-- TODO: Make sure Braden's magnetometer fixes are in sbg_driver -->
   <depend>sbg_driver</depend>
   <depend>ntrip_client</depend>
 
