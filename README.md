@@ -126,18 +126,6 @@ Please cite our relevant publications if you find this repository useful for you
 }
 ```
 
-### Sonar Simulation
-```bibtex
-@inproceedings{potokar2022holooceanrealisticsonarsim,
-  author={E. Potokar and K. Lay and K. Norman and D. Benham and T. Neilsen and M. Kaess and J. Mangelson},
-  title={Holo{O}cean: Realistic Sonar Simulation},
-  booktitle={Proc. IEEE/RSJ Intl. Conf. Intelligent Robots and Systems, IROS},
-  address={Kyoto, Japan},
-  month={Oct},
-  year={2022}
-}
-```
-
 ### HoloOcean 2.0 (Features)
 ```bibtex
 @misc{romrell2025previewholoocean20,
