@@ -37,6 +37,8 @@ class DvlTwistConverterNode(Node):
         self.declare_parameter("simulate_dropout", False)
         self.declare_parameter("dropout_frequency", 1.0 / 30.0)
         self.declare_parameter("dropout_duration", 5.0)
+        self.declare_parameter("use_fom_covariance", False)
+        self.declare_parameter("fom_covariance_scale", 4.0)
 
         input_topic = (
             self.get_parameter("input_topic").get_parameter_value().string_value
@@ -55,6 +57,12 @@ class DvlTwistConverterNode(Node):
         )
         self.dropout_duration = (
             self.get_parameter("dropout_duration").get_parameter_value().double_value
+        )
+        self.use_fom_covariance = (
+            self.get_parameter("use_fom_covariance").get_parameter_value().bool_value
+        )
+        self.fom_covariance_scale = (
+            self.get_parameter("fom_covariance_scale").get_parameter_value().double_value
         )
 
         self.subscription = self.create_subscription(
@@ -100,9 +108,15 @@ class DvlTwistConverterNode(Node):
         twist_msg.twist.twist.linear.y = msg.velocity.y
         twist_msg.twist.twist.linear.z = msg.velocity.z
 
-        twist_msg.twist.covariance[0:3] = msg.covariance[0:3]
-        twist_msg.twist.covariance[6:9] = msg.covariance[3:6]
-        twist_msg.twist.covariance[12:15] = msg.covariance[6:9]
+        if self.use_fom_covariance:
+            cov_val = msg.fom * self.fom_covariance_scale
+            twist_msg.twist.covariance[0] = cov_val
+            twist_msg.twist.covariance[7] = cov_val
+            twist_msg.twist.covariance[14] = cov_val
+        else:
+            twist_msg.twist.covariance[0:3] = msg.covariance[0:3]
+            twist_msg.twist.covariance[6:9] = msg.covariance[3:6]
+            twist_msg.twist.covariance[12:15] = msg.covariance[6:9]
 
         self.publisher.publish(twist_msg)
 

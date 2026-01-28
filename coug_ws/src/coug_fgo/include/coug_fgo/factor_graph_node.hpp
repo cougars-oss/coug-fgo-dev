@@ -296,6 +296,7 @@ private:
   size_t current_step_ = 1;
   double prev_time_ = 0.0;
   std::atomic<double> last_dvl_time_{0.0};
+  std::atomic<double> last_depth_trigger_time_{0.0};
   std::map<rclcpp::Time, gtsam::Key> time_to_key_;
 
   // --- GTSAM Objects ---
@@ -306,6 +307,9 @@ private:
   gtsam::Pose3 prev_pose_;
   gtsam::Vector3 prev_vel_;
   gtsam::imuBias::ConstantBias prev_imu_bias_;
+
+  gtsam::Vector3 last_dvl_velocity_ = gtsam::Vector3::Zero();
+  gtsam::Matrix3 last_dvl_covariance_ = gtsam::Matrix3::Zero();
 
   // --- Initial Averaged Measurements ---
   sensor_msgs::msg::Imu::SharedPtr initial_imu_;

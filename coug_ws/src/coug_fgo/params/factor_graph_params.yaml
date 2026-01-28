@@ -289,3 +289,6 @@ factor_graph_node:
     enable_dvl_preintegration:
       type: bool
       default_value: false
+    depth_rate_limit_hz:
+      type: double
+      default_value: 4.0

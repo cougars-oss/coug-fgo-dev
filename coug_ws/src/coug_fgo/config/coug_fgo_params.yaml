@@ -129,6 +129,7 @@
     experimental:
       # TURTLMap-based DVL preintegration implementation
       enable_dvl_preintegration: false
+      depth_rate_limit_hz: 4.0
 
 /**/navsat_preprocessor_node:
   ros__parameters:

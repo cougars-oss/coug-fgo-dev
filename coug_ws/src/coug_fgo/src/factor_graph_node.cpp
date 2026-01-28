@@ -107,6 +107,17 @@ void FactorGraphNode::setupRosInterfaces()
       bool dvl_timed_out = time_since_dvl > params_.dvl.timeout_threshold;
 
       if (params_.experimental.enable_dvl_preintegration) {
+
+        // IMPORTANT! Limit the depth rate to less than the DVL rate
+        if (params_.experimental.depth_rate_limit_hz > 0.0) {
+          double msg_time = rclcpp::Time(msg->header.stamp).seconds();
+          double min_period = 1.0 / params_.experimental.depth_rate_limit_hz;
+          if (msg_time - last_depth_trigger_time_ < min_period) {
+            return;
+          }
+          last_depth_trigger_time_ = msg_time;
+        }
+
         if (!graph_initialized_) {
           initializeGraph();
         } else {
@@ -708,6 +719,18 @@ void FactorGraphNode::initializeGraph()
   if (params_.experimental.enable_dvl_preintegration) {
     dvl_preintegrator_ = std::make_unique<DVLPreintegrator>();
     dvl_preintegrator_->reset(initial_orientation_dvl);
+    
+    last_dvl_velocity_ = toGtsam(initial_dvl_->twist.twist.linear);
+    if (params_.dvl.use_parameter_covariance) {
+      last_dvl_covariance_ = gtsam::Matrix3::Identity() *
+        (params_.dvl.parameter_covariance.velocity_noise_sigma *
+        params_.dvl.parameter_covariance.velocity_noise_sigma);
+    } else {
+      last_dvl_covariance_.setZero();
+      last_dvl_covariance_(0, 0) = initial_dvl_->twist.covariance[0];
+      last_dvl_covariance_(1, 1) = initial_dvl_->twist.covariance[7];
+      last_dvl_covariance_(2, 2) = initial_dvl_->twist.covariance[14];
+    }
   }
 
   // --- Initialize Incremental Fixed-Lag Smoother ---
@@ -1022,7 +1045,8 @@ void FactorGraphNode::addPreintegratedDvlFactor(
   const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs,
   const std::deque<sensor_msgs::msg::Imu::SharedPtr> & imu_msgs, double target_time)
 {
-  if (!have_imu_to_dvl_tf_ || !dvl_preintegrator_ || dvl_msgs.empty()) {return;}
+  // If we don't have any new DVL messages, use a zero-order hold
+  if (!have_imu_to_dvl_tf_ || !dvl_preintegrator_) {return;}
 
   if (imu_msgs.empty()) {
     std::scoped_lock lock(dvl_queue_mutex_);
@@ -1032,9 +1056,6 @@ void FactorGraphNode::addPreintegratedDvlFactor(
 
   double last_dvl_time = prev_time_;
   std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> unused_dvl_msgs;
-
-  gtsam::Vector3 last_linear_vel = gtsam::Vector3::Zero();
-  gtsam::Matrix3 last_covariance = gtsam::Matrix3::Zero();
 
   gtsam::Rot3 R_dvl_to_imu = toGtsam(imu_to_dvl_tf_.transform.rotation);
   gtsam::Rot3 R_imu_to_dvl = R_dvl_to_imu.inverse();
@@ -1056,17 +1077,17 @@ void FactorGraphNode::addPreintegratedDvlFactor(
 
     double dt = current_dvl_time - last_dvl_time;
     if (dt > 1e-9) {
-      last_linear_vel = toGtsam(dvl_msg->twist.twist.linear);
+      last_dvl_velocity_ = toGtsam(dvl_msg->twist.twist.linear);
 
       if (params_.dvl.use_parameter_covariance) {
-        last_covariance = gtsam::Matrix3::Identity() *
+        last_dvl_covariance_ = gtsam::Matrix3::Identity() *
           (params_.dvl.parameter_covariance.velocity_noise_sigma *
           params_.dvl.parameter_covariance.velocity_noise_sigma);
       } else {
-        last_covariance.setZero();
-        last_covariance(0, 0) = dvl_msg->twist.covariance[0];
-        last_covariance(1, 1) = dvl_msg->twist.covariance[7];
-        last_covariance(2, 2) = dvl_msg->twist.covariance[14];
+        last_dvl_covariance_.setZero();
+        last_dvl_covariance_(0, 0) = dvl_msg->twist.covariance[0];
+        last_dvl_covariance_(1, 1) = dvl_msg->twist.covariance[7];
+        last_dvl_covariance_(2, 2) = dvl_msg->twist.covariance[14];
       }
 
       // Integrate DVL measurement alongside interpolated IMU attitude
@@ -1074,8 +1095,8 @@ void FactorGraphNode::addPreintegratedDvlFactor(
       gtsam::Rot3 cur_dvl_att = cur_imu_att * R_imu_to_dvl;
 
       dvl_preintegrator_->integrateMeasurement(
-        last_linear_vel, cur_dvl_att, dt,
-        last_covariance);
+        last_dvl_velocity_, cur_dvl_att, dt,
+        last_dvl_covariance_);
     }
     last_dvl_time = current_dvl_time;
   }
@@ -1087,8 +1108,8 @@ void FactorGraphNode::addPreintegratedDvlFactor(
       gtsam::Rot3 cur_imu_att = getInterpolatedOrientation(imu_msgs, target_time);
       gtsam::Rot3 cur_dvl_att = cur_imu_att * R_imu_to_dvl;
       dvl_preintegrator_->integrateMeasurement(
-        last_linear_vel, cur_dvl_att, dt,
-        last_covariance);
+        last_dvl_velocity_, cur_dvl_att, dt,
+        last_dvl_covariance_);
     }
     last_dvl_time = target_time;
   }

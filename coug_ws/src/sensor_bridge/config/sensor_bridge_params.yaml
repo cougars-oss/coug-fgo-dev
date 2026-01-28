@@ -7,13 +7,17 @@
       simulate_dropout: false
       dropout_frequency: 0.033 # [Hz] Frequency of the dropout cycle (1/30).
       dropout_duration: 5.0 # [s] Duration of the dropout.
+
+      # TURTLMap-based covariance calculation
+      use_fom_covariance: false # Whether to use the FOM to scale the covariance
+      fom_covariance_scale: 4.0 # Scale factor for the covariance
     
   dvl_odom_converter_node:
     ros__parameters:
       input_topic: "dvl/position"
       output_topic: "odometry/dvl"
 
-      publish_local_tf: false
+      publish_local_tf: false # Whether to publish the dvl_odom->base_link transform
 
   gps_odom_converter_node:
     ros__parameters:
