@@ -77,13 +77,6 @@ private:
     const sensor_msgs::msg::NavSatFix::SharedPtr & msg,
     nav_msgs::msg::Odometry & odom_msg);
 
-  // --- ROS Interfaces ---
-  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
-  rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr origin_pub_;
-  rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr navsat_sub_;
-  rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr origin_sub_;
-  rclcpp::TimerBase::SharedPtr origin_timer_;
-
   // --- State ---
   bool origin_set_ = false;
   sensor_msgs::msg::NavSatFix origin_navsat_;
@@ -92,6 +85,13 @@ private:
   bool collecting_samples_ = false;
   double start_collection_time_ = 0.0;
   std::vector<sensor_msgs::msg::NavSatFix> gps_samples_;
+
+  // --- ROS Interfaces ---
+  rclcpp::Publisher<nav_msgs::msg::Odometry>::SharedPtr odom_pub_;
+  rclcpp::Publisher<sensor_msgs::msg::NavSatFix>::SharedPtr origin_pub_;
+  rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr navsat_sub_;
+  rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr origin_sub_;
+  rclcpp::TimerBase::SharedPtr origin_timer_;
 
   // --- Parameters ---
   std::shared_ptr<navsat_preprocessor_node::ParamListener> param_listener_;

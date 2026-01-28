@@ -14,7 +14,7 @@
 
 /**
  * @file ahrs_factor.hpp
- * @brief GTSAM factor for AHRS/orientation measurements with a sensor offset.
+ * @brief GTSAM factor for AHRS/orientation measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026
  */
@@ -35,7 +35,7 @@ namespace coug_fgo::factors
 
 /**
  * @class AhrsFactor
- * @brief GTSAM factor for AHRS/orientation measurements with a sensor offset.
+ * @brief GTSAM factor for AHRS/orientation measurements with a lever arm.
  *
  * This factor constrains the 3D orientation of the AUV based on AHRS/IMU measurements,
  * accounting for the rotation between the AUV base and the sensor.
@@ -74,14 +74,10 @@ public:
     const gtsam::Pose3 & pose,
     boost::optional<gtsam::Matrix &> H = boost::none) const override
   {
-    // Apply magnetic declination: R_true = R_decl * R_meas
     gtsam::Rot3 R_decl = gtsam::Rot3::Yaw(mag_declination_);
     gtsam::Rot3 measured_rot_sensor_true = R_decl * measured_rot_sensor_;
 
-    // Compute the measured base-frame orientation
     gtsam::Rot3 measured_rot_base = measured_rot_sensor_true * R_base_sensor_.inverse();
-
-    // Rotation residual
     gtsam::Rot3 error_rot = measured_rot_base.inverse() * pose.rotation();
 
     // 3D orientation residual

@@ -23,11 +23,14 @@
 
 #include <string>
 #include <vector>
+#include <memory>
 
 #include <geometry_msgs/msg/pose_array.hpp>
 #include <nav_msgs/msg/odometry.hpp>
 #include <rclcpp/rclcpp.hpp>
 #include <std_msgs/msg/float64.hpp>
+
+#include <coug_navigation/hsd_commander_parameters.hpp>
 
 namespace coug_navigation
 {
@@ -44,67 +47,21 @@ class HsdCommanderNode : public rclcpp::Node
 {
 public:
   /**
-   * @brief Constructor for HsdCommanderNode.
-   * Initializes parameters, publishers, subscribers, and timers.
+   * @brief HsdCommanderNode constructor.
    */
   HsdCommanderNode();
 
 private:
-  // --- Parameters ---
-  /// Distance to target to consider a waypoint reached.
-  double capture_radius_;
-  /// Maximum distance allowed past a waypoint before switching to the next (overshoot handling).
-  double slip_radius_;
-  /// Constant speed command for the mission (RPM).
-  double desired_speed_rpm_;
-  /// Time without odometry messages before triggering a safety pause.
-  double odom_timeout_sec_;
-
-  // --- State ---
-  enum class MissionState
-  {
-    IDLE,
-    ACTIVE
-  };
-
-  /// Current state of the mission.
-  MissionState state_ = MissionState::IDLE;
-
-  /// List of waypoints for the current mission.
-  std::vector<geometry_msgs::msg::Pose> waypoints_;
-  /// Index of the current target waypoint.
-  size_t current_waypoint_index_ = 0;
-  /// Timestamp of the last received odometry message.
-  rclcpp::Time last_odom_time_;
-  /// Distance to the target in the previous iteration (for slip detection).
-  double previous_distance_ = -1.0;
-
-  // --- Interfaces ---
-  /// Publisher for heading commands.
-  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr heading_pub_;
-  /// Publisher for speed commands.
-  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr speed_pub_;
-  /// Publisher for depth commands.
-  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr depth_pub_;
-
-  /// Subscriber for mission waypoints.
-  rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr waypoint_sub_;
-  /// Subscriber for odometry feedback.
-  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
-
-  /// Timer to check for odometry timeouts.
-  rclcpp::TimerBase::SharedPtr timeout_timer_;
-
-  // --- Functions ---
+  // --- Logic ---
   /**
    * @brief Callback for receiving a new list of waypoints.
-   * @param msg The PoseArray message containing waypoints.
+   * @param msg The incoming PoseArray message containing waypoints.
    */
   void waypointCallback(const geometry_msgs::msg::PoseArray::SharedPtr msg);
 
   /**
    * @brief Callback for odometry updates. Main control loop.
-   * @param msg The Odometry message.
+   * @param msg The incoming Odometry message.
    */
   void odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg);
 
@@ -142,6 +99,34 @@ private:
    * @param current_y Current Y position.
    */
   void processWaypointLogic(double current_x, double current_y);
+
+  // --- State ---
+  enum class MissionState
+  {
+    IDLE,
+    ACTIVE
+  };
+
+  MissionState state_ = MissionState::IDLE;
+
+  std::vector<geometry_msgs::msg::Pose> waypoints_;
+  size_t current_waypoint_index_ = 0;
+  rclcpp::Time last_odom_time_;
+  double previous_distance_ = -1.0;
+
+  // --- ROS Interfaces ---
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr heading_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr speed_pub_;
+  rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr depth_pub_;
+
+  rclcpp::Subscription<geometry_msgs::msg::PoseArray>::SharedPtr waypoint_sub_;
+  rclcpp::Subscription<nav_msgs::msg::Odometry>::SharedPtr odom_sub_;
+
+  rclcpp::TimerBase::SharedPtr timeout_timer_;
+
+  // --- Parameters ---
+  std::shared_ptr<hsd_commander_node::ParamListener> param_listener_;
+  hsd_commander_node::Params params_;
 };
 
 }  // namespace coug_navigation

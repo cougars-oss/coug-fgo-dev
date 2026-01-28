@@ -31,29 +31,22 @@ HsdCommanderNode::HsdCommanderNode()
 {
   RCLCPP_INFO(get_logger(), "Starting HSD Commander Node...");
 
-  // --- Parameters ---
-  capture_radius_ = declare_parameter<double>("capture_radius", 25.0);
-  slip_radius_ = declare_parameter<double>("slip_radius", 50.0);
-  desired_speed_rpm_ = declare_parameter<double>("desired_speed_rpm", 1500.0);
-  odom_timeout_sec_ = declare_parameter<double>("odom_timeout_sec", 2.0);
+  param_listener_ = std::make_shared<hsd_commander_node::ParamListener>(
+    get_node_parameters_interface());
+  params_ = param_listener_->get_params();
 
-  std::string waypoint_topic = declare_parameter<std::string>("waypoint_topic", "waypoints");
-  std::string odom_topic = declare_parameter<std::string>("odom_topic", "odometry/global");
-  std::string heading_topic = declare_parameter<std::string>("heading_topic", "heading");
-  std::string speed_topic = declare_parameter<std::string>("speed_topic", "speed");
-  std::string depth_topic = declare_parameter<std::string>("depth_topic", "depth");
-
-  // --- Interfaces ---
-  heading_pub_ = create_publisher<std_msgs::msg::Float64>(heading_topic, 10);
-  speed_pub_ = create_publisher<std_msgs::msg::Float64>(speed_topic, 10);
-  depth_pub_ = create_publisher<std_msgs::msg::Float64>(depth_topic, 10);
+  // --- ROS Interfaces ---
+  heading_pub_ = create_publisher<std_msgs::msg::Float64>(params_.heading_topic, 10);
+  speed_pub_ = create_publisher<std_msgs::msg::Float64>(params_.speed_topic, 10);
+  depth_pub_ = create_publisher<std_msgs::msg::Float64>(params_.depth_topic, 10);
 
   waypoint_sub_ = create_subscription<geometry_msgs::msg::PoseArray>(
-    waypoint_topic, 10,
+    params_.waypoint_topic, 10,
     std::bind(&HsdCommanderNode::waypointCallback, this, std::placeholders::_1));
 
   odom_sub_ = create_subscription<nav_msgs::msg::Odometry>(
-    odom_topic, 10, std::bind(&HsdCommanderNode::odomCallback, this, std::placeholders::_1));
+    params_.odom_topic, 10,
+    std::bind(&HsdCommanderNode::odomCallback, this, std::placeholders::_1));
 
   timeout_timer_ = create_wall_timer(
     std::chrono::milliseconds(1000),
@@ -109,13 +102,15 @@ void HsdCommanderNode::processWaypointLogic(double current_x, double current_y)
   const auto & target = waypoints_[current_waypoint_index_];
   double distance = calculateDistance(current_x, current_y, target.position.x, target.position.y);
 
-  if (distance < capture_radius_) {
+  if (distance < params_.capture_radius) {
     current_waypoint_index_++;
     previous_distance_ = -1.0;
     return;
   }
 
-  if (previous_distance_ != -1.0 && distance > previous_distance_ && distance < slip_radius_) {
+  if (previous_distance_ != -1.0 && distance > previous_distance_ &&
+    distance < params_.slip_radius)
+  {
     current_waypoint_index_++;
     previous_distance_ = -1.0;
     return;
@@ -127,7 +122,7 @@ void HsdCommanderNode::processWaypointLogic(double current_x, double current_y)
   double dy = target.position.y - current_y;
   double heading = std::atan2(dy, dx) * 180.0 / M_PI;
 
-  publishCommands(heading, desired_speed_rpm_, target.position.z);
+  publishCommands(heading, params_.desired_speed_rpm, target.position.z);
 }
 
 double HsdCommanderNode::calculateDistance(double x1, double y1, double x2, double y2)
@@ -142,7 +137,7 @@ void HsdCommanderNode::checkOdomTimeout()
   }
 
   auto now = this->get_clock()->now();
-  if ((now - last_odom_time_).seconds() > odom_timeout_sec_) {
+  if ((now - last_odom_time_).seconds() > params_.odom_timeout_sec) {
     RCLCPP_ERROR(get_logger(), "Odometry timeout. Stopping mission.");
     stopMission();
   }

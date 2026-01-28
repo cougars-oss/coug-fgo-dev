@@ -3,10 +3,6 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Global Options1
-        - /Status1
-        - /FGO1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 555
   - Class: rviz_common/Selection
@@ -71,6 +67,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        depth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         dvl_link:
           Alpha: 1
           Show Axes: false
@@ -98,7 +98,11 @@ Visualization Manager:
         All Enabled: true
         bluerov2/base_link:
           Value: true
+        bluerov2/depth_link:
+          Value: true
         bluerov2/dvl_link:
+          Value: true
+        bluerov2/dvl_odom:
           Value: true
         bluerov2/gps_link:
           Value: true
@@ -118,18 +122,23 @@ Visualization Manager:
       Show Axes: true
       Show Names: false
       Tree:
+        map:
+          bluerov2/dvl_odom:
+            {}
+          bluerov2/odom:
+            bluerov2/base_link:
+              bluerov2/depth_link:
+                {}
+              bluerov2/dvl_link:
+                {}
+              bluerov2/gps_link:
+                {}
+              bluerov2/imu_link:
+                {}
+          origin:
+            {}
         map__identity:
-          map:
-            bluerov2/odom:
-              bluerov2/base_link:
-                bluerov2/dvl_link:
-                  {}
-                bluerov2/gps_link:
-                  {}
-                bluerov2/imu_link:
-                  {}
-            origin:
-              {}
+          {}
       Update Interval: 0
       Value: true
     - Angle Tolerance: 0.10000000149011612

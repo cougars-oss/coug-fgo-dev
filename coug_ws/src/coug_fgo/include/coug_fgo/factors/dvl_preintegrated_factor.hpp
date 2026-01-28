@@ -73,13 +73,11 @@ public:
   {
     gtsam::Matrix66 D_between_i, D_between_j;
 
-    // Predict the relative pose
     gtsam::Pose3 relative_pose =
       pose_i.between(
       pose_j, (H_pose_i || H_pose_j) ? &D_between_i : 0,
       (H_pose_i || H_pose_j) ? &D_between_j : 0);
 
-    // Predict the translation in the starting AUV frame
     gtsam::Matrix36 D_trans_pose;
     gtsam::Vector3 p_ij = relative_pose.translation((H_pose_i || H_pose_j) ? &D_trans_pose : 0);
 

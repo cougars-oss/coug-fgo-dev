@@ -4,8 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /Global Options1
-        - /Status1
+        - /auv01
+        - /auv11
+        - /auv21
       Splitter Ratio: 0.5
     Tree Height: 555
   - Class: rviz_common/Selection
@@ -80,6 +81,8 @@ Visualization Manager:
           Value: true
         auv0/tray_link:
           Value: true
+        auv0/truth_link:
+          Value: true
         auv1/base_link:
           Value: true
         auv1/com_link:
@@ -107,6 +110,8 @@ Visualization Manager:
         auv1/top_fin_link:
           Value: true
         auv1/tray_link:
+          Value: true
+        auv1/truth_link:
           Value: true
         auv2/base_link:
           Value: true
@@ -136,7 +141,9 @@ Visualization Manager:
           Value: true
         auv2/tray_link:
           Value: true
-        holoocean:
+        auv2/truth_link:
+          Value: true
+        holoocean_global_frame:
           Value: true
         map:
           Value: true
@@ -158,24 +165,26 @@ Visualization Manager:
                   {}
                 auv0/dvl_link:
                   {}
-                auv0/handle_link:
-                  {}
-                auv0/hull_link:
-                  {}
                 auv0/imu_link:
-                  {}
-                auv0/left_fin_link:
                   {}
                 auv0/modem_link:
                   {}
-                auv0/right_fin_link:
-                  {}
-                auv0/thruster_link:
-                  {}
-                auv0/top_fin_link:
-                  {}
-                auv0/tray_link:
-                  {}
+              auv0/handle_link:
+                {}
+              auv0/hull_link:
+                {}
+              auv0/left_fin_link:
+                {}
+              auv0/right_fin_link:
+                {}
+              auv0/thruster_link:
+                {}
+              auv0/top_fin_link:
+                {}
+              auv0/tray_link:
+                {}
+              auv0/truth_link:
+                {}
           auv1/odom:
             auv1/base_link:
               auv1/com_link:
@@ -183,24 +192,26 @@ Visualization Manager:
                   {}
                 auv1/dvl_link:
                   {}
-                auv1/handle_link:
-                  {}
-                auv1/hull_link:
-                  {}
                 auv1/imu_link:
-                  {}
-                auv1/left_fin_link:
                   {}
                 auv1/modem_link:
                   {}
-                auv1/right_fin_link:
-                  {}
-                auv1/thruster_link:
-                  {}
-                auv1/top_fin_link:
-                  {}
-                auv1/tray_link:
-                  {}
+              auv1/handle_link:
+                {}
+              auv1/hull_link:
+                {}
+              auv1/left_fin_link:
+                {}
+              auv1/right_fin_link:
+                {}
+              auv1/thruster_link:
+                {}
+              auv1/top_fin_link:
+                {}
+              auv1/tray_link:
+                {}
+              auv1/truth_link:
+                {}
           auv2/odom:
             auv2/base_link:
               auv2/com_link:
@@ -208,25 +219,27 @@ Visualization Manager:
                   {}
                 auv2/dvl_link:
                   {}
-                auv2/handle_link:
-                  {}
-                auv2/hull_link:
-                  {}
                 auv2/imu_link:
-                  {}
-                auv2/left_fin_link:
                   {}
                 auv2/modem_link:
                   {}
-                auv2/right_fin_link:
-                  {}
-                auv2/thruster_link:
-                  {}
-                auv2/top_fin_link:
-                  {}
-                auv2/tray_link:
-                  {}
-          holoocean:
+              auv2/handle_link:
+                {}
+              auv2/hull_link:
+                {}
+              auv2/left_fin_link:
+                {}
+              auv2/right_fin_link:
+                {}
+              auv2/thruster_link:
+                {}
+              auv2/top_fin_link:
+                {}
+              auv2/tray_link:
+                {}
+              auv2/truth_link:
+                {}
+          holoocean_global_frame:
             {}
           origin:
             {}
@@ -234,581 +247,669 @@ Visualization Manager:
           {}
       Update Interval: 0
       Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/RobotModel
-      Collision Enabled: false
-      Description File: ""
-      Description Source: Topic
-      Description Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv0/robot_description
+    - Class: rviz_common/Group
+      Displays:
+        - Alpha: 1
+          Class: rviz_default_plugins/RobotModel
+          Collision Enabled: false
+          Description File: ""
+          Description Source: Topic
+          Description Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv0/robot_description
+          Enabled: true
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+            base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            com_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            dvl_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            handle_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            hull_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            imu_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            left_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            modem_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            right_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            thruster_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            tray_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            truth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+          Mass Properties:
+            Inertia: false
+            Mass: false
+          Name: RobotModel
+          TF Prefix: auv0
+          Update Interval: 0
+          Value: true
+          Visual Enabled: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: false
+          Enabled: true
+          Keep: 1
+          Name: Truth
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 255; 255
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv0/odometry/truth
+          Value: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 1
+          Name: FGO
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 0; 255; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv0/odometry/global
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz_default_plugins/Path
+          Color: 170; 0; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv0/smoothed_path
+          Value: true
+        - Alpha: 1
+          Arrow Length: 0.30000001192092896
+          Axes Length: 0.30000001192092896
+          Axes Radius: 0.009999999776482582
+          Class: rviz_default_plugins/PoseArray
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.07000000029802322
+          Head Radius: 0.029999999329447746
+          Name: PoseArray
+          Shaft Length: 0.23000000417232513
+          Shaft Radius: 0.009999999776482582
+          Shape: Arrow (Flat)
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv0/waypoints
+          Value: true
       Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        com_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+      Name: auv0
+    - Class: rviz_common/Group
+      Displays:
+        - Alpha: 1
+          Class: rviz_default_plugins/RobotModel
+          Collision Enabled: false
+          Description File: ""
+          Description Source: Topic
+          Description Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv1/robot_description
+          Enabled: true
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+            base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            com_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            dvl_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            handle_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            hull_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            imu_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            left_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            modem_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            right_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            thruster_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            tray_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            truth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+          Mass Properties:
+            Inertia: false
+            Mass: false
+          Name: RobotModel
+          TF Prefix: auv1
+          Update Interval: 0
           Value: true
-        depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        dvl_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        handle_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+          Visual Enabled: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: false
+          Enabled: true
+          Keep: 1
+          Name: Truth
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 255; 255
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv1/odometry/truth
           Value: true
-        hull_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 1
+          Name: FGO
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 0; 255; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv1/odometry/global
           Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz_default_plugins/Path
+          Color: 170; 0; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv1/smoothed_path
           Value: true
-        modem_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
+        - Alpha: 1
+          Arrow Length: 0.30000001192092896
+          Axes Length: 0.30000001192092896
+          Axes Radius: 0.009999999776482582
+          Class: rviz_default_plugins/PoseArray
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.07000000029802322
+          Head Radius: 0.029999999329447746
+          Name: PoseArray
+          Shaft Length: 0.23000000417232513
+          Shaft Radius: 0.009999999776482582
+          Shape: Arrow (Flat)
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv1/waypoints
           Value: true
-        thruster_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        tray_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Mass Properties:
-        Inertia: false
-        Mass: false
-      Name: RobotModel (auv0)
-      TF Prefix: auv0
-      Update Interval: 0
-      Value: true
-      Visual Enabled: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: false
       Enabled: true
-      Keep: 1
-      Name: Truth (auv0)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 255; 255
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv0/odometry/truth
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
+      Name: auv1
+    - Class: rviz_common/Group
+      Displays:
+        - Alpha: 1
+          Class: rviz_default_plugins/RobotModel
+          Collision Enabled: false
+          Description File: ""
+          Description Source: Topic
+          Description Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv2/robot_description
+          Enabled: true
+          Links:
+            All Links Enabled: true
+            Expand Joint Details: false
+            Expand Link Details: false
+            Expand Tree: false
+            Link Tree Style: Links in Alphabetic Order
+            base_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            com_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            depth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            dvl_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            handle_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            hull_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            imu_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            left_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            modem_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+            right_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            thruster_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            top_fin_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            tray_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+              Value: true
+            truth_link:
+              Alpha: 1
+              Show Axes: false
+              Show Trail: false
+          Mass Properties:
+            Inertia: false
+            Mass: false
+          Name: RobotModel
+          TF Prefix: auv2
+          Update Interval: 0
           Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
+          Visual Enabled: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: false
+          Enabled: true
+          Keep: 1
+          Name: Truth
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 255; 255; 255
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv2/odometry/truth
           Value: true
-        Value: true
+        - Angle Tolerance: 0.10000000149011612
+          Class: rviz_default_plugins/Odometry
+          Covariance:
+            Orientation:
+              Alpha: 0.5
+              Color: 255; 255; 127
+              Color Style: Unique
+              Frame: Local
+              Offset: 1
+              Scale: 1
+              Value: true
+            Position:
+              Alpha: 0.30000001192092896
+              Color: 204; 51; 204
+              Scale: 1
+              Value: true
+            Value: true
+          Enabled: true
+          Keep: 1
+          Name: FGO
+          Position Tolerance: 0.10000000149011612
+          Shape:
+            Alpha: 1
+            Axes Length: 1
+            Axes Radius: 0.10000000149011612
+            Color: 0; 255; 0
+            Head Length: 0.30000001192092896
+            Head Radius: 0.10000000149011612
+            Shaft Length: 1
+            Shaft Radius: 0.05000000074505806
+            Value: Arrow
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv2/odometry/global
+          Value: true
+        - Alpha: 1
+          Buffer Length: 1
+          Class: rviz_default_plugins/Path
+          Color: 170; 0; 255
+          Enabled: true
+          Head Diameter: 0.30000001192092896
+          Head Length: 0.20000000298023224
+          Length: 0.30000001192092896
+          Line Style: Lines
+          Line Width: 0.029999999329447746
+          Name: Path
+          Offset:
+            X: 0
+            Y: 0
+            Z: 0
+          Pose Color: 255; 85; 255
+          Pose Style: None
+          Radius: 0.029999999329447746
+          Shaft Diameter: 0.10000000149011612
+          Shaft Length: 0.10000000149011612
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv2/smoothed_path
+          Value: true
+        - Alpha: 1
+          Arrow Length: 0.30000001192092896
+          Axes Length: 0.30000001192092896
+          Axes Radius: 0.009999999776482582
+          Class: rviz_default_plugins/PoseArray
+          Color: 255; 25; 0
+          Enabled: true
+          Head Length: 0.07000000029802322
+          Head Radius: 0.029999999329447746
+          Name: PoseArray
+          Shaft Length: 0.23000000417232513
+          Shaft Radius: 0.009999999776482582
+          Shape: Arrow (Flat)
+          Topic:
+            Depth: 5
+            Durability Policy: Volatile
+            Filter size: 10
+            History Policy: Keep Last
+            Reliability Policy: Reliable
+            Value: /auv2/waypoints
+          Value: true
       Enabled: true
-      Keep: 1
-      Name: FGO (auv0)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 0; 255; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv0/odometry/global
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz_default_plugins/Path
-      Color: 170; 0; 255
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Lines
-      Line Width: 0.029999999329447746
-      Name: Path (auv0)
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv0/smoothed_path
-      Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/RobotModel
-      Collision Enabled: false
-      Description File: ""
-      Description Source: Topic
-      Description Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv1/robot_description
-      Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        com_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        dvl_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        handle_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        hull_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        modem_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thruster_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        tray_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Mass Properties:
-        Inertia: false
-        Mass: false
-      Name: RobotModel (auv1)
-      TF Prefix: auv1
-      Update Interval: 0
-      Value: true
-      Visual Enabled: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: false
-      Enabled: true
-      Keep: 1
-      Name: Truth (auv1)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 255; 255
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv1/odometry/truth
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: true
-      Enabled: true
-      Keep: 1
-      Name: FGO (auv1)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 0; 255; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv1/odometry/global
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz_default_plugins/Path
-      Color: 170; 0; 255
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Lines
-      Line Width: 0.029999999329447746
-      Name: Path (auv1)
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv1/smoothed_path
-      Value: true
-    - Alpha: 1
-      Class: rviz_default_plugins/RobotModel
-      Collision Enabled: false
-      Description File: ""
-      Description Source: Topic
-      Description Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv2/robot_description
-      Enabled: true
-      Links:
-        All Links Enabled: true
-        Expand Joint Details: false
-        Expand Link Details: false
-        Expand Tree: false
-        Link Tree Style: Links in Alphabetic Order
-        base_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        com_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        depth_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        dvl_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        handle_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        hull_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        imu_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        left_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        modem_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-        right_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        thruster_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        top_fin_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-        tray_link:
-          Alpha: 1
-          Show Axes: false
-          Show Trail: false
-          Value: true
-      Mass Properties:
-        Inertia: false
-        Mass: false
-      Name: RobotModel (auv2)
-      TF Prefix: auv2
-      Update Interval: 0
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: false
-      Enabled: true
-      Keep: 1
-      Name: Truth (auv2)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 255; 255
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv2/odometry/truth
-      Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz_default_plugins/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: true
-      Enabled: true
-      Keep: 1
-      Name: FGO (auv2)
-      Position Tolerance: 0.10000000149011612
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 0; 255; 0
-        Head Length: 0.30000001192092896
-        Head Radius: 0.10000000149011612
-        Shaft Length: 1
-        Shaft Radius: 0.05000000074505806
-        Value: Arrow
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv2/odometry/global
-      Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz_default_plugins/Path
-      Color: 170; 0; 255
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Lines
-      Line Width: 0.029999999329447746
-      Name: Path (auv2)
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic:
-        Depth: 5
-        Durability Policy: Volatile
-        Filter size: 10
-        History Policy: Keep Last
-        Reliability Policy: Reliable
-        Value: /auv2/smoothed_path
-      Value: true
+      Name: auv2
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -870,7 +971,7 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.4487999975681305
+      Pitch: 0.4000000059604645
       Target Frame: auv0/base_link
       Value: Orbit (rviz_default_plugins)
       Yaw: 4.721399784088135

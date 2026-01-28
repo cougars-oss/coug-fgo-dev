@@ -14,7 +14,7 @@
 
 /**
  * @file depth_factor_arm.hpp
- * @brief GTSAM factor for depth (Z) measurements with a sensor offset.
+ * @brief GTSAM factor for depth (Z) measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026
  */
@@ -34,10 +34,10 @@ namespace coug_fgo::factors
 
 /**
  * @class CustomDepthFactorArm
- * @brief GTSAM factor for depth (Z) measurements with a sensor offset.
+ * @brief GTSAM factor for depth (Z) measurements with a lever arm.
  *
  * This factor constrains the Z position of the AUV based on depth sensor measurements,
- * accounting for the lever arm (offset) between the AUV base and the sensor.
+ * accounting for the lever arm between the AUV base and the sensor.
  */
 class CustomDepthFactorArm : public gtsam::NoiseModelFactor1<gtsam::Pose3>
 {
@@ -69,7 +69,6 @@ public:
     const gtsam::Pose3 & pose,
     boost::optional<gtsam::Matrix &> H = boost::none) const override
   {
-    // Predict the sensor's world-frame pose
     gtsam::Pose3 T_ws = pose.compose(T_base_sensor_);
 
     // 1D Z-axis residual
@@ -79,10 +78,10 @@ public:
       // Jacobian with respect to pose
       gtsam::Matrix H_matrix = gtsam::Matrix::Zero(1, 6);
 
-      gtsam::Matrix R_wb = pose.rotation().matrix();  // AUV rotation
-      gtsam::Vector3 p_bs = T_base_sensor_.translation();  // Sensor lever arm
+      gtsam::Matrix R_wb = pose.rotation().matrix();
+      gtsam::Vector3 p_bs = T_base_sensor_.translation();
       gtsam::Matrix p_bs_skew = gtsam::skewSymmetric(p_bs);
-      gtsam::Matrix R_row2 = R_wb.row(2);  // Z-axis row
+      gtsam::Matrix R_row2 = R_wb.row(2);
 
       H_matrix.block<1, 3>(0, 0) = -R_row2 * p_bs_skew;  // d(error)/d(theta)
       H_matrix.block<1, 3>(0, 3) = R_row2;  // d(error)/d(pos)

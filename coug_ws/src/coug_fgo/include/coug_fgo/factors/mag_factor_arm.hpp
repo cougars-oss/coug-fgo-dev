@@ -14,7 +14,7 @@
 
 /**
  * @file mag_factor_arm.hpp
- * @brief GTSAM factor for magnetometer measurements with a sensor offset.
+ * @brief GTSAM factor for magnetometer measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026
  */
@@ -36,7 +36,7 @@ namespace coug_fgo::factors
 
 /**
  * @class CustomMagFactorArm
- * @brief GTSAM factor for magnetometer measurements with a sensor offset.
+ * @brief GTSAM factor for magnetometer measurements with a lever arm.
  *
  * This factor constrains the 3D orientation of the AUV based on magnetometer measurements,
  * accounting for the rotation between the AUV base and the sensor.
@@ -86,11 +86,10 @@ public:
     gtsam::Point3 b_sensor = R_base_sensor_.unrotate(b_body);
 
     if (constrain_yaw_only_) {
-      // 1D yaw residual
       double yaw_pred = std::atan2(b_sensor.y(), b_sensor.x());
       double yaw_meas = std::atan2(measured_field_.y(), measured_field_.x());
 
-      // Residual = predicted - measured (1D)
+      // 1D yaw residual
       double error = gtsam::Rot3::Ypr(yaw_meas, 0.0, 0.0).localCoordinates(
         gtsam::Rot3::Ypr(yaw_pred, 0.0, 0.0)).z();
 

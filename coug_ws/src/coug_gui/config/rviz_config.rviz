@@ -3,10 +3,6 @@ Panels:
     Help Height: 78
     Name: Displays
     Property Tree Widget:
-      Expanded:
-        - /Global Options1
-        - /Status1
-        - /FGO1/Shape1
       Splitter Ratio: 0.5
     Tree Height: 555
   - Class: rviz_common/Selection
@@ -70,11 +66,11 @@ Visualization Manager:
           Alpha: 1
           Show Axes: false
           Show Trail: false
+          Value: true
         com_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
-          Value: true
         depth_link:
           Alpha: 1
           Show Axes: false
@@ -126,6 +122,10 @@ Visualization Manager:
           Show Axes: false
           Show Trail: false
           Value: true
+        truth_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
       Mass Properties:
         Inertia: false
         Mass: false
@@ -167,7 +167,9 @@ Visualization Manager:
           Value: true
         auv0/tray_link:
           Value: true
-        holoocean:
+        auv0/truth_link:
+          Value: true
+        holoocean_global_frame:
           Value: true
         map:
           Value: true
@@ -189,25 +191,27 @@ Visualization Manager:
                   {}
                 auv0/dvl_link:
                   {}
-                auv0/handle_link:
-                  {}
-                auv0/hull_link:
-                  {}
                 auv0/imu_link:
-                  {}
-                auv0/left_fin_link:
                   {}
                 auv0/modem_link:
                   {}
-                auv0/right_fin_link:
-                  {}
-                auv0/thruster_link:
-                  {}
-                auv0/top_fin_link:
-                  {}
-                auv0/tray_link:
-                  {}
-          holoocean:
+              auv0/handle_link:
+                {}
+              auv0/hull_link:
+                {}
+              auv0/left_fin_link:
+                {}
+              auv0/right_fin_link:
+                {}
+              auv0/thruster_link:
+                {}
+              auv0/top_fin_link:
+                {}
+              auv0/tray_link:
+                {}
+              auv0/truth_link:
+                {}
+          holoocean_global_frame:
             {}
           origin:
             {}
@@ -476,6 +480,27 @@ Visualization Manager:
         History Policy: Keep Last
         Reliability Policy: Reliable
         Value: /auv0/smoothed_path
+      Value: true
+    - Alpha: 1
+      Arrow Length: 0.30000001192092896
+      Axes Length: 0.30000001192092896
+      Axes Radius: 0.009999999776482582
+      Class: rviz_default_plugins/PoseArray
+      Color: 255; 25; 0
+      Enabled: true
+      Head Length: 0.07000000029802322
+      Head Radius: 0.029999999329447746
+      Name: PoseArray
+      Shaft Length: 0.23000000417232513
+      Shaft Radius: 0.009999999776482582
+      Shape: Arrow (Flat)
+      Topic:
+        Depth: 5
+        Durability Policy: Volatile
+        Filter size: 10
+        History Policy: Keep Last
+        Reliability Policy: Reliable
+        Value: /auv0/waypoints
       Value: true
   Enabled: true
   Global Options:

@@ -60,7 +60,6 @@ def generate_launch_description():
                 name="robot_state_publisher",
                 parameters=[
                     {
-                        # Use the xacro command to process the URDF file
                         "robot_description": ParameterValue(
                             Command(
                                 ["xacro ", PathJoinSubstitution([pkg_share, urdf_file])]

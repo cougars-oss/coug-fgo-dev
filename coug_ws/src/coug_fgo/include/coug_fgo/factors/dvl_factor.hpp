@@ -77,7 +77,6 @@ public:
     boost::optional<gtsam::Matrix &> H_pose = boost::none,
     boost::optional<gtsam::Matrix &> H_vel = boost::none) const override
   {
-    // Predict the base-frame velocity
     gtsam::Rot3 R_bw = pose.rotation().inverse();
     gtsam::Vector3 predicted_vel_base = R_bw.rotate(vel_world);
 

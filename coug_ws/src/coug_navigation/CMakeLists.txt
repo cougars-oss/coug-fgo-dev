@@ -16,6 +16,13 @@ find_package(nav_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
+find_package(generate_parameter_library REQUIRED)
+
+generate_parameter_library(
+  hsd_commander_parameters
+  "params/hsd_commander_params.yaml"
+)
+
 add_executable(hsd_commander src/hsd_commander_node.cpp)
 target_include_directories(hsd_commander PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -25,6 +32,9 @@ ament_target_dependencies(hsd_commander
   nav_msgs
   geometry_msgs
   std_msgs
+)
+target_link_libraries(hsd_commander
+  hsd_commander_parameters
 )
 
 install(TARGETS hsd_commander
