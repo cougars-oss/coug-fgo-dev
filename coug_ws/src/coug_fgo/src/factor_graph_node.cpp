@@ -107,7 +107,6 @@ void FactorGraphNode::setupRosInterfaces()
       bool dvl_timed_out = time_since_dvl > params_.dvl.timeout_threshold;
 
       if (params_.experimental.enable_dvl_preintegration) {
-
         // IMPORTANT! Limit the depth rate to less than the DVL rate
         if (params_.experimental.depth_rate_limit_hz > 0.0) {
           double msg_time = rclcpp::Time(msg->header.stamp).seconds();
@@ -458,6 +457,8 @@ gtsam::Rot3 FactorGraphNode::computeInitialOrientation()
     yaw = measured_yaw - ref_yaw;
   }
 
+  RCLCPP_DEBUG(get_logger(), "Initial orientation: %f %f %f", roll, pitch, yaw);
+
   return gtsam::Rot3::Ypr(yaw, pitch, roll) * R_base_dvl;
 }
 
@@ -486,6 +487,10 @@ gtsam::Point3 FactorGraphNode::computeInitialPosition(const gtsam::Rot3 & initia
   gtsam::Point3 world_t_dvl_depth = initial_orientation_dvl.rotate(T_dvl_depth.translation());
   initial_position_dvl.z() = initial_depth_->pose.pose.position.z - world_t_dvl_depth.z();
 
+  RCLCPP_DEBUG(
+    get_logger(), "Initial position: %f %f %f", initial_position_dvl.x(),
+    initial_position_dvl.y(), initial_position_dvl.z());
+
   return initial_position_dvl;
 }
 
@@ -496,6 +501,10 @@ gtsam::Vector3 FactorGraphNode::computeInitialVelocity(const gtsam::Rot3 & initi
     return initial_orientation_dvl.rotate(
       gtsam::Vector3(params_.prior.parameter_priors.initial_velocity.data()));
   }
+
+  RCLCPP_DEBUG(
+    get_logger(), "Initial velocity: %f %f %f", initial_dvl_->twist.twist.linear.x,
+    initial_dvl_->twist.twist.linear.y, initial_dvl_->twist.twist.linear.z);
 
   // Account for DVL rotation (in world frame)
   return initial_orientation_dvl.rotate(toGtsam(initial_dvl_->twist.twist.linear));
@@ -519,6 +528,10 @@ gtsam::imuBias::ConstantBias FactorGraphNode::computeInitialBias()
   gtsam::Vector3 init_accel_bias(params_.prior.parameter_priors.initial_accel_bias[0],
     params_.prior.parameter_priors.initial_accel_bias[1],
     params_.prior.parameter_priors.initial_accel_bias[2]);
+
+  RCLCPP_DEBUG(
+    get_logger(), "Initial accel bias: %f %f %f", init_accel_bias.x(), init_accel_bias.y(),
+    init_accel_bias.z());
 
   return gtsam::imuBias::ConstantBias(init_accel_bias, init_gyro_bias);
 }
@@ -652,7 +665,7 @@ void FactorGraphNode::initializeGraph()
     double duration = this->get_clock()->now().seconds() - start_avg_time_;
     if (duration < params_.prior.initialization_duration) {
       RCLCPP_INFO_THROTTLE(
-        get_logger(), *get_clock(), 500,
+        get_logger(), *get_clock(), 1000,
         "Averaging sensor data (%.2fs / %.2fs)...", duration,
         params_.prior.initialization_duration);
       return;
@@ -719,7 +732,7 @@ void FactorGraphNode::initializeGraph()
   if (params_.experimental.enable_dvl_preintegration) {
     dvl_preintegrator_ = std::make_unique<DVLPreintegrator>();
     dvl_preintegrator_->reset(initial_orientation_dvl);
-    
+
     last_dvl_velocity_ = toGtsam(initial_dvl_->twist.twist.linear);
     if (params_.dvl.use_parameter_covariance) {
       last_dvl_covariance_ = gtsam::Matrix3::Identity() *
@@ -779,6 +792,8 @@ void FactorGraphNode::addGpsFactor(
       gtsam::noiseModel::mEstimator::Tukey::Create(params_.gps.robust_k), gps_noise);
   }
 
+  RCLCPP_DEBUG(get_logger(), "Adding GPS factor at step %d", current_step_);
+
   graph.emplace_shared<CustomGPSFactorArm>(
     X(current_step_), toGtsam(gps_msg->pose.pose.position),
     toGtsam(gps_to_dvl_tf_.transform), gps_noise);
@@ -807,6 +822,8 @@ void FactorGraphNode::addDepthFactor(
     depth_noise = gtsam::noiseModel::Robust::Create(
       gtsam::noiseModel::mEstimator::Tukey::Create(params_.depth.robust_k), depth_noise);
   }
+
+  RCLCPP_DEBUG(get_logger(), "Adding depth factor at step %d", current_step_);
 
   graph.emplace_shared<CustomDepthFactorArm>(
     X(current_step_), depth_msg->pose.pose.position.z,
@@ -843,6 +860,8 @@ void FactorGraphNode::addAhrsFactor(
     ahrs_noise = gtsam::noiseModel::Robust::Create(
       gtsam::noiseModel::mEstimator::Tukey::Create(params_.ahrs.robust_k), ahrs_noise);
   }
+
+  RCLCPP_DEBUG(get_logger(), "Adding AHRS factor at step %d", current_step_);
 
   graph.emplace_shared<CustomAHRSFactor>(
     X(current_step_), toGtsam(ahrs_msg->orientation),
@@ -888,6 +907,8 @@ void FactorGraphNode::addMagFactor(
         gtsam::noiseModel::mEstimator::Tukey::Create(params_.mag.robust_k), mag_noise);
     }
 
+    RCLCPP_DEBUG(get_logger(), "Adding 1D mag factor at step %d", current_step_);
+
     graph.emplace_shared<CustomMagFactorArm>(
       X(current_step_), toGtsam(mag_msg->magnetic_field), ref_vec,
       toGtsam(mag_to_dvl_tf_.transform.rotation), mag_noise, true);
@@ -913,6 +934,8 @@ void FactorGraphNode::addMagFactor(
       mag_noise = gtsam::noiseModel::Robust::Create(
         gtsam::noiseModel::mEstimator::Tukey::Create(params_.mag.robust_k), mag_noise);
     }
+
+    RCLCPP_DEBUG(get_logger(), "Adding 3D mag factor at step %d", current_step_);
 
     graph.emplace_shared<CustomMagFactorArm>(
       X(current_step_), toGtsam(mag_msg->magnetic_field), ref_vec,
@@ -947,6 +970,8 @@ void FactorGraphNode::addDvlFactor(
       gtsam::noiseModel::mEstimator::Tukey::Create(params_.dvl.robust_k), dvl_noise);
   }
 
+  RCLCPP_DEBUG(get_logger(), "Adding DVL factor at step %d", current_step_);
+
   graph.emplace_shared<CustomDVLFactor>(
     X(current_step_), V(current_step_),
     toGtsam(dvl_msg->twist.twist.linear), dvl_noise);
@@ -972,8 +997,7 @@ void FactorGraphNode::addPreintegratedImuFactor(
     }
 
     if (current_imu_time <= last_imu_time) {
-      RCLCPP_DEBUG_THROTTLE(
-        get_logger(), *get_clock(), 5000, "IMU message older than last integrated time. Skipping.");
+      RCLCPP_DEBUG(get_logger(), "IMU message older than last integrated time. Skipping.");
       continue;
     }
 
@@ -998,6 +1022,8 @@ void FactorGraphNode::addPreintegratedImuFactor(
     X(prev_step_), V(prev_step_), X(current_step_),
     V(current_step_), B(prev_step_),
     B(current_step_), *imu_preintegrator_);
+
+  RCLCPP_DEBUG(get_logger(), "Adding preintegrated IMU factor at step %d", current_step_);
 
   // Re-queue future IMU messages
   if (!unused_imu_msgs.empty()) {
@@ -1070,8 +1096,7 @@ void FactorGraphNode::addPreintegratedDvlFactor(
     }
 
     if (current_dvl_time <= last_dvl_time) {
-      RCLCPP_DEBUG_THROTTLE(
-        get_logger(), *get_clock(), 5000, "DVL message older than last integrated time. Skipping.");
+      RCLCPP_DEBUG(get_logger(), "DVL message older than last integrated time. Skipping.");
       continue;
     }
 
@@ -1113,6 +1138,8 @@ void FactorGraphNode::addPreintegratedDvlFactor(
     }
     last_dvl_time = target_time;
   }
+
+  RCLCPP_DEBUG(get_logger(), "Adding preintegrated DVL factor at step %d", current_step_);
 
   graph.emplace_shared<CustomDVLPreintegratedFactor>(
     X(prev_step_), X(current_step_), dvl_preintegrator_->delta(),
@@ -1331,7 +1358,8 @@ void FactorGraphNode::optimizeGraph()
   if (params_.experimental.enable_dvl_preintegration) {
     if (depth_msgs.size() > 1) {
       RCLCPP_WARN(
-        get_logger(), "Processing overflow. Skipping %ld Depth keyframes.",
+        get_logger(), "Processing overflow. Skipping %ld Depth keyframes.\n"
+        "This may be intentional (depth_rate_limit_hz).",
         depth_msgs.size() - 1);
     }
   } else {

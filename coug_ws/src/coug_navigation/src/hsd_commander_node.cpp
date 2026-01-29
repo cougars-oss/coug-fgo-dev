@@ -57,18 +57,8 @@ HsdCommanderNode::HsdCommanderNode()
 
 void HsdCommanderNode::waypointCallback(const geometry_msgs::msg::PoseArray::SharedPtr msg)
 {
-  std::stringstream ss;
-  ss << "Received mission with " << msg->poses.size() << " waypoints: ";
-  for (size_t i = 0; i < msg->poses.size(); ++i) {
-    const auto & p = msg->poses[i].position;
-    ss << "[" << i << "]: (" << p.x << ", " << p.y << ", " << p.z << ")";
-    if (i < msg->poses.size() - 1) {
-      ss << " | ";
-    }
-  }
-  RCLCPP_INFO(get_logger(), "%s", ss.str().c_str());
-
   if (msg->poses.empty()) {
+    RCLCPP_WARN(get_logger(), "Received empty mission. Stopping mission.");
     stopMission();
     return;
   }
@@ -77,7 +67,17 @@ void HsdCommanderNode::waypointCallback(const geometry_msgs::msg::PoseArray::Sha
   current_waypoint_index_ = 0;
   state_ = MissionState::ACTIVE;
   previous_distance_ = -1.0;
-  RCLCPP_INFO(get_logger(), "Mission started with %zu waypoints.", waypoints_.size());
+
+  std::stringstream ss;
+  ss << "Started mission with " << msg->poses.size() << " waypoints: ";
+  for (size_t i = 0; i < msg->poses.size(); ++i) {
+    const auto & p = msg->poses[i].position;
+    ss << "[" << i << "]: (" << p.x << ", " << p.y << ", " << p.z << ")";
+    if (i < msg->poses.size() - 1) {
+      ss << " | ";
+    }
+  }
+  RCLCPP_INFO(get_logger(), "%s", ss.str().c_str());
 }
 
 void HsdCommanderNode::odomCallback(const nav_msgs::msg::Odometry::SharedPtr msg)
