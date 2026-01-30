@@ -42,9 +42,10 @@
   <depend condition="$ROS_BUILD_ARCH == 'amd64'">swri_transform_util</depend>
   <depend>tf2</depend>
   <depend>visualization_msgs</depend>
-  <depend>rviz2</depend>
-  <depend>plotjuggler</depend>
-  
+
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>plotjuggler</exec_depend>
+  <exec_depend>plotjuggler_ros</exec_depend>
   <exec_depend>libqt5-opengl</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>diagnostic_aggregator</exec_depend>
