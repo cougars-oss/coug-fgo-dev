@@ -327,6 +327,8 @@ private:
   std::atomic<bool> processing_overflow_{false};
   std::atomic<double> last_depth_trigger_time_{0.0};
   std::atomic<double> last_opt_duration_{0.0};
+  std::atomic<double> total_opt_duration_{0.0};
+  std::atomic<size_t> opt_count_{0};
   std::map<rclcpp::Time, gtsam::Key> time_to_key_;
 
   // --- GTSAM Objects ---

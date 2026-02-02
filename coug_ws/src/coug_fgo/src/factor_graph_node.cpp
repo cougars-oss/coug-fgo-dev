@@ -1555,7 +1555,11 @@ void FactorGraphNode::optimizeGraph()
     current_step_++;
 
     double opt_end = this->get_clock()->now().seconds();
-    last_opt_duration_ = opt_end - opt_start;
+    double duration = opt_end - opt_start;
+    last_opt_duration_ = duration;
+    double current_total = total_opt_duration_.load();
+    total_opt_duration_.store(current_total + duration);
+    opt_count_++;
   } catch (const std::exception & e) {
     RCLCPP_FATAL(get_logger(), "%s", e.what());
     rclcpp::shutdown();
@@ -1645,6 +1649,13 @@ void FactorGraphNode::checkProcessingOverflow(diagnostic_updater::DiagnosticStat
     stat.summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "No processing overflow detected.");
   }
   stat.add("Optimization Duration (s)", last_opt_duration_.load());
+  double total_duration = total_opt_duration_.load();
+  size_t count = opt_count_.load();
+  if (count > 0) {
+    stat.add("Avg Optimization Duration (s)", total_duration / static_cast<double>(count));
+  } else {
+    stat.add("Avg Optimization Duration (s)", 0.0);
+  }
 }
 
 }  // namespace coug_fgo
