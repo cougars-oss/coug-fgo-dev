@@ -29,6 +29,7 @@
 #include <gtsam/nonlinear/NonlinearFactorGraph.h>
 #include <gtsam/nonlinear/Values.h>
 #include <gtsam_unstable/nonlinear/IncrementalFixedLagSmoother.h>
+#include <gtsam/nonlinear/ISAM2.h>
 #include <tf2_ros/buffer.h>
 #include <tf2_ros/transform_broadcaster.h>
 #include <tf2_ros/transform_listener.h>
@@ -208,7 +209,8 @@ private:
    */
   void addDvlFactor(
     gtsam::NonlinearFactorGraph & graph,
-    const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs);
+    const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs,
+    double target_time);
 
   /**
    * @brief Integrates and adds a combined IMU factor to the graph.
@@ -321,13 +323,16 @@ private:
   std::atomic<double> last_depth_time_{0.0};
   std::atomic<double> last_mag_time_{0.0};
   std::atomic<double> last_ahrs_time_{0.0};
+  std::atomic<double> last_real_dvl_time_{0.0};
   std::atomic<bool> processing_overflow_{false};
   std::atomic<double> last_depth_trigger_time_{0.0};
   std::atomic<double> last_opt_duration_{0.0};
   std::map<rclcpp::Time, gtsam::Key> time_to_key_;
 
   // --- GTSAM Objects ---
-  std::unique_ptr<gtsam::IncrementalFixedLagSmoother> smoother_;
+  std::unique_ptr<gtsam::IncrementalFixedLagSmoother> inc_smoother_;
+  std::unique_ptr<gtsam::ISAM2> isam_;
+
   std::unique_ptr<gtsam::PreintegratedCombinedMeasurements> imu_preintegrator_;
   std::unique_ptr<utils::DVLPreintegrator> dvl_preintegrator_;
 

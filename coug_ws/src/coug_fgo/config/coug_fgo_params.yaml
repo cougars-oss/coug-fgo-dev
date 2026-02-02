@@ -12,10 +12,16 @@
     publish_imu_bias_cov: false # Publish the IMU bias covariance along with the bias.
 
     # --- GTSAM Smoother Settings ---
+    #
+    # Solver Types:
+    # - "IncrementalFixedLagSmoother": Fixed-lag smoothing.
+    # - "ISAM2": Full history smoothing.
+
+    solver_type: "IncrementalFixedLagSmoother"
+    max_keyframe_rate: -1.0 # Maximum keyframe rate (in Hz). -1.0 for no limit.
     smoother_lag: 20.0 # The time window (in seconds) of past states to smooth over.
     relinearize_threshold: 0.1 # Lower values are more accurate but slower.
     relinearize_skip: 1 # Number of updates to skip between relinearizations.
-    max_keyframe_rate: -1.0 # Maximum keyframe rate (in Hz). -1.0 for no limit.
 
     # --- ROS Topics and Frames ---
     imu_topic: "imu/data"
@@ -108,7 +114,8 @@
       use_parameter_covariance: false
       parameter_covariance:
         velocity_noise_sigma: 0.02 # [m/s] DVL body-velocity uncertainty sigma.
-      timeout_threshold: 1.0 # [s] Time before switching to depth-driven FGO (DVL dropout).
+      velocity_random_walk: 0.1 # [m/s/sqrt(s)] Velocity uncertainty growth rate during dropouts.
+      timeout_threshold: 0.25 # [s] Time before switching to depth-driven keyframes (DVL dropout).
       robust_kernel: "None"
       robust_k: 1.345
 
@@ -128,8 +135,8 @@
         initial_position_sigma: 1e-3 # [m] Initial position uncertainty.
         initial_orientation_sigma: 1e-3 # [rad] Initial yaw uncertainty.
         initial_velocity_sigma: 1e-3 # [m/s] Initial velocity uncertainty.
-      initial_accel_bias_sigma: 1e-3 # [m/s^2] Initial accelerometer bias uncertainty.
-      initial_gyro_bias_sigma: 1e-4 # [rad/s] Initial gyroscope bias uncertainty.
+      initial_accel_bias_sigma: 1e-2 # [m/s^2] Initial accelerometer bias uncertainty.
+      initial_gyro_bias_sigma: 1e-3 # [rad/s] Initial gyroscope bias uncertainty.
 
     # --- Experimental Features ---
     experimental:
@@ -190,19 +197,11 @@
   ros__parameters:
     ahrs_topic: "imu/data"
 
-    imu:
-      use_parameter_frame: true
-
-    depth:
-      use_parameter_frame: true
-
-    mag:
-      use_parameter_frame: true
+    gps:
+      enable_gps: false
 
     ahrs:
-      enable_ahrs: false
-      use_parameter_frame: true
-      mag_declination_radians: 0.1876
+      enable_ahrs: true
 
     use_parameter_child_frame: true
     use_parameter_origin: false

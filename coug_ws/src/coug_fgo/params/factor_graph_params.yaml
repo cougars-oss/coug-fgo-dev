@@ -23,6 +23,12 @@ factor_graph_node:
     default_value: false
 
   # --- GTSAM Settings ---
+  solver_type:
+    type: string
+    default_value: "IncrementalFixedLagSmoother"
+  max_keyframe_rate:
+    type: double
+    default_value: -1.0
   smoother_lag:
     type: double
     default_value: 10.0
@@ -32,9 +38,6 @@ factor_graph_node:
   relinearize_skip:
     type: int
     default_value: 1
-  max_keyframe_rate:
-    type: double
-    default_value: -1.0
 
   # --- ROS Topics and Frames ---
   imu_topic:
@@ -230,7 +233,7 @@ factor_graph_node:
       default_value: 0.0
     timeout_threshold:
       type: double
-      default_value: 1.0
+      default_value: 0.25
     robust_kernel:
       type: string
       default_value: "None"
@@ -252,6 +255,9 @@ factor_graph_node:
       velocity_noise_sigma:
         type: double
         default_value: 0.02
+    velocity_random_walk:
+      type: double
+      default_value: 0.1
     timeout_threshold:
       type: double
       default_value: 1.0
@@ -297,10 +303,10 @@ factor_graph_node:
         default_value: 1.0e-3
     initial_accel_bias_sigma:
       type: double
-      default_value: 1.0e-3
+      default_value: 1.0e-2
     initial_gyro_bias_sigma:
       type: double
-      default_value: 1.0e-4
+      default_value: 1.0e-3
 
   # --- Experimental Features ---
   experimental:

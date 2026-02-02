@@ -34,6 +34,7 @@
 #include "coug_fgo/factors/gps_factor_arm.hpp"
 #include "coug_fgo/factors/ahrs_factor.hpp"
 #include "coug_fgo/factors/mag_factor_arm.hpp"
+#include "coug_fgo/factors/constant_velocity_factor.hpp"
 #include "coug_fgo/utils/conversion_utils.hpp"
 
 
@@ -738,6 +739,7 @@ void FactorGraphNode::initializeGraph()
     initial_depth_->header.stamp :
     initial_dvl_->header.stamp;
   prev_time_ = init_stamp.seconds();
+  last_real_dvl_time_ = prev_time_;
   time_to_key_[init_stamp] = X(0);
 
   // --- Initialize Preintegrators ---
@@ -769,10 +771,15 @@ void FactorGraphNode::initializeGraph()
   gtsam::ISAM2Params isam2_params;
   isam2_params.relinearizeThreshold = params_.relinearize_threshold;
   isam2_params.relinearizeSkip = params_.relinearize_skip;
-  smoother_ = std::make_unique<gtsam::IncrementalFixedLagSmoother>(
-    params_.smoother_lag,
-    isam2_params);
-  smoother_->update(initial_graph, initial_values, initial_timestamps);
+  if (params_.solver_type == "ISAM2") {
+    isam_ = std::make_unique<gtsam::ISAM2>(isam2_params);
+    isam_->update(initial_graph, initial_values);
+  } else {
+    inc_smoother_ = std::make_unique<gtsam::IncrementalFixedLagSmoother>(
+      params_.smoother_lag,
+      isam2_params);
+    inc_smoother_->update(initial_graph, initial_values, initial_timestamps);
+  }
 
   graph_initialized_ = true;
   RCLCPP_INFO(get_logger(), "Graph initialized successfully!");
@@ -959,36 +966,55 @@ void FactorGraphNode::addMagFactor(
 
 void FactorGraphNode::addDvlFactor(
   gtsam::NonlinearFactorGraph & graph,
-  const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs)
+  const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs,
+  double target_time)
 {
-  if (dvl_msgs.empty()) {return;}
+  if (!dvl_msgs.empty()) {
+    const auto & dvl_msg = dvl_msgs.back();
 
-  const auto & dvl_msg = dvl_msgs.back();
+    gtsam::Vector3 dvl_sigmas;
+    if (params_.dvl.use_parameter_covariance) {
+      dvl_sigmas << params_.dvl.parameter_covariance.velocity_noise_sigma,
+        params_.dvl.parameter_covariance.velocity_noise_sigma,
+        params_.dvl.parameter_covariance.velocity_noise_sigma;
+    } else {
+      dvl_sigmas << sqrt(dvl_msg->twist.covariance[0]), sqrt(dvl_msg->twist.covariance[7]),
+        sqrt(dvl_msg->twist.covariance[14]);
+    }
+    gtsam::SharedNoiseModel dvl_noise = gtsam::noiseModel::Diagonal::Sigmas(dvl_sigmas);
 
-  gtsam::Vector3 dvl_sigmas;
-  if (params_.dvl.use_parameter_covariance) {
-    dvl_sigmas << params_.dvl.parameter_covariance.velocity_noise_sigma,
-      params_.dvl.parameter_covariance.velocity_noise_sigma,
-      params_.dvl.parameter_covariance.velocity_noise_sigma;
+    if (params_.dvl.robust_kernel == "Huber") {
+      dvl_noise = gtsam::noiseModel::Robust::Create(
+        gtsam::noiseModel::mEstimator::Huber::Create(params_.dvl.robust_k), dvl_noise);
+    } else if (params_.dvl.robust_kernel == "Tukey") {
+      dvl_noise = gtsam::noiseModel::Robust::Create(
+        gtsam::noiseModel::mEstimator::Tukey::Create(params_.dvl.robust_k), dvl_noise);
+    }
+
+    RCLCPP_DEBUG(get_logger(), "Adding DVL factor at step %zu", current_step_);
+
+    graph.emplace_shared<CustomDVLFactor>(
+      X(current_step_), V(current_step_),
+      toGtsam(dvl_msg->twist.twist.linear), dvl_noise);
+
   } else {
-    dvl_sigmas << sqrt(dvl_msg->twist.covariance[0]), sqrt(dvl_msg->twist.covariance[7]),
-      sqrt(dvl_msg->twist.covariance[14]);
+    // IMPORTANT! Add constant velocity constraints when DVL drops out.
+    RCLCPP_WARN_THROTTLE(
+      get_logger(), *get_clock(), 5000,
+      "DVL dropped out! Adding constant DVL factors.");
+
+    double dt = target_time - prev_time_;
+    double vel_random_walk = params_.dvl.velocity_random_walk;
+    double scaled_sigma = vel_random_walk * std::sqrt(std::max(dt, 0.001));
+
+    gtsam::SharedNoiseModel zero_accel_noise = gtsam::noiseModel::Isotropic::Sigma(3, scaled_sigma);
+
+    graph.emplace_shared<coug_fgo::factors::CustomConstantVelocityFactor>(
+      X(prev_step_), V(prev_step_),
+      X(current_step_), V(current_step_),
+      zero_accel_noise
+    );
   }
-  gtsam::SharedNoiseModel dvl_noise = gtsam::noiseModel::Diagonal::Sigmas(dvl_sigmas);
-
-  if (params_.dvl.robust_kernel == "Huber") {
-    dvl_noise = gtsam::noiseModel::Robust::Create(
-      gtsam::noiseModel::mEstimator::Huber::Create(params_.dvl.robust_k), dvl_noise);
-  } else if (params_.dvl.robust_kernel == "Tukey") {
-    dvl_noise = gtsam::noiseModel::Robust::Create(
-      gtsam::noiseModel::mEstimator::Tukey::Create(params_.dvl.robust_k), dvl_noise);
-  }
-
-  RCLCPP_DEBUG(get_logger(), "Adding DVL factor at step %zu", current_step_);
-
-  graph.emplace_shared<CustomDVLFactor>(
-    X(current_step_), V(current_step_),
-    toGtsam(dvl_msg->twist.twist.linear), dvl_noise);
 }
 
 void FactorGraphNode::addPreintegratedImuFactor(
@@ -1085,7 +1111,7 @@ void FactorGraphNode::addPreintegratedDvlFactor(
   const std::deque<geometry_msgs::msg::TwistWithCovarianceStamped::SharedPtr> & dvl_msgs,
   const std::deque<sensor_msgs::msg::Imu::SharedPtr> & imu_msgs, double target_time)
 {
-  // If we don't have any new DVL messages, use a zero-order hold
+  // If we don't have any new DVL messages, use a zero-order hold (ZOH)
   if (!have_imu_to_dvl_tf_ || !dvl_preintegrator_) {return;}
 
   if (imu_msgs.empty()) {
@@ -1117,6 +1143,7 @@ void FactorGraphNode::addPreintegratedDvlFactor(
     double dt = current_dvl_time - last_dvl_time;
     if (dt > 1e-9) {
       last_dvl_velocity_ = toGtsam(dvl_msg->twist.twist.linear);
+      last_real_dvl_time_ = current_dvl_time;
 
       if (params_.dvl.use_parameter_covariance) {
         last_dvl_covariance_ = gtsam::Matrix3::Identity() *
@@ -1144,11 +1171,19 @@ void FactorGraphNode::addPreintegratedDvlFactor(
   if (last_dvl_time < target_time) {
     double dt = target_time - last_dvl_time;
     if (dt > 1e-6) {
+      double time_in_dropout = target_time - last_real_dvl_time_;
+
+      double vel_random_walk = params_.dvl.velocity_random_walk;
+      double variance_growth = (vel_random_walk * vel_random_walk) * time_in_dropout;
+      gtsam::Matrix3 inflation = gtsam::Vector3::Constant(variance_growth).asDiagonal();
+
+      gtsam::Matrix3 effective_cov = last_dvl_covariance_ + inflation;
+
       gtsam::Rot3 cur_imu_att = getInterpolatedOrientation(imu_msgs, target_time);
       gtsam::Rot3 cur_dvl_att = cur_imu_att * R_imu_to_dvl;
       dvl_preintegrator_->integrateMeasurement(
         last_dvl_velocity_, cur_dvl_att, dt,
-        last_dvl_covariance_);
+        effective_cov);
     }
     last_dvl_time = target_time;
   }
@@ -1430,7 +1465,7 @@ void FactorGraphNode::optimizeGraph()
   if (params_.experimental.enable_dvl_preintegration) {
     addPreintegratedDvlFactor(new_graph, dvl_msgs, imu_msgs, target_time);
   } else {
-    addDvlFactor(new_graph, dvl_msgs);
+    addDvlFactor(new_graph, dvl_msgs, target_time);
   }
 
   // --- Incremental Fixed-Lag Smoother Update ---
@@ -1443,23 +1478,38 @@ void FactorGraphNode::optimizeGraph()
   new_timestamps[B(current_step_)] = target_time;
 
   try {
-    smoother_->update(new_graph, new_values, new_timestamps);
-    prev_pose_ = smoother_->calculateEstimate<gtsam::Pose3>(X(current_step_));
-    gtsam::Matrix new_pose_cov = params_.publish_pose_cov ?
-      smoother_->marginalCovariance(X(current_step_)) :
-      gtsam::Matrix::Identity(6, 6) * -1.0;
+    gtsam::Matrix new_pose_cov;
+    if (inc_smoother_) {
+      inc_smoother_->update(new_graph, new_values, new_timestamps);
+      prev_pose_ = inc_smoother_->calculateEstimate<gtsam::Pose3>(X(current_step_));
+      new_pose_cov = params_.publish_pose_cov ?
+        inc_smoother_->marginalCovariance(X(current_step_)) :
+        gtsam::Matrix::Identity(6, 6) * -1.0;
+      prev_vel_ = inc_smoother_->calculateEstimate<gtsam::Vector3>(V(current_step_));
+      prev_imu_bias_ =
+        inc_smoother_->calculateEstimate<gtsam::imuBias::ConstantBias>(B(current_step_));
 
-    prev_vel_ = smoother_->calculateEstimate<gtsam::Vector3>(V(current_step_));
-    prev_imu_bias_ =
-      smoother_->calculateEstimate<gtsam::imuBias::ConstantBias>(B(current_step_));
+    } else if (isam_) {
+      isam_->update(new_graph, new_values);
+      prev_pose_ = isam_->calculateEstimate<gtsam::Pose3>(X(current_step_));
+      new_pose_cov = params_.publish_pose_cov ?
+        isam_->marginalCovariance(X(current_step_)) :
+        gtsam::Matrix::Identity(6, 6) * -1.0;
+      prev_vel_ = isam_->calculateEstimate<gtsam::Vector3>(V(current_step_));
+      prev_imu_bias_ =
+        isam_->calculateEstimate<gtsam::imuBias::ConstantBias>(B(current_step_));
+    }
+
     imu_preintegrator_->resetIntegrationAndSetBias(prev_imu_bias_);
 
     time_to_key_[target_stamp] = X(current_step_);
-    time_to_key_.erase(
-      time_to_key_.begin(),
-      time_to_key_.lower_bound(
-        target_stamp -
-        rclcpp::Duration::from_seconds(params_.smoother_lag)));
+    if (!isam_) {
+      time_to_key_.erase(
+        time_to_key_.begin(),
+        time_to_key_.lower_bound(
+          target_stamp -
+          rclcpp::Duration::from_seconds(params_.smoother_lag)));
+    }
 
     // --- Publish Global Odometry ---
     gtsam::Pose3 T_base_dvl = toGtsam(dvl_to_base_tf_.transform);
@@ -1470,23 +1520,34 @@ void FactorGraphNode::optimizeGraph()
       broadcastGlobalTf(prev_pose_ * T_base_dvl.inverse(), target_stamp);
     }
 
-    // --- Publish Smoothed Path ---
     if (params_.publish_smoothed_path) {
-      publishSmoothedPath(smoother_->calculateEstimate(), target_stamp);
+      if (inc_smoother_) {
+        publishSmoothedPath(inc_smoother_->calculateEstimate(), target_stamp);
+      } else if (isam_) {
+        publishSmoothedPath(isam_->calculateEstimate(), target_stamp);
+      }
     }
 
     // --- Publish Velocity ---
     if (params_.publish_velocity) {
-      publishVelocity(
-        prev_vel_, smoother_->marginalCovariance(V(current_step_)),
-        target_stamp);
+      gtsam::Matrix vel_cov;
+      if (inc_smoother_) {
+        vel_cov = inc_smoother_->marginalCovariance(V(current_step_));
+      } else if (isam_) {
+        vel_cov = isam_->marginalCovariance(V(current_step_));
+      }
+      publishVelocity(prev_vel_, vel_cov, target_stamp);
     }
 
     // --- Publish IMU Bias ---
     if (params_.publish_imu_bias) {
-      publishImuBias(
-        prev_imu_bias_, smoother_->marginalCovariance(B(current_step_)),
-        target_stamp);
+      gtsam::Matrix bias_cov;
+      if (inc_smoother_) {
+        bias_cov = inc_smoother_->marginalCovariance(B(current_step_));
+      } else if (isam_) {
+        bias_cov = isam_->marginalCovariance(B(current_step_));
+      }
+      publishImuBias(prev_imu_bias_, bias_cov, target_stamp);
     }
 
     prev_time_ = target_time;

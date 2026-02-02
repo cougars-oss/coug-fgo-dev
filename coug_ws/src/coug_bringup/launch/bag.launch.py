@@ -84,12 +84,9 @@ def launch_setup(context, *args, **kwargs):
                 "--remap",
                 "/tf:=/tf_discard",
                 "/tf_static:=/tf_static_discard",
-                "/imu/nav_sat_fix:=/bluerov2/gps/fix",
-                "/imu/data:=/bluerov2/imu/data",
-                "/imu/mag:=/bluerov2/imu/mag",
-                "/shallow/depth_data:=/bluerov2/odometry/depth",
-                "/dvl/data:=/bluerov2/dvl/data",
-                "/dvl/position:=/bluerov2/dvl/position",
+                "bluerov2/dvl/twist:=/bluerov2/dvl/twist_discard",
+                "bluerov2/imu/nav_sat_fix:=/bluerov2/gps/fix",
+                "bluerov2/shallow/depth_data:=/bluerov2/odometry/depth",
             ],
         )
         actions.append(play_process)
