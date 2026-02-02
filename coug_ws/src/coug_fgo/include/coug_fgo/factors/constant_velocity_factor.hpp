@@ -85,23 +85,28 @@ public:
     gtsam::Rot3 R1 = pose1.rotation();
     gtsam::Rot3 R2 = pose2.rotation();
 
+    gtsam::Matrix33 H_R1_v1, H_v1;
+    gtsam::Matrix33 H_R2_v2, H_v2;
+
     // 3D velocity difference residual
-    gtsam::Vector3 err = R1.unrotate(vel1, H1 ? &(*H1) : 0, H2 ? &(*H2) : 0) -
-      R2.unrotate(vel2, H3 ? &(*H3) : 0, H4 ? &(*H4) : 0);
+    gtsam::Vector3 err = R1.unrotate(vel1, H1 ? &H_R1_v1 : nullptr, H2 ? &H_v1 : nullptr) -
+      R2.unrotate(vel2, H3 ? &H_R2_v2 : nullptr, H4 ? &H_v2 : nullptr);
 
     if (H1) {
       // Jacobian with respect to pose1
-      gtsam::Matrix33 H_rot = *H1;
-      *H1 = (gtsam::Matrix36() << H_rot, gtsam::Matrix33::Zero()).finished();
+      *H1 = (gtsam::Matrix36() << H_R1_v1, gtsam::Matrix33::Zero()).finished();
+    }
+    if (H2) {
+      // Jacobian with respect to vel1
+      *H2 = H_v1;
     }
     if (H3) {
       // Jacobian with respect to pose2
-      gtsam::Matrix33 H_rot = *H3;
-      *H3 = (gtsam::Matrix36() << -H_rot, gtsam::Matrix33::Zero()).finished();
+      *H3 = (gtsam::Matrix36() << -H_R2_v2, gtsam::Matrix33::Zero()).finished();
     }
     if (H4) {
       // Jacobian with respect to vel2
-      *H4 = -(*H4);
+      *H4 = -H_v2;
     }
 
     return err;

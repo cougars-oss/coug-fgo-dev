@@ -175,8 +175,6 @@
       parameter_priors:
         initial_position: [0.0, 0.0, 0.0] # [m]
         initial_orientation: [0.0, 0.0, 0.0] # [rad]
-    experimental:
-      depth_rate_limit_hz: 0.0
 
 /auv1/**:
   ros__parameters:
@@ -184,8 +182,6 @@
       parameter_priors:
         initial_position: [0.0, 20.0, 0.0] # [m]
         initial_orientation: [0.0, 0.0, 0.0] # [rad]
-    experimental:
-      depth_rate_limit_hz: 0.0
 
 /auv2/**:
   ros__parameters:
@@ -193,8 +189,6 @@
       parameter_priors:
         initial_position: [0.0, 40.0, 0.0] # [m]
         initial_orientation: [0.0, 0.0, 0.0] # [rad]
-    experimental:
-      depth_rate_limit_hz: 0.0
 
 /bluerov2/**:
   ros__parameters:
