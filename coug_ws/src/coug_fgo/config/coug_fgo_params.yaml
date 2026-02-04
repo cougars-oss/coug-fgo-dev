@@ -210,11 +210,10 @@
     mag:
       enable_mag: false
       use_parameter_covariance: true
-      parameter_covariance:
-        magnetic_field_noise_sigma: 0.02
 
     ahrs:
-      enable_ahrs: true
+      enable_ahrs: false
+      enable_ahrs_init_only: true
 
     use_parameter_child_frame: true
     use_parameter_origin: false
