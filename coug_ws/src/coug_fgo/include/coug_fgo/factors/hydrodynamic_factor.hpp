@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @file hydrodynamic_factor_arm.hpp
- * @brief GTSAM factor for enforcing Fossen's hydrodynamic equations (F=ma) with lever arm.
+ * @file hydrodynamic_factor.hpp
+ * @brief GTSAM factor for enforcing a simplified version of Fossen's equations with lever arm.
  * @author Nelson Durrant
  * @date Jan 2026
  */
@@ -35,16 +35,16 @@ namespace coug_fgo::factors
 {
 
 /**
- * @class CustomHydrodynamicFactorArm
- * @brief GTSAM factor for enforcing hydrodynamic dynamics between two poses.
+ * @class CustomHydrodynamicDragFactorArm
+ * @brief GTSAM factor for enforcing simplified hydrodynamic dynamics between two poses.
  *
  * This factor constrains the velocity evolution of the AUV based on a simplified
  * Fossen model, accounting for thruster inputs and drag.
  *
  * Model: V_next = V_curr + (dt/m) * (F_thrust - (linear_drag * V + quad_drag * |V| * V))
  */
-class CustomHydrodynamicFactorArm : public gtsam::NoiseModelFactor4<gtsam::Pose3, gtsam::Vector3,
-    gtsam::Pose3, gtsam::Vector3>
+class CustomHydrodynamicDragFactorArm : public gtsam::NoiseModelFactor4<gtsam::Pose3,
+    gtsam::Vector3, gtsam::Pose3, gtsam::Vector3>
 {
 private:
   double dt_;
@@ -55,7 +55,7 @@ private:
 
 public:
   /**
-   * @brief Constructor for CustomHydrodynamicFactorArm.
+   * @brief Constructor for CustomHydrodynamicDragFactorArm.
    * @param pose_key1 GTSAM key for the first pose (state i).
    * @param vel_key1 GTSAM key for the first velocity (state i).
    * @param pose_key2 GTSAM key for the second pose (state j).
@@ -68,7 +68,7 @@ public:
    * @param quad_drag Quadratic damping coefficient.
    * @param noise_model The noise model for the constraint.
    */
-  CustomHydrodynamicFactorArm(
+  CustomHydrodynamicDragFactorArm(
     gtsam::Key pose_key1, gtsam::Key vel_key1,
     gtsam::Key pose_key2, gtsam::Key vel_key2,
     double dt,
@@ -88,7 +88,7 @@ public:
     force_body_ = body_T_sensor.rotation() * control_force;
   }
 
-  ~CustomHydrodynamicFactorArm() override {}
+  ~CustomHydrodynamicDragFactorArm() override {}
 
   /**
    * @brief Evaluates the error and Jacobians for the factor.

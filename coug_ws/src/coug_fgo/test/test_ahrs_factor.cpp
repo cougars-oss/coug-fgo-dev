@@ -25,7 +25,7 @@
 
 #include <boost/bind/bind.hpp>
 
-#include "coug_fgo/factors/ahrs_factor_arm.hpp"
+#include "coug_fgo/factors/ahrs_factor.hpp"
 
 /**
  * @brief Test the error evaluation logic of the CustomAHRSYawFactorArm.

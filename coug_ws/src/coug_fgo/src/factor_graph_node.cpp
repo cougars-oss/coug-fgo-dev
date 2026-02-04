@@ -28,14 +28,14 @@
 
 #include <algorithm>
 
-#include "coug_fgo/factors/depth_factor_arm.hpp"
+#include "coug_fgo/factors/depth_factor.hpp"
 #include "coug_fgo/factors/dvl_factor.hpp"
 #include "coug_fgo/factors/dvl_preintegrated_factor.hpp"
-#include "coug_fgo/factors/gps_factor_arm.hpp"
-#include "coug_fgo/factors/ahrs_factor_arm.hpp"
-#include "coug_fgo/factors/mag_factor_arm.hpp"
+#include "coug_fgo/factors/gps_factor.hpp"
+#include "coug_fgo/factors/ahrs_factor.hpp"
+#include "coug_fgo/factors/mag_factor.hpp"
 #include "coug_fgo/factors/constant_velocity_factor.hpp"
-#include "coug_fgo/factors/hydrodynamic_factor_arm.hpp"
+#include "coug_fgo/factors/hydrodynamic_factor.hpp"
 #include "coug_fgo/utils/conversion_utils.hpp"
 
 
@@ -46,7 +46,7 @@ using coug_fgo::factors::CustomGPS2DFactorArm;
 using coug_fgo::factors::CustomAHRSYawFactorArm;
 using coug_fgo::factors::CustomMagYawFactorArm;
 using coug_fgo::factors::CustomConstantVelocityFactor;
-using coug_fgo::factors::CustomHydrodynamicFactorArm;
+using coug_fgo::factors::CustomHydrodynamicDragFactorArm;
 using coug_fgo::utils::toGtsam;
 using coug_fgo::utils::toGtsam3x3;
 using coug_fgo::utils::toGtsam3x3Diagonal;
@@ -1028,7 +1028,7 @@ void FactorGraphNode::addHydrodynamicFactor(
   double dt = target_time - prev_time_;
   RCLCPP_DEBUG(get_logger(), "Adding hydrodynamic factor at step %zu", current_step_);
 
-  graph.emplace_shared<CustomHydrodynamicFactorArm>(
+  graph.emplace_shared<CustomHydrodynamicDragFactorArm>(
     X(prev_step_), V(prev_step_),
     X(current_step_), V(current_step_),
     dt, toGtsam(wrench_msg->wrench.force),

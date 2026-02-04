@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @file test_mag_factor_arm.cpp
- * @brief Unit tests for mag_factor_arm.hpp.
+ * @file test_mag_factor.cpp
+ * @brief Unit tests for mag_factor.hpp.
  * @author Nelson Durrant (w Gemini 3 Pro)
  * @date Jan 2026
  */
@@ -25,7 +25,7 @@
 
 #include <boost/bind/bind.hpp>
 
-#include "coug_fgo/factors/mag_factor_arm.hpp"
+#include "coug_fgo/factors/mag_factor.hpp"
 
 /**
  * @brief Test the error evaluation logic of the CustomMagYawFactorArm.

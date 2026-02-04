@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @file depth_factor_arm.hpp
+ * @file depth_factor.hpp
  * @brief GTSAM factor for depth (Z) measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026

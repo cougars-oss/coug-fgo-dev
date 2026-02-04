@@ -25,8 +25,6 @@
 
 /**
  * @brief Test fixture for DVLPreintegrator tests.
- *
- * Sets up a standard integrator instance and covariance matrix for reuse.
  */
 class DVLPreintegratorTest : public ::testing::Test
 {
@@ -37,9 +35,6 @@ protected:
 
 /**
  * @brief Verify initialization state.
- *
- * Cases tested:
- * 1.  **Identity**: Initial state check.
  */
 TEST_F(DVLPreintegratorTest, Initialization) {
   EXPECT_TRUE(integrator.delta().isZero());
@@ -48,9 +43,6 @@ TEST_F(DVLPreintegratorTest, Initialization) {
 
 /**
  * @brief Verify integration of stationary measurements.
- *
- * Cases tested:
- * 1.  **Zero Velocity**: Integration of zero vector.
  */
 TEST_F(DVLPreintegratorTest, StationaryIntegration) {
   gtsam::Vector3 vel(0, 0, 0);
@@ -63,9 +55,6 @@ TEST_F(DVLPreintegratorTest, StationaryIntegration) {
 
 /**
  * @brief Verify constant velocity integration.
- *
- * Cases tested:
- * 1.  **Constant Velocity**: Dead reckoning check.
  */
 TEST_F(DVLPreintegratorTest, ConstantVelocityX) {
   gtsam::Vector3 vel(1.0, 0, 0);
@@ -81,9 +70,6 @@ TEST_F(DVLPreintegratorTest, ConstantVelocityX) {
 
 /**
  * @brief Verify integration with orientation changes.
- *
- * Cases tested:
- * 1.  **Rotated Integration**: Integration in rotated frame.
  */
 TEST_F(DVLPreintegratorTest, RotatedIntegration) {
   gtsam::Vector3 vel(1.0, 0, 0);
@@ -98,9 +84,6 @@ TEST_F(DVLPreintegratorTest, RotatedIntegration) {
 
 /**
  * @brief Verify reset functionality.
- *
- * Cases tested:
- * 1.  **Reset**: Check state clearing.
  */
 TEST_F(DVLPreintegratorTest, Reset) {
   integrator.integrateMeasurement(gtsam::Vector3(1, 0, 0), gtsam::Rot3(), 1.0, measured_cov);

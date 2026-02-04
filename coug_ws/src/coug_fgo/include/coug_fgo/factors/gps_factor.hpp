@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @file gps_factor_arm.hpp
+ * @file gps_factor.hpp
  * @brief GTSAM factor for GPS position measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026

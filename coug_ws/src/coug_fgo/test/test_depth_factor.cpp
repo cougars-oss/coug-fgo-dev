@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @file test_depth_factor_arm.cpp
- * @brief Unit tests for depth_factor_arm.hpp.
+ * @file test_depth_factor.cpp
+ * @brief Unit tests for depth_factor.hpp.
  * @author Nelson Durrant (w Gemini 3 Pro)
  * @date Jan 2026
  */
@@ -25,7 +25,7 @@
 
 #include <boost/bind/bind.hpp>
 
-#include "coug_fgo/factors/depth_factor_arm.hpp"
+#include "coug_fgo/factors/depth_factor.hpp"
 
 /**
  * @brief Test the error evaluation logic of the CustomDepthFactorArm.

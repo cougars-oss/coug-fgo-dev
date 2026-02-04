@@ -13,8 +13,8 @@
 // limitations under the License.
 
 /**
- * @file test_hydrodynamic_factor_arm.cpp
- * @brief Unit tests for hydrodynamic_factor_arm.hpp.
+ * @file test_hydrodynamic_factor.cpp
+ * @brief Unit tests for hydrodynamic_factor.hpp.
  * @author Nelson Durrant (w Gemini 3 Pro)
  * @date Jan 2026
  */
@@ -25,10 +25,10 @@
 
 #include <boost/bind/bind.hpp>
 
-#include "coug_fgo/factors/hydrodynamic_factor_arm.hpp"
+#include "coug_fgo/factors/hydrodynamic_factor.hpp"
 
 /**
- * @brief Test the error evaluation logic of the CustomHydrodynamicFactorArm.
+ * @brief Test the error evaluation logic of the CustomHydrodynamicDragFactorArm.
  *
  * Verifies that the factor correctly implements the Fossen dynamics model.
  * V_next = V_curr + (dt/m) * (F_thrust - (linear_drag * V + quad_drag * |V| * V))
@@ -41,7 +41,7 @@
  * 5.  **Combined**: Vehicle rotated + Sensor offset.
  * 6.  **Error Check**: Verifies non-zero error magnitude.
  */
-TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
+TEST(CustomHydrodynamicDragFactorArmTest, ErrorEvaluation) {
   gtsam::Key poseKey1 = gtsam::symbol_shorthand::X(1);
   gtsam::Key velKey1 = gtsam::symbol_shorthand::V(1);
   gtsam::Key poseKey2 = gtsam::symbol_shorthand::X(2);
@@ -56,7 +56,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
   gtsam::Pose3 body_P_sensor = gtsam::Pose3::Identity();
 
   // Case 1: Identity
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -70,7 +70,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
   // Case 2: Dynamic Identity
   // Subcase A: Constant Acceleration (Force = 10N x, Mass = 10kg => a = 1 m/s^2)
   control_force = gtsam::Vector3(10.0, 0.0, 0.0);
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_thrust(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_thrust(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -84,7 +84,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
   // Subcase B: Drag Equilibrium (Linear = 1.0, v = 10.0)
   linear_drag = 1.0;
   control_force = gtsam::Vector3(10.0, 0.0, 0.0);
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_drag(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_drag(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -98,7 +98,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
   // Case 3: Rotation
   linear_drag = 0.0;
   control_force = gtsam::Vector3(10.0, 0.0, 0.0);
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_rot(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_rot(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, gtsam::Pose3::Identity(),
     mass, linear_drag, quad_drag, model);
 
@@ -115,7 +115,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
   // Case 4: Mounting/Lever Arm
   body_P_sensor = gtsam::Pose3(gtsam::Rot3::Yaw(M_PI_2), gtsam::Point3::Zero());
   control_force = gtsam::Vector3(10.0, 0.0, 0.0);
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_mount(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_mount(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -128,7 +128,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
 
   // Case 5: Combined
   gtsam::Pose3 body_pose = gtsam::Pose3(gtsam::Rot3::Roll(M_PI_2), gtsam::Point3::Zero());
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_comb(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_comb(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -140,7 +140,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
         body_pose, gtsam::Vector3(0.0, 0.0, 1.0)), 1e-9));
 
   // Case 6: Error Check
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor_err(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor_err(
     poseKey1, velKey1, poseKey2, velKey2, dt, gtsam::Vector3::Zero(), gtsam::Pose3::Identity(),
     mass, 0.0, 0.0, model);
 
@@ -153,7 +153,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
 }
 
 /**
- * @brief Verify Jacobians of the CustomHydrodynamicFactorArm using numerical differentiation.
+ * @brief Verify Jacobians of the CustomHydrodynamicDragFactorArm using numerical differentiation.
  *
  * Validates the analytical Jacobians with respect to:
  * 1.  **Pose 1**: Orientation affects projection of v1.
@@ -161,7 +161,7 @@ TEST(CustomHydrodynamicFactorArmTest, ErrorEvaluation) {
  * 3.  **Pose 2**: Orientation affects projection of v2.
  * 4.  **Velocity 2**: Linear.
  */
-TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
+TEST(CustomHydrodynamicDragFactorArmTest, Jacobians) {
   gtsam::Key poseKey1 = gtsam::symbol_shorthand::X(1);
   gtsam::Key velKey1 = gtsam::symbol_shorthand::V(1);
   gtsam::Key poseKey2 = gtsam::symbol_shorthand::X(2);
@@ -175,7 +175,7 @@ TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
   gtsam::Vector3 control_force(2.0, -1.0, 0.5);
   gtsam::Pose3 body_P_sensor = gtsam::Pose3(gtsam::Rot3::Roll(0.1), gtsam::Point3(0.1, 0, 0));
 
-  coug_fgo::factors::CustomHydrodynamicFactorArm factor(
+  coug_fgo::factors::CustomHydrodynamicDragFactorArm factor(
     poseKey1, velKey1, poseKey2, velKey2, dt, control_force, body_P_sensor,
     mass, linear_drag, quad_drag, model);
 
@@ -187,7 +187,7 @@ TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
   gtsam::Matrix expectedH1 = gtsam::numericalDerivative41<gtsam::Vector, gtsam::Pose3,
       gtsam::Vector3, gtsam::Pose3, gtsam::Vector3>(
     boost::bind(
-      &coug_fgo::factors::CustomHydrodynamicFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::CustomHydrodynamicDragFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3,
       boost::placeholders::_4, boost::none, boost::none, boost::none, boost::none),
     pose1, vel1, pose2, vel2, 1e-5);
@@ -195,7 +195,7 @@ TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
   gtsam::Matrix expectedH2 = gtsam::numericalDerivative42<gtsam::Vector, gtsam::Pose3,
       gtsam::Vector3, gtsam::Pose3, gtsam::Vector3>(
     boost::bind(
-      &coug_fgo::factors::CustomHydrodynamicFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::CustomHydrodynamicDragFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3,
       boost::placeholders::_4, boost::none, boost::none, boost::none, boost::none),
     pose1, vel1, pose2, vel2, 1e-5);
@@ -203,7 +203,7 @@ TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
   gtsam::Matrix expectedH3 = gtsam::numericalDerivative43<gtsam::Vector, gtsam::Pose3,
       gtsam::Vector3, gtsam::Pose3, gtsam::Vector3>(
     boost::bind(
-      &coug_fgo::factors::CustomHydrodynamicFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::CustomHydrodynamicDragFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3,
       boost::placeholders::_4, boost::none, boost::none, boost::none, boost::none),
     pose1, vel1, pose2, vel2, 1e-5);
@@ -211,7 +211,7 @@ TEST(CustomHydrodynamicFactorArmTest, Jacobians) {
   gtsam::Matrix expectedH4 = gtsam::numericalDerivative44<gtsam::Vector, gtsam::Pose3,
       gtsam::Vector3, gtsam::Pose3, gtsam::Vector3>(
     boost::bind(
-      &coug_fgo::factors::CustomHydrodynamicFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::CustomHydrodynamicDragFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::placeholders::_2, boost::placeholders::_3,
       boost::placeholders::_4, boost::none, boost::none, boost::none, boost::none),
     pose1, vel1, pose2, vel2, 1e-5);

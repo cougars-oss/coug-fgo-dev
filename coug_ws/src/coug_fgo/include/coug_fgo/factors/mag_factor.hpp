@@ -13,7 +13,7 @@
 // limitations under the License.
 
 /**
- * @file mag_factor_arm.hpp
+ * @file mag_factor.hpp
  * @brief GTSAM factor for magnetometer yaw-only measurements with a lever arm.
  * @author Nelson Durrant
  * @date Jan 2026
