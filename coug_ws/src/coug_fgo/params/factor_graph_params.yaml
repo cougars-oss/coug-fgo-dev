@@ -194,7 +194,7 @@ factor_graph_node:
         default_value: 0.003
     reference_field:
       type: double_array
-      default_value: [0.08, 0.41, -0.91]
+      default_value: [0.07857, 0.41316, -0.90726]
     timeout_threshold:
       type: double
       default_value: 1.0

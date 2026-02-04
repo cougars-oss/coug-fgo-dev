@@ -662,9 +662,12 @@ void FactorGraphNode::initializeGraph()
     std::scoped_lock lock(imu_queue_mutex_, gps_queue_mutex_, depth_queue_mutex_,
       mag_queue_mutex_, ahrs_queue_mutex_, dvl_queue_mutex_);
 
-    if (!imu_queue_.empty() && (!params_.gps.enable_gps || !gps_queue_.empty()) &&
-      !depth_queue_.empty() && (!params_.mag.enable_mag || !mag_queue_.empty()) &&
-      (!params_.ahrs.enable_ahrs || !ahrs_queue_.empty()) && !dvl_queue_.empty() &&
+    if (!imu_queue_.empty() &&
+      (!(params_.gps.enable_gps || params_.gps.enable_gps_init_only) || !gps_queue_.empty()) &&
+      !depth_queue_.empty() &&
+      (!(params_.mag.enable_mag || params_.mag.enable_mag_init_only) || !mag_queue_.empty()) &&
+      (!(params_.ahrs.enable_ahrs || params_.ahrs.enable_ahrs_init_only) || !ahrs_queue_.empty()) &&
+      !dvl_queue_.empty() &&
       (!params_.hydro.enable_hydro || !wrench_queue_.empty()))
     {
       if (params_.prior.use_parameter_priors) {
@@ -672,10 +675,16 @@ void FactorGraphNode::initializeGraph()
           get_logger(),
           "Required sensor messages received! Skipping averaging...");
         initial_imu_ = imu_queue_.back();
-        if (params_.gps.enable_gps) {initial_gps_ = gps_queue_.back();}
+        if (params_.gps.enable_gps || params_.gps.enable_gps_init_only) {
+          initial_gps_ = gps_queue_.back();
+        }
         initial_depth_ = depth_queue_.back();
-        if (params_.mag.enable_mag) {initial_mag_ = mag_queue_.back();}
-        if (params_.ahrs.enable_ahrs) {initial_ahrs_ = ahrs_queue_.back();}
+        if (params_.mag.enable_mag || params_.mag.enable_mag_init_only) {
+          initial_mag_ = mag_queue_.back();
+        }
+        if (params_.ahrs.enable_ahrs || params_.ahrs.enable_ahrs_init_only) {
+          initial_ahrs_ = ahrs_queue_.back();
+        }
         initial_dvl_ = dvl_queue_.back();
         if (params_.hydro.enable_hydro) {initial_wrench_ = wrench_queue_.back();}
         data_averaged_ = true;

@@ -88,10 +88,10 @@
       parameter_covariance:
         magnetic_field_noise_sigma: 0.003 # [normalized] Magnetic field uncertainty sigma.
       # https://www.ngdc.noaa.gov/geomag/calculators/magcalc.shtml#igrfwmm
-      # Reference Magnetic Field Vector (Local Earth Field)
-      # Provo, Utah (X=20,843.1 nT, Y=3,894.9 nT, Z=45,873.1 nT, F=50,536.6 nT)
+      # WMMHR-2025 (40.2406 N, 111.741 W, 2026-01-23)
+      # North: 20,842.3 nT, East: 3,963.4 nT, Vertical: 45,767.8 nT
       # NED: [X, Y, Z] -> ENU: [Y, X, -Z]
-      reference_field: [0.08, 0.41, -0.91] # [normalized]
+      reference_field: [0.07857, 0.41316, -0.90726] # [normalized]
       timeout_threshold: 1.0 # [s]
       robust_kernel: "None"
       robust_k: 1.345
@@ -210,6 +210,8 @@
     mag:
       enable_mag: false
       use_parameter_covariance: true
+      parameter_covariance:
+        magnetic_field_noise_sigma: 0.02
 
     ahrs:
       enable_ahrs: true
