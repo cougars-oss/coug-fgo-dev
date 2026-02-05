@@ -7,10 +7,6 @@ repositories:
     type: git
     url: https://github.com/paagutie/dvl_msgs.git
     version: master
-  visualization_tutorials:
-    type: git
-    url: https://github.com/ros-visualization/visualization_tutorials.git
-    version: humble
   # dvl-a50:
   #   type: git
   #   url: https://github.com/paagutie/dvl-a50.git
