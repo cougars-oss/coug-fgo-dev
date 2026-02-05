@@ -51,6 +51,8 @@ jobs:
       - name: Fix permissions
         run: |
           mkdir -p coug_ws/.ccache
+          mkdir -p coug_ws/src
+          cp -r packages/* coug_ws/src/
           chown -R frostlab-docker:frostlab-docker .
       - name: Save package list
         run: |
