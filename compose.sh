@@ -34,10 +34,6 @@ case $1 in
         # Allow container to forward graphical displays to host
         xhost +
 
-        # Export host UID and GID for permission fixes
-        export HOST_UID=$(id -u)
-        export HOST_GID=$(id -g)
-
         if [[ "$arch" == "x86_64" ]]; then
             printInfo "Loading the mapproxy-ct container..."
         fi
@@ -45,7 +41,7 @@ case $1 in
         docker compose -f "$SCRIPT_DIR/docker/docker-compose.yaml" $PROFILES up -d
 
         # Wait for './entrypoint.sh' to finish
-        while [ "$(docker exec cougars-ct ps -p 1 -o uid= | tr -d ' ')" != "$HOST_UID" ]; do sleep 1; done
+        while [ "$(docker exec cougars-ct test -f /tmp/ready && echo 'yes' || echo 'no')" != "yes" ]; do sleep 1; done
 
         # Install vcs-defined external packages
         docker exec -it --user frostlab-docker -w /home/frostlab-docker/coug_ws/src cougars-ct \

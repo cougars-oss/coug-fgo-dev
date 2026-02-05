@@ -31,15 +31,11 @@ case $1 in
         # Allow container to forward graphical displays to host
         xhost +
 
-        # Export host UID and GID for permission fixes
-        export HOST_UID=$(id -u)
-        export HOST_GID=$(id -g)
-
         printInfo "Loading the holoocean-ct container..."
         docker compose -f "$SCRIPT_DIR/docker/docker-compose.yaml" up -d
 
         # Wait for './entrypoint.sh' to finish
-        while [ "$(docker exec holoocean-ct ps -p 1 -o uid= | tr -d ' ')" != "$HOST_UID" ]; do sleep 1; done
+        while [ "$(docker exec holoocean-ct test -f /tmp/ready && echo 'yes' || echo 'no')" != "yes" ]; do sleep 1; done
 
         PARAMS_FILE="/home/ue4/config/coug_holoocean_params.yaml"
         

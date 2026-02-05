@@ -23,8 +23,6 @@ services:
     runtime: nvidia
     network_mode: host
     environment:
-      - HOST_UID=${HOST_UID:-1000}
-      - HOST_GID=${HOST_GID:-1000}
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
       - NVIDIA_DRIVER_CAPABILITIES=all

@@ -41,14 +41,13 @@ services:
     network_mode: host
     # privileged: true
     environment:
-      - HOST_UID=${HOST_UID:-1000}
-      - HOST_GID=${HOST_GID:-1000}
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
     volumes:
       - ../bags:/home/frostlab-docker/bags
       - ../packages:/home/frostlab-docker/coug_ws/src
       - ../scripts:/home/frostlab-docker/scripts
+      - ./entrypoint.sh:/entrypoint.sh
       - ./completions.sh:/completions.sh
       - ./introduction.txt:/introduction.txt
       - ./.tmux.conf:/home/frostlab-docker/.tmux.conf

@@ -9,8 +9,11 @@ set -e
 
 # Fix permission errors
 USERNAME=frostlab-docker
-TARGET_UID=${HOST_UID:-1000}
-TARGET_GID=${HOST_GID:-1000}
+TARGET_UID=$(stat -c '%u' /home/$USERNAME/coug_ws/src)
+TARGET_GID=$(stat -c '%g' /home/$USERNAME/coug_ws/src)
+
+if [ -z "$TARGET_UID" ]; then TARGET_UID=1000; fi
+if [ -z "$TARGET_GID" ]; then TARGET_GID=1000; fi
 
 if [ "$TARGET_GID" != "$(id -g $USERNAME)" ]; then
     echo "Changing GID of $USERNAME to $TARGET_GID..."
@@ -35,6 +38,5 @@ if ! grep -q "source /completions.sh" /home/$USERNAME/.bashrc; then
 fi
 touch /home/$USERNAME/.hushlogin
 
-chown -R $USERNAME:$USERNAME /home/$USERNAME
-
+touch /tmp/ready
 exec "$@"
