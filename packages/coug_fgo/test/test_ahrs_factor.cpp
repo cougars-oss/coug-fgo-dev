@@ -28,7 +28,7 @@
 #include "coug_fgo/factors/ahrs_factor.hpp"
 
 /**
- * @brief Test the error evaluation logic of the AHRSYawFactorArm.
+ * @brief Test the error evaluation logic of the AhrsYawFactorArm.
  *
  * Verifies that the factor correctly accounts for the mounting rotation (offset)
  * between the vehicle's body frame and the AHRS sensor frame.
@@ -40,12 +40,12 @@
  * 4.  **Combined**: Vehicle rotated + Sensor offset.
  * 5.  **Error Check**: Verifies non-zero error magnitude.
  */
-TEST(AHRSYawFactorArmTest, ErrorEvaluation) {
+TEST(AhrsYawFactorArmTest, ErrorEvaluation) {
   gtsam::Key poseKey = gtsam::symbol_shorthand::X(1);
   gtsam::SharedNoiseModel model = gtsam::noiseModel::Isotropic::Sigma(1, 0.1);
 
   // Case 1: Identity
-  coug_fgo::factors::AHRSYawFactorArm factor1(poseKey, gtsam::Rot3::Identity(),
+  coug_fgo::factors::AhrsYawFactorArm factor1(poseKey, gtsam::Rot3::Identity(),
     gtsam::Rot3::Identity(), 0.0, model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -54,7 +54,7 @@ TEST(AHRSYawFactorArmTest, ErrorEvaluation) {
 
   // Case 2: Rotation
   gtsam::Pose3 pose_rot = gtsam::Pose3(gtsam::Rot3::Yaw(M_PI_2), gtsam::Point3());
-  coug_fgo::factors::AHRSYawFactorArm factor_rot(poseKey, gtsam::Rot3::Yaw(M_PI_2),
+  coug_fgo::factors::AhrsYawFactorArm factor_rot(poseKey, gtsam::Rot3::Yaw(M_PI_2),
     gtsam::Rot3::Identity(), 0.0, model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -62,7 +62,7 @@ TEST(AHRSYawFactorArmTest, ErrorEvaluation) {
       factor_rot.evaluateError(pose_rot), 1e-9));
 
   // Case 3: Mounting/Lever Arm
-  coug_fgo::factors::AHRSYawFactorArm factor2(poseKey, gtsam::Rot3::Yaw(M_PI_2),
+  coug_fgo::factors::AhrsYawFactorArm factor2(poseKey, gtsam::Rot3::Yaw(M_PI_2),
     gtsam::Rot3::Yaw(M_PI_2), 0.0, model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -70,7 +70,7 @@ TEST(AHRSYawFactorArmTest, ErrorEvaluation) {
       factor2.evaluateError(gtsam::Pose3::Identity()), 1e-9));
 
   // Case 4: Combined
-  coug_fgo::factors::AHRSYawFactorArm factor_comb(poseKey, gtsam::Rot3::Yaw(M_PI),
+  coug_fgo::factors::AhrsYawFactorArm factor_comb(poseKey, gtsam::Rot3::Yaw(M_PI),
     gtsam::Rot3::Yaw(M_PI_2), 0.0, model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -85,20 +85,20 @@ TEST(AHRSYawFactorArmTest, ErrorEvaluation) {
 }
 
 /**
- * @brief Verify Jacobians of the AHRSYawFactorArm using numerical differentiation.
+ * @brief Verify Jacobians of the AhrsYawFactorArm using numerical differentiation.
  *
  * Validates the analytical Jacobians with respect to:
  * 1.  **Pose**: Orientation affects the error (rotational difference).
  */
-TEST(AHRSYawFactorArmTest, Jacobians) {
-  coug_fgo::factors::AHRSYawFactorArm factor(gtsam::symbol_shorthand::X(1),
+TEST(AhrsYawFactorArmTest, Jacobians) {
+  coug_fgo::factors::AhrsYawFactorArm factor(gtsam::symbol_shorthand::X(1),
     gtsam::Rot3::Ypr(0.5, 0.1, -0.1),
     gtsam::Rot3::Ypr(0.1, 0, 0), 0.0, gtsam::noiseModel::Isotropic::Sigma(1, 0.1));
   gtsam::Pose3 pose = gtsam::Pose3(gtsam::Rot3::Ypr(0.4, 0.05, -0.05), gtsam::Point3(1, 1, 1));
 
   gtsam::Matrix expectedH = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
     boost::bind(
-      &coug_fgo::factors::AHRSYawFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::AhrsYawFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::none), pose, 1e-5);
 
   gtsam::Matrix actualH;

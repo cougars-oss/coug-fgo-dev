@@ -357,7 +357,7 @@ private:
   std::unique_ptr<gtsam::ISAM2> isam_;
 
   std::unique_ptr<gtsam::PreintegratedCombinedMeasurements> imu_preintegrator_;
-  std::unique_ptr<utils::DVLPreintegrator> dvl_preintegrator_;
+  std::unique_ptr<utils::DvlPreintegrator> dvl_preintegrator_;
 
   gtsam::Pose3 prev_pose_;
   gtsam::Vector3 prev_vel_;

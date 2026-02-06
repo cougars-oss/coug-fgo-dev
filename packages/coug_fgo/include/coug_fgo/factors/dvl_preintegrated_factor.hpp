@@ -32,25 +32,25 @@ namespace coug_fgo::factors
 {
 
 /**
- * @class DVLPreintegratedFactor
+ * @class DvlPreintegratedFactor
  * @brief GTSAM factor for preintegrated DVL translation measurements.
  *
  * This factor relates two AUV poses based on a
  * preintegrated translation measurement derived from DVL data.
  */
-class DVLPreintegratedFactor : public gtsam::NoiseModelFactor2<gtsam::Pose3, gtsam::Pose3>
+class DvlPreintegratedFactor : public gtsam::NoiseModelFactor2<gtsam::Pose3, gtsam::Pose3>
 {
   gtsam::Vector3 measured_translation_;
 
 public:
   /**
-   * @brief Constructor for DVLPreintegratedFactor.
+   * @brief Constructor for DvlPreintegratedFactor.
    * @param pose_key_i GTSAM key for the starting AUV pose.
    * @param pose_key_j GTSAM key for the ending AUV pose.
    * @param measured_translation The preintegrated translation measurement.
    * @param noise_model The noise model for the measurement.
    */
-  DVLPreintegratedFactor(
+  DvlPreintegratedFactor(
     gtsam::Key pose_key_i, gtsam::Key pose_key_j,
     const gtsam::Vector3 & measured_translation,
     gtsam::SharedNoiseModel noise_model)

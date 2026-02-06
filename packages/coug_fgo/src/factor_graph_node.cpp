@@ -40,12 +40,12 @@
 
 
 using coug_fgo::factors::DepthFactorArm;
-using coug_fgo::factors::DVLFactor;
-using coug_fgo::factors::DVLPreintegratedFactor;
-using coug_fgo::factors::GPS2DFactorArm;
-using coug_fgo::factors::AHRSYawFactorArm;
+using coug_fgo::factors::DvlFactor;
+using coug_fgo::factors::DvlPreintegratedFactor;
+using coug_fgo::factors::Gps2dFactorArm;
+using coug_fgo::factors::AhrsYawFactorArm;
 using coug_fgo::factors::MagYawFactorArm;
-using coug_fgo::factors::AUVDynamicsFactorArm;
+using coug_fgo::factors::AuvDynamicsFactorArm;
 using coug_fgo::factors::ConstantVelocityFactor;
 using coug_fgo::utils::toGtsam;
 using coug_fgo::utils::toGtsam3x3;
@@ -57,7 +57,7 @@ using coug_fgo::utils::toVectorMsg;
 using coug_fgo::utils::toPoseMsg;
 using coug_fgo::utils::toCovariance36Msg;
 using coug_fgo::utils::toPoseCovarianceMsg;
-using coug_fgo::utils::DVLPreintegrator;
+using coug_fgo::utils::DvlPreintegrator;
 
 using gtsam::symbol_shorthand::B;  // Bias (ax,ay,az,gx,gy,gz)
 using gtsam::symbol_shorthand::V;  // Velocity (x,y,z)
@@ -769,7 +769,7 @@ void FactorGraphNode::initializeGraph()
   imu_preintegrator_ = std::make_unique<gtsam::PreintegratedCombinedMeasurements>(
     configureImuPreintegration(), prev_imu_bias_);
   if (params_.experimental.enable_dvl_preintegration) {
-    dvl_preintegrator_ = std::make_unique<DVLPreintegrator>();
+    dvl_preintegrator_ = std::make_unique<DvlPreintegrator>();
     dvl_preintegrator_->reset(initial_orientation_dvl);
 
     last_dvl_velocity_ = toGtsam(initial_dvl_->twist.twist.linear);
@@ -831,7 +831,7 @@ void FactorGraphNode::addGpsFactor(
 
   RCLCPP_DEBUG(get_logger(), "Adding GPS factor at step %zu", current_step_);
 
-  graph.emplace_shared<GPS2DFactorArm>(
+  graph.emplace_shared<Gps2dFactorArm>(
     X(current_step_), toGtsam(gps_msg->pose.pose.position),
     toGtsam(gps_to_dvl_tf_.transform), gps_noise);
 }
@@ -898,7 +898,7 @@ void FactorGraphNode::addAhrsFactor(
 
   RCLCPP_DEBUG(get_logger(), "Adding AHRS factor at step %zu", current_step_);
 
-  graph.emplace_shared<AHRSYawFactorArm>(
+  graph.emplace_shared<AhrsYawFactorArm>(
     X(current_step_), toGtsam(ahrs_msg->orientation),
     toGtsam(ahrs_to_dvl_tf_.transform.rotation),
     params_.ahrs.mag_declination_radians,
@@ -976,7 +976,7 @@ void FactorGraphNode::addDvlFactor(
 
   RCLCPP_DEBUG(get_logger(), "Adding DVL factor at step %zu", current_step_);
 
-  graph.emplace_shared<DVLFactor>(
+  graph.emplace_shared<DvlFactor>(
     X(current_step_), V(current_step_),
     toGtsam(dvl_msg->twist.twist.linear), dvl_noise);
 }
@@ -1030,7 +1030,7 @@ void FactorGraphNode::addAuvDynamicsFactor(
 
   double dt = target_time - prev_time_;
   RCLCPP_DEBUG(get_logger(), "Adding dynamics factor at step %zu", current_step_);
-  graph.emplace_shared<coug_fgo::factors::AUVDynamicsFactorArm>(
+  graph.emplace_shared<coug_fgo::factors::AuvDynamicsFactorArm>(
     X(prev_step_), V(prev_step_),
     X(current_step_), V(current_step_),
     dt, toGtsam(wrench_msg->wrench.force),
@@ -1248,7 +1248,7 @@ void FactorGraphNode::addPreintegratedDvlFactor(
 
   RCLCPP_DEBUG(get_logger(), "Adding preintegrated DVL factor at step %zu", current_step_);
 
-  graph.emplace_shared<DVLPreintegratedFactor>(
+  graph.emplace_shared<DvlPreintegratedFactor>(
     X(prev_step_), X(current_step_), dvl_preintegrator_->delta(),
     gtsam::noiseModel::Gaussian::Covariance(dvl_preintegrator_->covariance()));
 

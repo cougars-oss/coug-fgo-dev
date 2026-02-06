@@ -28,7 +28,7 @@
 #include "coug_fgo/factors/gps_factor.hpp"
 
 /**
- * @brief Test the error evaluation logic of the GPS2DFactorArm.
+ * @brief Test the error evaluation logic of the Gps2dFactorArm.
  *
  * Verifies that the factor correctly accounts for the lever arm offset between
  * the vehicle's body origin (Pose) and the GPS antenna location.
@@ -40,12 +40,12 @@
  * 4.  **Combined**: Vehicle rotated + Sensor offset.
  * 5.  **Error Check**: Verifies non-zero error magnitude.
  */
-TEST(GPS2DFactorArmTest, ErrorEvaluation) {
+TEST(Gps2dFactorArmTest, ErrorEvaluation) {
   gtsam::Key poseKey = gtsam::symbol_shorthand::X(1);
   gtsam::SharedNoiseModel model = gtsam::noiseModel::Isotropic::Sigma(2, 0.1);
 
   // Case 1: Identity
-  coug_fgo::factors::GPS2DFactorArm factor1(poseKey, gtsam::Point3(1, 2, 3),
+  coug_fgo::factors::Gps2dFactorArm factor1(poseKey, gtsam::Point3(1, 2, 3),
     gtsam::Pose3::Identity(), model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -59,7 +59,7 @@ TEST(GPS2DFactorArmTest, ErrorEvaluation) {
       factor1.evaluateError(gtsam::Pose3(gtsam::Rot3::Yaw(M_PI_2), gtsam::Point3(1, 2, 3))), 1e-9));
 
   // Case 3: Mounting/Lever Arm
-  coug_fgo::factors::GPS2DFactorArm factor2(poseKey, gtsam::Point3(1, 2, 3),
+  coug_fgo::factors::Gps2dFactorArm factor2(poseKey, gtsam::Point3(1, 2, 3),
     gtsam::Pose3(gtsam::Rot3(), gtsam::Point3(1, 0, 0)), model);
   EXPECT_TRUE(
     gtsam::assert_equal(
@@ -80,13 +80,13 @@ TEST(GPS2DFactorArmTest, ErrorEvaluation) {
 }
 
 /**
- * @brief Verify Jacobians of the GPS2DFactorArm using numerical differentiation.
+ * @brief Verify Jacobians of the Gps2dFactorArm using numerical differentiation.
  *
  * Validates the analytical Jacobians with respect to:
  * 1.  **Pose**: Position and orientation (due to lever arm).
  */
-TEST(GPS2DFactorArmTest, Jacobians) {
-  coug_fgo::factors::GPS2DFactorArm factor(gtsam::symbol_shorthand::X(1),
+TEST(Gps2dFactorArmTest, Jacobians) {
+  coug_fgo::factors::Gps2dFactorArm factor(gtsam::symbol_shorthand::X(1),
     gtsam::Point3(5, 5, 5),
     gtsam::Pose3(gtsam::Rot3(), gtsam::Point3(0.2, -0.1, 0.5)),
     gtsam::noiseModel::Isotropic::Sigma(2, 0.1));
@@ -94,7 +94,7 @@ TEST(GPS2DFactorArmTest, Jacobians) {
 
   gtsam::Matrix expectedH = gtsam::numericalDerivative11<gtsam::Vector, gtsam::Pose3>(
     boost::bind(
-      &coug_fgo::factors::GPS2DFactorArm::evaluateError, &factor,
+      &coug_fgo::factors::Gps2dFactorArm::evaluateError, &factor,
       boost::placeholders::_1, boost::none), pose, 1e-5);
 
   gtsam::Matrix actualH;
