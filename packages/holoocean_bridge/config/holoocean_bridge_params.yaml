@@ -85,5 +85,6 @@
 
   wrench_converter_node:
     ros__parameters:
-      input_topic: "/command/agent"
+      agent_topic: "/command/agent"
+      control_topic: "ControlCommand"
       output_topic: "cmd_wrench"

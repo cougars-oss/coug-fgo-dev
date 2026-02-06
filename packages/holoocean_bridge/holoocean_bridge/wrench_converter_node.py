@@ -15,12 +15,12 @@
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import WrenchStamped
-from holoocean_interfaces.msg import AgentCommand
+from holoocean_interfaces.msg import AgentCommand, ControlCommand
 
 
 class WrenchConverterNode(Node):
     """
-    Converts HoloOcean agent command messages back to WrenchStamped messages.
+    Converts HoloOcean agent/control command messages back to WrenchStamped messages.
 
     :author: Nelson Durrant (w Gemini 3 Pro)
     :date: Jan 2026
@@ -29,12 +29,16 @@ class WrenchConverterNode(Node):
     def __init__(self):
         super().__init__("wrench_converter_node")
 
-        self.declare_parameter("input_topic", "/command/agent")
+        self.declare_parameter("agent_topic", "/command/agent")
+        self.declare_parameter("control_topic", "ControlCommand")
         self.declare_parameter("output_topic", "cmd_wrench")
         self.declare_parameter("wrench_frame", "base_link")
 
-        input_topic = (
-            self.get_parameter("input_topic").get_parameter_value().string_value
+        agent_topic = (
+            self.get_parameter("agent_topic").get_parameter_value().string_value
+        )
+        control_topic = (
+            self.get_parameter("control_topic").get_parameter_value().string_value
         )
         output_topic = (
             self.get_parameter("output_topic").get_parameter_value().string_value
@@ -43,19 +47,22 @@ class WrenchConverterNode(Node):
             self.get_parameter("wrench_frame").get_parameter_value().string_value
         )
 
-        self.subscription = self.create_subscription(
-            AgentCommand, input_topic, self.listener_callback, 10
+        self.agent_sub = self.create_subscription(
+            AgentCommand, agent_topic, self.agent_callback, 10
+        )
+        self.control_sub = self.create_subscription(
+            ControlCommand, control_topic, self.control_callback, 10
         )
         self.publisher = self.create_publisher(WrenchStamped, output_topic, 10)
 
         self.get_logger().info(
-            f"Wrench converter started. Listening on {input_topic} and "
+            f"Wrench converter started. Listening on {agent_topic} and {control_topic}, "
             f"publishing on {output_topic}."
         )
 
-    def listener_callback(self, msg: AgentCommand):
+    def agent_callback(self, msg: AgentCommand):
         """
-        Process agent command messages.
+        Process agent command messages (BlueROV2).
 
         :param msg: AgentCommand message containing thruster values.
         """
@@ -74,6 +81,34 @@ class WrenchConverterNode(Node):
         wrench_msg.wrench.force.x = fwd
         wrench_msg.wrench.force.y = lat
         wrench_msg.wrench.force.z = vert
+        self.publisher.publish(wrench_msg)
+
+    def control_callback(self, msg: ControlCommand):
+        """
+        Process control command messages (CougUV).
+
+        :param msg: ControlCommand message containing control surface/thruster values.
+        """
+        thruster_rpm = msg.cs[3]
+
+        # From the fossen_dynamics/actuator.py file
+        rho = 1026.0
+        D_prop = 0.14
+        t_prop = 0.1
+        KT_0 = 0.4566
+
+        n_rps = thruster_rpm / 60.0
+        abs_n_rps = abs(n_rps)
+
+        # IMPORTANT! Assuming advance velocity is 0 and no spool up/down delays
+        X_prop = rho * pow(D_prop, 4) * KT_0 * abs_n_rps * n_rps
+
+        force_x = (1.0 - t_prop) * X_prop
+
+        wrench_msg = WrenchStamped()
+        wrench_msg.header.stamp = self.get_clock().now().to_msg()
+        wrench_msg.header.frame_id = self.wrench_frame
+        wrench_msg.wrench.force.x = force_x
         self.publisher.publish(wrench_msg)
 
 
