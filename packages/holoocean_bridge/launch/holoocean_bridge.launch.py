@@ -232,7 +232,7 @@ def generate_launch_description():
                     },
                 ],
             ),
-            # Set this to the starting position of the main AUV in HoloOcean
+            # Set this to the starting XY position of the main AUV in HoloOcean
             Node(
                 package="tf2_ros",
                 executable="static_transform_publisher",
@@ -243,7 +243,7 @@ def generate_launch_description():
                     "--y",
                     "0",
                     "--z",
-                    "0", # "-0.833",
+                    "0",
                     "--yaw",
                     "0",
                     "--pitch",
