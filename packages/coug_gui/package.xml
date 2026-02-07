@@ -30,6 +30,9 @@
   <exec_depend>rclpy</exec_depend>
   <exec_depend>diagnostic_aggregator</exec_depend>
   <exec_depend>rqt_gui</exec_depend>
+  <exec_depend>rqt_console</exec_depend>
+  <exec_depend>rqt_robot_monitor</exec_depend>
+  <exec_depend>rqt_runtime_monitor</exec_depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>

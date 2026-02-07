@@ -54,7 +54,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
   - Open a new terminal, attach to the `coug_dev` tmux window using `./compose.sh up`, build the `coug_ws` workspace, and launch the simulation stack using `./sim_launch.sh`.
   
     ```bash
-    cd ~/coug_ws && colcon build --symlink-install
+    cd ~/coug_ws && colcon build
     cd ~/scripts && ./sim_launch.sh
     ```
 
@@ -65,7 +65,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
   - Inside of the `coug_dev` tmux window, build the `coug_ws` workspace and launch the development stack using `./bag_launch.sh <bag_name>`. Provide the name of your bag as the script argument.
   
     ```bash
-    cd ~/coug_ws && colcon build --symlink-install
+    cd ~/coug_ws && colcon build
     cd ~/scripts && ./bag_launch.sh <bag_name>
     ```
 --
