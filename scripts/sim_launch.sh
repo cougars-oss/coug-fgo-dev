@@ -7,7 +7,7 @@
 #   ./scripts/sim_launch.sh [-b] [-c] [-m] [-r <bag_name>]
 #
 # Arguments:
-#   -b: Launch the BlueROV2 scenario (default: CougUV)
+#   -b: Launch the BlueROV2 scenario
 #   -c: Launch alternative localization methods for comparison
 #   -m: Launch multi-agent CougUV scenario
 #   -r <bag_name>: Record a rosbag to ~/bags/<bag_name>
