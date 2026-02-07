@@ -27,6 +27,8 @@ USER root
 RUN apt update && apt install -y --no-install-recommends \
     # Drive the AUV with a joystick or keyboard - Nelson Durrant, Jan 2026
     ros-${ROS_DISTRO}-joy ros-${ROS_DISTRO}-teleop-twist-joy ros-${ROS_DISTRO}-teleop-twist-keyboard \
+    # Better rosbag2 storage format - Nelson Durrant, Jan 2026
+    ros-${ROS_DISTRO}-rosbag2-storage-mcap \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /home/frostlab-docker/coug_ws/src && chown -R frostlab-docker:frostlab-docker /home/frostlab-docker/coug_ws
