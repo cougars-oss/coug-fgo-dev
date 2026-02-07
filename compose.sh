@@ -51,7 +51,7 @@ case $1 in
             # If not, create a new 'coug_dev' tmux session
             printWarning "Creating a new 'coug_dev' tmux session..."
             docker exec -it --user frostlab-docker cougars-ct \
-                tmuxp load /home/frostlab-docker/.tmuxp/coug_dev.yaml
+                tmuxp load -d /home/frostlab-docker/.tmuxp/coug_dev.yaml
         fi
 
         # Attach to the 'coug_dev' tmux session
