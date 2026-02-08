@@ -31,7 +31,8 @@ RUN apt update && apt install -y --no-install-recommends \
     ros-${ROS_DISTRO}-rosbag2-storage-mcap \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p /home/frostlab-docker/coug_ws/src && chown -R frostlab-docker:frostlab-docker /home/frostlab-docker/coug_ws
+RUN mkdir -p /home/frostlab-docker/coug_ws/src \
+    && chown -R frostlab-docker:frostlab-docker /home/frostlab-docker/coug_ws
 WORKDIR /home/frostlab-docker/coug_ws/src
 COPY --chown=frostlab-docker:frostlab-docker packages .
 
@@ -59,7 +60,8 @@ RUN vcs import . < cougars.repos \
 RUN echo "" >> /home/frostlab-docker/.bashrc \
     && echo "# Source ROS 2 environment" >> /home/frostlab-docker/.bashrc \
     && echo "source /opt/ros/humble/setup.bash" >> /home/frostlab-docker/.bashrc \
-    && echo "[ -f /home/frostlab-docker/coug_ws/install/setup.bash ] && source /home/frostlab-docker/coug_ws/install/setup.bash" >> /home/frostlab-docker/.bashrc \
+    && echo "[ -f /home/frostlab-docker/coug_ws/install/setup.bash ] \
+        && source /home/frostlab-docker/coug_ws/install/setup.bash" >> /home/frostlab-docker/.bashrc \
     && echo "" >> /home/frostlab-docker/.bashrc \
     && echo "# Script tab completions" >> /home/frostlab-docker/.bashrc \
     && echo "[ -f /completions.sh ] && source /completions.sh" >> /home/frostlab-docker/.bashrc \

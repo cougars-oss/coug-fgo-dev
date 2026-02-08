@@ -7,8 +7,8 @@
 --
 
 - [ ] ROS package dependencies are added to the appropriate `package.xml`.
-- [ ] System dependencies are added to the `Dockerfile`.
-- [ ] External ROS packages are added to `cougars.repos`.
+- [ ] System/script dependencies are added to the `Dockerfile`.
+- [ ] External ROS packages are added to `cougars.repos` and `dependencies.repos`.
 - [ ] Dependencies verified locally using `docker compose up --build -d`.
 
 --

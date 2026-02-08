@@ -8,7 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-ALGORITHMS = ["FGO", "TM", "EKF", "UKF", "IEKF"]  # , "DVL"]
+ALGORITHMS = ["FGO", "TM", "EKF", "UKF", "IEKF", "DVL"]
 
 COLORS = {
     "FGO": "#4C72B0",
@@ -26,7 +26,7 @@ NAME_MAPPING = {
     "global_ekf": "EKF",
     "global_ukf": "UKF",
     "global_iekf": "IEKF",
-    # "dvl": "DVL",
+    "dvl": "DVL",
 }
 
 METRICS_CONFIG = [

@@ -25,5 +25,11 @@ if [ ! -z "$TARGET_UID" ]; then
     fi
 fi
 
+# Source ROS environment
+source /opt/ros/humble/setup.bash
+if [ -f "/home/$USERNAME/ros2_ws/install/setup.bash" ]; then
+    source "/home/$USERNAME/ros2_ws/install/setup.bash"
+fi
+
 touch /tmp/ready
 exec "$@"

@@ -11,7 +11,7 @@ repos:
       - id: ament_uncrustify
         name: ament_uncrustify
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_uncrustify --reformat "$@"' --
         language: system
@@ -21,7 +21,7 @@ repos:
       - id: ament_cpplint
         name: ament_cpplint
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_cpplint "$@"' --
         language: system
@@ -30,7 +30,7 @@ repos:
       - id: ament_cppcheck
         name: ament_cppcheck
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           export AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS=1 &&
           ament_cppcheck "$@"' --
@@ -41,7 +41,7 @@ repos:
       - id: ament_flake8
         name: ament_flake8
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_flake8 "$@"' --
         language: system
@@ -52,7 +52,7 @@ repos:
         name: ament_pep257
         name: ament_pep257
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_pep257 "$@"' --
         language: system
@@ -63,7 +63,7 @@ repos:
       - id: ament_lint_cmake
         name: ament_lint_cmake
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_lint_cmake "$@"' --
         language: system
@@ -72,7 +72,7 @@ repos:
       - id: ament_xmllint
         name: ament_xmllint
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_xmllint "$@"' --
         language: system
@@ -82,7 +82,7 @@ repos:
       - id: ament_copyright
         name: ament_copyright
         entry: >
-          docker exec cougars-ct bash -c
+          docker exec cougars-ct /bin/bash -c
           'source /opt/ros/humble/setup.bash &&
           ament_copyright "$@"' --
         language: system

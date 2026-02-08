@@ -18,7 +18,6 @@
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPT_DIR/../../scripts/common.sh"
-source "$SCRIPT_DIR/../../.venv/bin/activate"
 
 if [ -z "$1" ]; then
     printError "Usage: $0 <bag_name> [evo_args...]"
@@ -40,11 +39,13 @@ if [ ! -f "$METADATA_FILE" ]; then
     exit 1
 fi
 
-# evo_config reset
-evo_config set save_traj_in_zip true
+evo_config reset &>/dev/null
+evo_config set save_traj_in_zip true &>/dev/null
 
 AGENTS=("auv0" "auv1" "auv2" "bluerov2")
-SUFFIXES=("odometry/global" "odometry/global_tm" "odometry/global_ekf" "odometry/global_ukf" "odometry/global_iekf" "odometry/dvl")
+SUFFIXES=("odometry/global" "odometry/global_tm" \
+          "odometry/global_ekf" "odometry/global_ukf" \
+          "odometry/global_iekf" "odometry/dvl")
 LABELS=("fgo" "tm" "ekf" "ukf" "iekf" "dvl")
 METRICS=("trans_part" "angle_deg")
 

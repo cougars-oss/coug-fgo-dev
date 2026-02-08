@@ -1,3 +1,5 @@
+# Created by Nelson Durrant, Jan 2026
+
 # %%
 import daft
 import copy

@@ -17,7 +17,6 @@
 
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 source "$SCRIPT_DIR/../../scripts/common.sh"
-source "$SCRIPT_DIR/../../.venv/bin/activate"
 
 printInfo "Evaluating all bags..."
 

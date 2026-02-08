@@ -1,7 +1,7 @@
 #!/bin/bash
 # Created by Nelson Durrant, Jan 2026
 #
-# Script tab completions
+# Script tab completions for rosbags
 
 _bag_tab_completion() {
     local cur=${COMP_WORDS[COMP_CWORD]}

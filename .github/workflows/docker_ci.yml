@@ -19,11 +19,11 @@ on:
     branches: ["main"]
     paths:
       - ".github/workflows/docker_ci.yml"
+      - "docker/gtsam/Dockerfile"
       - "docker/Dockerfile"
       - "docker/entrypoint.sh"
       - "docker/completions.sh"
       - "docker/.tmux.conf"
-      - "docker/gtsam/Dockerfile"
       - "packages/cougars.repos"
       - "packages/**/package.xml"
 
