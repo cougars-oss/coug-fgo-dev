@@ -23,8 +23,9 @@ from launch.actions import (
     OpaqueFunction,
 )
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import PushRosNamespace
+from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
@@ -121,7 +122,13 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "urdf_file",
-                default_value="urdf/couguv_holoocean.urdf.xacro",
+                default_value=PathJoinSubstitution(
+                    [
+                        FindPackageShare("coug_description"),
+                        "urdf",
+                        "couguv_holoocean.urdf.xacro",
+                    ]
+                ),
                 description="URDF or Xacro file to load",
             ),
             DeclareLaunchArgument(

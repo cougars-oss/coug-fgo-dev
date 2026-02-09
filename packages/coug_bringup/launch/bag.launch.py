@@ -30,8 +30,9 @@ from launch.event_handlers import OnProcessExit
 from launch.events import matches_action
 from launch.events.process import SignalProcess
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import PushRosNamespace
+from launch_ros.substitutions import FindPackageShare
 
 
 def launch_setup(context, *args, **kwargs):
@@ -176,7 +177,14 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "urdf_file",
-                default_value="urdf/bluerov2/bluerov2.urdf.xacro",
+                default_value=PathJoinSubstitution(
+                    [
+                        FindPackageShare("coug_description"),
+                        "urdf",
+                        "bluerov2",
+                        "bluerov2.urdf.xacro",
+                    ]
+                ),
                 description="URDF or Xacro file to load",
             ),
             DeclareLaunchArgument(

@@ -16,7 +16,9 @@ script_dir="$(dirname "$(readlink -f "$0")")"
 source "$script_dir/common.sh"
 source ~/coug_ws/install/setup.bash
 
-urdf="urdf/couguv_holoocean.urdf.xacro"
+coug_share=$(ros2 pkg prefix coug_description --share)
+urdf="$coug_share/urdf/couguv_holoocean.urdf.xacro"
+
 agents=1
 bag_path=""
 compare="false"
@@ -24,7 +26,7 @@ compare="false"
 while getopts ":bcmr:" opt; do
     case $opt in
         b)
-            urdf="urdf/bluerov2_holoocean/bluerov2_holoocean.urdf.xacro"
+            urdf="$coug_share/urdf/bluerov2_holoocean/bluerov2_holoocean.urdf.xacro"
             ;;
         c)
             compare="true"

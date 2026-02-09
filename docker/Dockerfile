@@ -42,7 +42,10 @@ COPY --chown=frostlab-docker:frostlab-docker packages .
 USER frostlab-docker
 ENV PATH="$PATH:/home/frostlab-docker/.local/bin"
 RUN pip3 install --upgrade --no-cache-dir \
-    vcstool rosdoc2 tmuxp asciimatics Pillow
+    # External repo management tool - Nelson Durrant, Jan 2026
+    vcstool \
+    # Terminal multiplexer - Nelson Durrant, Jan 2026
+    tmuxp asciimatics Pillow
 
 # Install tmux plugins
 RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm

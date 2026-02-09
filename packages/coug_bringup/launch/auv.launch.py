@@ -18,14 +18,22 @@ from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time", default="false")
     urdf_file = LaunchConfiguration(
-        "urdf_file", default="urdf/couguv_holoocean.urdf.xacro"
+        "urdf_file",
+        default=PathJoinSubstitution(
+            [
+                FindPackageShare("coug_description"),
+                "urdf",
+                "couguv_holoocean.urdf.xacro",
+            ]
+        ),
     )
     auv_ns = LaunchConfiguration("auv_ns", default="auv0")
     set_origin = LaunchConfiguration("set_origin", default="true")
@@ -94,7 +102,13 @@ def generate_launch_description():
     ld.add_action(
         DeclareLaunchArgument(
             "urdf_file",
-            default_value="urdf/couguv_holoocean.urdf.xacro",
+            default_value=PathJoinSubstitution(
+                [
+                    FindPackageShare("coug_description"),
+                    "urdf",
+                    "couguv_holoocean.urdf.xacro",
+                ]
+            ),
             description="URDF or Xacro file to load",
         )
     )

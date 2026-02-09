@@ -28,8 +28,6 @@ from launch.conditions import UnlessCondition
 
 def generate_launch_description():
 
-    pkg_share = FindPackageShare(package="coug_description").find("coug_description")
-
     use_sim_time = LaunchConfiguration("use_sim_time")
     urdf_file = LaunchConfiguration("urdf_file")
     auv_ns = LaunchConfiguration("auv_ns")
@@ -44,7 +42,13 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "urdf_file",
-                default_value="urdf/couguv_holoocean.urdf.xacro",
+                default_value=PathJoinSubstitution(
+                    [
+                        FindPackageShare("coug_description"),
+                        "urdf",
+                        "couguv_holoocean.urdf.xacro",
+                    ]
+                ),
                 description="URDF or Xacro file to load",
             ),
             DeclareLaunchArgument(
@@ -61,9 +65,7 @@ def generate_launch_description():
                 parameters=[
                     {
                         "robot_description": ParameterValue(
-                            Command(
-                                ["xacro ", PathJoinSubstitution([pkg_share, urdf_file])]
-                            ),
+                            Command(["xacro ", urdf_file]),
                             value_type=str,
                         ),
                         "use_sim_time": use_sim_time,
