@@ -17,6 +17,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
@@ -56,11 +57,17 @@ def generate_launch_description():
                     "Namespace for the AUV (e.g. auv0), used for namespacing topics and frames"
                 ),
             ),
+            DeclareLaunchArgument(
+                "compare",
+                default_value="false",
+                description="Launch additional localization nodes if true",
+            ),
             # https://docs.ros.org/en/melodic/api/robot_localization/html/state_estimation_nodes.html
             Node(
                 package="robot_localization",
                 executable="ekf_node",
                 name="ekf_filter_node_odom",
+                condition=IfCondition(LaunchConfiguration("compare")),
                 parameters=[
                     params_file,
                     {
@@ -71,14 +78,15 @@ def generate_launch_description():
                     },
                 ],
                 remappings=[
-                    ("odometry/filtered", "odometry/local_ekf")
-                ],  # Different topic to avoid conflict with IEKF
+                    ("odometry/filtered", "odometry/local")
+                ],
             ),
             # https://docs.ros.org/en/melodic/api/robot_localization/html/state_estimation_nodes.html
             Node(
                 package="robot_localization",
                 executable="ekf_node",
                 name="ekf_filter_node_map",
+                condition=IfCondition(LaunchConfiguration("compare")),
                 parameters=[
                     params_file,
                     {
@@ -98,6 +106,7 @@ def generate_launch_description():
                 package="robot_localization",
                 executable="ukf_node",
                 name="ukf_filter_node_map",
+                condition=IfCondition(LaunchConfiguration("compare")),
                 parameters=[
                     params_file,
                     {

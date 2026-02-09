@@ -66,8 +66,8 @@ def generate_launch_description():
         launch_arguments={
             "use_sim_time": use_sim_time,
             "auv_ns": auv_ns,
+            "compare": compare,
         }.items(),
-        condition=IfCondition(compare),
     )
 
     coug_fgo_cmd = IncludeLaunchDescription(

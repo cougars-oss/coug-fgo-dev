@@ -191,7 +191,6 @@ def generate_launch_description():
                     },
                 ],
             ),
-            # TODO: Replace this with the IEKF
             Node(
                 package="tf2_ros",
                 executable="static_transform_publisher",
