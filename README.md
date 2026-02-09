@@ -4,8 +4,6 @@
 [![ROS 2 CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/ros2_ci.yml)
 [![Docker CI](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/snelsondurrant/coug_fgo_dev/actions/workflows/docker_ci.yml)
 
-[**Get Started**](#get-started) | [**Contributing**](#contributing) | [**Citations**](#citations)
-
 CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autonomy research by the [Field Robotic Systems Lab (FROST Lab)](https://frostlab.byu.edu) at [Brigham Young University](https://byu.edu).
 
 --
