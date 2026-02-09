@@ -14,37 +14,27 @@
 
 /**
  * @file coug_waypoints_plugin.cpp
- * @brief Implementation of the CougWaypointsPlugin class.
+ * @brief Implementation of the CougWaypointsPlugin.
  * @author Nelson Durrant
  * @date Jan 2026
  */
 
 #include <coug_mapviz/coug_waypoints_plugin.hpp>
 
-#include <QDateTime>
-#include <QDir>
-#include <QFile>
-#include <QFileDialog>
-#include <QGLWidget>
-#include <QJsonArray>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QMouseEvent>
-#include <QPainter>
-#include <QComboBox>
-#include <QLabel>
 #include <swri_transform_util/frames.h>
 
-#include <limits>
-#include <memory>
+#include <QDateTime>
+#include <QDir>
+#include <QFileDialog>
+#include <QMouseEvent>
+#include <QPainter>
+
 #include <string>
 #include <vector>
 
 #include <pluginlib/class_list_macros.hpp>
-#include <rclcpp/rclcpp.hpp>
 
 PLUGINLIB_EXPORT_CLASS(coug_mapviz::CougWaypointsPlugin, mapviz::MapvizPlugin)
-
 
 namespace coug_mapviz
 {
@@ -69,19 +59,26 @@ CougWaypointsPlugin::CougWaypointsPlugin()
   ui_.status->setPalette(p3);
 
   discovery_timer_ = new QTimer(this);
-  QObject::connect(discovery_timer_, SIGNAL(timeout()), this, SLOT(DiscoverTopics()));
+  QObject::connect(
+    discovery_timer_, SIGNAL(timeout()), this,
+    SLOT(DiscoverTopics()));
 
   QObject::connect(
-    ui_.topic_selector, SIGNAL(currentTextChanged(const QString&)), this,
+    ui_.topic_selector,
+    SIGNAL(currentTextChanged(const QString&)), this,
     SLOT(TopicChanged(const QString&)));
-  QObject::connect(ui_.publish, SIGNAL(clicked()), this, SLOT(PublishWaypoints()));
+  QObject::connect(
+    ui_.publish, SIGNAL(clicked()), this,
+    SLOT(PublishWaypoints()));
   QObject::connect(ui_.stop, SIGNAL(clicked()), this, SLOT(Stop()));
   QObject::connect(ui_.clear, SIGNAL(clicked()), this, SLOT(Clear()));
 
   QObject::connect(ui_.save, SIGNAL(clicked()), this, SLOT(SaveWaypoints()));
   QObject::connect(ui_.load, SIGNAL(clicked()), this, SLOT(LoadWaypoints()));
 
-  QObject::connect(this, SIGNAL(VisibleChanged(bool)), this, SLOT(VisibilityChanged(bool)));
+  QObject::connect(
+    this, SIGNAL(VisibleChanged(bool)), this,
+    SLOT(VisibilityChanged(bool)));
   QObject::connect(
     ui_.depth_editor, SIGNAL(valueChanged(double)), this,
     SLOT(DepthChanged(double)));
@@ -92,6 +89,18 @@ CougWaypointsPlugin::~CougWaypointsPlugin()
   if (map_canvas_) {
     map_canvas_->removeEventFilter(this);
   }
+}
+
+bool CougWaypointsPlugin::Initialize(QGLWidget * canvas)
+{
+  map_canvas_ = dynamic_cast<mapviz::MapCanvas *>(canvas);
+  map_canvas_->installEventFilter(this);
+
+  discovery_timer_->start(1000);
+  DiscoverTopics();
+
+  initialized_ = true;
+  return true;
 }
 
 void CougWaypointsPlugin::VisibilityChanged(bool visible)
@@ -106,15 +115,11 @@ void CougWaypointsPlugin::VisibilityChanged(bool visible)
 void CougWaypointsPlugin::DiscoverTopics()
 {
   auto topics_and_types = node_->get_topic_names_and_types();
-  for (const auto & [topic, types] : topics_and_types) {
+  for (const auto &[topic, types] : topics_and_types) {
     for (const auto & type : types) {
       if (type == "geometry_msgs/msg/PoseArray") {
         if (ui_.topic_selector->findText(QString::fromStdString(topic)) == -1) {
           ui_.topic_selector->addItem(QString::fromStdString(topic));
-
-          if (waypoint_map_.find(topic) == waypoint_map_.end()) {
-            waypoint_map_[topic] = std::vector<geometry_msgs::msg::Pose>();
-          }
         }
         break;
       }
@@ -124,20 +129,17 @@ void CougWaypointsPlugin::DiscoverTopics()
 
 void CougWaypointsPlugin::TopicChanged(const QString & text)
 {
-  if (!current_topic_.empty()) {
-    waypoint_map_[current_topic_] = waypoints_;
-  }
-
   current_topic_ = text.toStdString();
-  waypoints_ = waypoint_map_[current_topic_];
-
   selected_point_ = -1;
   ui_.depth_editor->setEnabled(false);
 
-  if (waypoints_.empty()) {
+  auto wps = manager_.getWaypoints(current_topic_);
+  if (wps.empty()) {
     PrintInfo("Click to add waypoints");
   } else {
-    PrintInfo(current_topic_ + " (" + std::to_string(waypoints_.size()) + " waypoints)");
+    PrintInfo(
+      current_topic_ + " (" + std::to_string(wps.size()) +
+      " waypoints)");
   }
 }
 
@@ -146,13 +148,13 @@ void CougWaypointsPlugin::PublishWaypoints()
   if (ui_.apply_all->isChecked()) {
     PublishAll();
   } else if (!current_topic_.empty()) {
-    waypoint_map_[current_topic_] = waypoints_;
-    PublishTopic(current_topic_, waypoints_);
+    auto wps = manager_.getWaypoints(current_topic_);
+    PublishTopic(current_topic_, wps);
 
-    if (waypoints_.empty()) {
+    if (wps.empty()) {
       PrintWarning("Stopped");
     } else {
-      PrintInfo("Published " + std::to_string(waypoints_.size()) + " waypoints");
+      PrintInfo("Published " + std::to_string(wps.size()) + " waypoints");
     }
   } else {
     PrintError("No topic selected");
@@ -171,12 +173,8 @@ void CougWaypointsPlugin::Stop()
 
 void CougWaypointsPlugin::PublishAll()
 {
-  if (!current_topic_.empty()) {
-    waypoint_map_[current_topic_] = waypoints_;
-  }
-
   int count = 0;
-  for (auto const & [topic, wps] : waypoint_map_) {
+  for (const auto &[topic, wps] : manager_.getAllWaypoints()) {
     PublishTopic(topic, wps);
     count++;
   }
@@ -185,10 +183,12 @@ void CougWaypointsPlugin::PublishAll()
 
 void CougWaypointsPlugin::StopAll()
 {
-  for (auto const & [topic, wps] : waypoint_map_) {
+  for (const auto &[topic, wps] : manager_.getAllWaypoints()) {
     PublishTopic(topic, {});
   }
-  PrintWarning("Stopped all (" + std::to_string(waypoint_map_.size()) + " topics)");
+  PrintWarning(
+    "Stopped all (" +
+    std::to_string(manager_.getAllWaypoints().size()) + " topics)");
 }
 
 void CougWaypointsPlugin::PublishTopic(
@@ -201,7 +201,11 @@ void CougWaypointsPlugin::PublishTopic(
   }
 
   swri_transform_util::Transform transform;
-  if (!tf_manager_->GetTransform(target_frame_, swri_transform_util::_wgs84_frame, transform)) {
+  if (!tf_manager_->GetTransform(
+      target_frame_,
+      swri_transform_util::_wgs84_frame,
+      transform))
+  {
     PrintError("No transform for " + topic);
     return;
   }
@@ -217,6 +221,256 @@ void CougWaypointsPlugin::PublishTopic(
   publishers_[topic]->publish(*pose_array);
 }
 
+bool CougWaypointsPlugin::IsTopicAvailable(const std::string & topic)
+{
+  return ui_.topic_selector->findText(QString::fromStdString(topic)) != -1;
+}
+
+void CougWaypointsPlugin::Clear()
+{
+  if (ui_.apply_all->isChecked()) {
+    manager_.clearAllWaypoints();
+  } else if (!current_topic_.empty()) {
+    manager_.clearWaypoints(current_topic_);
+  }
+
+  ui_.depth_editor->setValue(0.0);
+  selected_point_ = -1;
+  dragged_point_ = -1;
+  ui_.depth_editor->setEnabled(false);
+  PrintInfo("Cleared waypoints");
+}
+
+void CougWaypointsPlugin::SaveWaypoints()
+{
+  QString path = QDir::homePath() + "/coug_ws/src/coug_mapviz/waypoints";
+  QDir dir(path);
+  if (!dir.exists()) {
+    dir.mkpath(".");
+  }
+
+  QString filename = QFileDialog::getSaveFileName(
+    config_widget_, "Save Mission", path, "JSON Files (*.json)");
+  if (filename.isEmpty()) {return;}
+  if (!filename.endsWith(".json", Qt::CaseInsensitive)) {filename += ".json";}
+
+  std::string topic_to_save = "";
+  if (!ui_.apply_all->isChecked()) {
+    if (current_topic_.empty()) {
+      PrintError("No topic selected to save");
+      return;
+    }
+    topic_to_save = current_topic_;
+  }
+
+  if (manager_.saveToFile(filename.toStdString(), topic_to_save)) {
+    if (topic_to_save.empty()) {
+      PrintInfo(
+        "Saved all (" +
+        std::to_string(manager_.getAllWaypoints().size()) + " topics)");
+    } else {
+      PrintInfo("Saved topic: " + topic_to_save);
+    }
+  } else {
+    PrintError("Failed to save file");
+  }
+}
+
+void CougWaypointsPlugin::LoadWaypoints()
+{
+  QString path = QDir::homePath() + "/coug_ws/src/coug_mapviz/waypoints";
+  QString filename = QFileDialog::getOpenFileName(
+    config_widget_, "Load Mission", path, "JSON Files (*.json)");
+  if (filename.isEmpty()) {return;}
+
+  std::string topic_to_load = "";
+  if (!ui_.apply_all->isChecked()) {
+    if (current_topic_.empty()) {
+      PrintError("No topic selected to load");
+      return;
+    }
+    topic_to_load = current_topic_;
+  }
+
+  if (manager_.loadFromFile(filename.toStdString(), topic_to_load)) {
+    TopicChanged(QString::fromStdString(current_topic_));
+    if (topic_to_load.empty()) {
+      PrintInfo(
+        "Loaded all topics (" +
+        std::to_string(manager_.getAllWaypoints().size()) + " total)");
+    } else {
+      auto wps = manager_.getWaypoints(topic_to_load);
+      PrintInfo(
+        "Loaded topic: " + topic_to_load + " (" +
+        std::to_string(wps.size()) + " waypoints)");
+    }
+  } else {
+    PrintError("Failed to load file");
+  }
+}
+
+void CougWaypointsPlugin::Draw(double x, double y, double scale)
+{
+  (void)x;
+  (void)y;
+  (void)scale;
+
+  swri_transform_util::Transform transform;
+  if (!tf_manager_->GetTransform(
+      target_frame_,
+      swri_transform_util::_wgs84_frame,
+      transform))
+  {
+    return;
+  }
+
+  glLineWidth(2);
+
+  for (const auto &[topic, wps] : manager_.getAllWaypoints()) {
+    if (topic != current_topic_ && IsTopicAvailable(topic)) {
+      DrawPath(wps, QColor(Qt::white), transform, -1);
+    }
+  }
+}
+
+void CougWaypointsPlugin::DrawPath(
+  const std::vector<geometry_msgs::msg::Pose> & wps, const QColor & color,
+  const swri_transform_util::Transform & transform, int selected_index)
+{
+  if (color == Qt::blue) {
+    glColor4f(0.0, 0.0, 1.0, 1.0);
+  } else {
+    glColor4f(1.0, 1.0, 1.0, 1.0);
+  }
+
+  glBegin(GL_LINE_STRIP);
+  for (const auto & wp : wps) {
+    tf2::Vector3 point(wp.position.x, wp.position.y, 0);
+    point = transform * point;
+    glVertex2d(point.x(), point.y());
+  }
+  glEnd();
+
+  glPointSize(20);
+  glBegin(GL_POINTS);
+  for (size_t i = 0; i < wps.size(); ++i) {
+    if (static_cast<int>(i) == selected_index) {
+      glColor4f(1.0, 1.0, 0.0, 1.0);
+    } else if (color == Qt::blue) {
+      glColor4f(0.0, 1.0, 1.0, 1.0);
+    } else {
+      glColor4f(0.5, 0.5, 0.5, 1.0);
+    }
+
+    tf2::Vector3 point(wps[i].position.x, wps[i].position.y, 0);
+    point = transform * point;
+    glVertex2d(point.x(), point.y());
+  }
+  glEnd();
+}
+
+void CougWaypointsPlugin::Paint(
+  QPainter * painter, double x, double y,
+  double scale)
+{
+  (void)x;
+  (void)y;
+  (void)scale;
+
+  swri_transform_util::Transform transform;
+  if (!tf_manager_->GetTransform(
+      target_frame_,
+      swri_transform_util::_wgs84_frame,
+      transform))
+  {
+    return;
+  }
+
+  painter->save();
+  painter->resetTransform();
+
+  painter->setFont(QFont("DejaVu Sans Mono", 10, QFont::Bold));
+  for (const auto &[topic, wps] : manager_.getAllWaypoints()) {
+    if (topic != current_topic_ && IsTopicAvailable(topic)) {
+      PaintLabels(painter, wps, transform, QColor(255, 255, 255, 200));
+    }
+  }
+
+  if (!current_topic_.empty()) {
+    auto wps = manager_.getWaypoints(current_topic_);
+    if (!wps.empty()) {
+      PaintPath(painter, wps, QColor(Qt::blue), transform, selected_point_);
+    }
+  }
+
+  painter->setFont(QFont("DejaVu Sans Mono", 10, QFont::Bold));
+  if (!current_topic_.empty()) {
+    auto wps = manager_.getWaypoints(current_topic_);
+    if (!wps.empty()) {
+      PaintLabels(painter, wps, transform, Qt::white);
+    }
+  }
+  painter->restore();
+}
+
+void CougWaypointsPlugin::PaintPath(
+  QPainter * painter, const std::vector<geometry_msgs::msg::Pose> & wps,
+  const QColor & color, const swri_transform_util::Transform & transform,
+  int selected_index)
+{
+  QVector<QPointF> points;
+  for (const auto & wp : wps) {
+    tf2::Vector3 point(wp.position.x, wp.position.y, 0);
+    point = transform * point;
+    points.push_back(
+      map_canvas_->FixedFrameToMapGlCoord(QPointF(point.x(), point.y())));
+  }
+
+  QPen pen(color, 2);
+  painter->setPen(pen);
+  painter->drawPolyline(points);
+  for (int i = 0; i < points.size(); ++i) {
+    if (i == selected_index) {
+      painter->setPen(QPen(Qt::yellow, 20, Qt::SolidLine, Qt::RoundCap));
+      painter->drawPoint(points[i]);
+    } else if (color == Qt::blue) {
+      painter->setPen(QPen(Qt::cyan, 20, Qt::SolidLine, Qt::RoundCap));
+      painter->drawPoint(points[i]);
+    } else {
+      painter->setPen(QPen(Qt::gray, 20, Qt::SolidLine, Qt::RoundCap));
+      painter->drawPoint(points[i]);
+    }
+  }
+}
+
+void CougWaypointsPlugin::PaintLabels(
+  QPainter * painter, const std::vector<geometry_msgs::msg::Pose> & wps,
+  const swri_transform_util::Transform & transform, const QColor & color)
+{
+  for (size_t i = 0; i < wps.size(); i++) {
+    tf2::Vector3 point(wps[i].position.x, wps[i].position.y, 0);
+    point = transform * point;
+    QPointF gl_point =
+      map_canvas_->FixedFrameToMapGlCoord(QPointF(point.x(), point.y()));
+
+    painter->setPen(QPen(color));
+
+    QPointF depth_text_corner(gl_point.x() - 50, gl_point.y() + 15);
+    QRectF depth_text_rect(depth_text_corner, QSizeF(100, 20));
+    QString depth_text = QString::number(wps[i].position.z, 'f', 1) + "m";
+    painter->drawText(
+      depth_text_rect, Qt::AlignHCenter | Qt::AlignTop,
+      depth_text);
+
+    painter->setPen(QPen(color == Qt::white ? Qt::black : color));
+    QPointF num_corner(gl_point.x() - 20, gl_point.y() - 20);
+    QRectF num_rect(num_corner, QSizeF(40, 40));
+    painter->drawText(
+      num_rect, Qt::AlignHCenter | Qt::AlignVCenter,
+      QString::number(i + 1));
+  }
+}
+
 void CougWaypointsPlugin::TransformWaypoints(
   const std::vector<geometry_msgs::msg::Pose> & in,
   std::vector<geometry_msgs::msg::Pose> & out,
@@ -228,211 +482,21 @@ void CougWaypointsPlugin::TransformWaypoints(
     position = transform * position;
     out[i].position.x = position.x();
     out[i].position.y = position.y();
+    out[i].position.z = in[i].position.z;
   }
-}
-
-int CougWaypointsPlugin::GetClosestPoint(const QPointF & point, double & distance)
-{
-  int closest_point = -1;
-  distance = std::numeric_limits<double>::max();
-
-  swri_transform_util::Transform transform;
-  if (!tf_manager_->GetTransform(target_frame_, swri_transform_util::_wgs84_frame, transform)) {
-    return -1;
-  }
-
-  for (size_t i = 0; i < waypoints_.size(); i++) {
-    tf2::Vector3 waypoint(waypoints_[i].position.x, waypoints_[i].position.y, 0);
-    waypoint = transform * waypoint;
-    QPointF transformed =
-      map_canvas_->FixedFrameToMapGlCoord(QPointF(waypoint.x(), waypoint.y()));
-
-    double d = QLineF(transformed, point).length();
-    if (d < distance) {
-      distance = d;
-      closest_point = static_cast<int>(i);
-    }
-  }
-  return closest_point;
-}
-
-void CougWaypointsPlugin::SaveWaypoints()
-{
-  QString path = QDir::homePath() + "/coug_ws/src/coug_mapviz/waypoints";
-
-  QDir dir(path);
-  if (!dir.exists()) {
-    dir.mkpath(".");
-  }
-
-  QString filename =
-    QFileDialog::getSaveFileName(config_widget_, "Save Mission", path, "JSON Files (*.json)");
-  if (filename.isEmpty()) {return;}
-  if (!filename.endsWith(".json", Qt::CaseInsensitive)) {filename += ".json";}
-
-  QJsonObject multi_topic_obj;
-
-  if (!current_topic_.empty()) {
-    waypoint_map_[current_topic_] = waypoints_;
-  }
-
-  for (auto const & [topic, wps] : waypoint_map_) {
-    QJsonArray waypoints_array;
-    for (const auto & wp : wps) {
-      QJsonObject wp_obj;
-
-      wp_obj["lon"] = wp.position.x;
-      wp_obj["lat"] = wp.position.y;
-      wp_obj["z"] = wp.position.z;
-
-      swri_transform_util::Transform transform;
-      if (tf_manager_->GetTransform(target_frame_, swri_transform_util::_wgs84_frame, transform)) {
-        tf2::Vector3 wgs_point(wp.position.x, wp.position.y, 0.0);
-        tf2::Vector3 map_point = transform * wgs_point;
-        wp_obj["map_x"] = map_point.x();
-        wp_obj["map_y"] = map_point.y();
-      } else {
-        PrintError("Transform failed");
-      }
-
-      waypoints_array.append(wp_obj);
-    }
-    multi_topic_obj[QString::fromStdString(topic)] = waypoints_array;
-  }
-  PrintInfo("Saved mission (" + std::to_string(waypoint_map_.size()) + " topics)");
-
-
-  QJsonDocument doc(multi_topic_obj);
-  QFile file(filename);
-  if (file.open(QIODevice::WriteOnly)) {
-    file.write(doc.toJson());
-    file.close();
-  } else {
-    PrintError("Failed to save file");
-  }
-}
-
-void CougWaypointsPlugin::LoadWaypoints()
-{
-  QString path = QDir::homePath() + "/coug_ws/src/coug_mapviz/waypoints";
-
-  QString filename =
-    QFileDialog::getOpenFileName(config_widget_, "Load Mission", path, "JSON Files (*.json)");
-  if (filename.isEmpty()) {return;}
-
-  QFile file(filename);
-  if (!file.open(QIODevice::ReadOnly)) {
-    PrintError("Failed to open file");
-    return;
-  }
-
-  QByteArray data = file.readAll();
-  QJsonDocument doc = QJsonDocument::fromJson(data);
-
-  if (!doc.isObject()) {
-    PrintError("Invalid mission file format");
-    return;
-  }
-
-  QJsonObject obj = doc.object();
-
-  ui_.topic_selector->blockSignals(true);
-
-  for (auto & [topic, wps] : waypoint_map_) {
-    wps.clear();
-  }
-
-  int loaded_count = 0;
-  for (const QString & topic_key : obj.keys()) {
-    std::string topic_str = topic_key.toStdString();
-
-    if (waypoint_map_.find(topic_str) != waypoint_map_.end()) {
-      std::vector<geometry_msgs::msg::Pose> wps;
-      QJsonArray array = obj[topic_key].toArray();
-
-      for (const auto & val : array) {
-        QJsonObject wp_obj = val.toObject();
-        geometry_msgs::msg::Pose pose;
-
-        if (wp_obj.contains("lat") && wp_obj.contains("lon")) {
-          pose.position.x = wp_obj["lon"].toDouble();
-          pose.position.y = wp_obj["lat"].toDouble();
-          pose.position.z = wp_obj["z"].toDouble();
-          wps.push_back(pose);
-        }
-      }
-      waypoint_map_[topic_str] = wps;
-      loaded_count++;
-    }
-  }
-
-  if (!current_topic_.empty()) {
-    waypoints_ = waypoint_map_[current_topic_];
-  }
-
-  ui_.topic_selector->blockSignals(false);
-
-  PrintInfo("Loaded mission (" + std::to_string(loaded_count) + " topics)");
-}
-
-void CougWaypointsPlugin::Clear()
-{
-  waypoints_.clear();
-  waypoint_map_[current_topic_].clear();
-
-  if (ui_.apply_all->isChecked()) {
-    for (auto & [topic, wps] : waypoint_map_) {
-      wps.clear();
-    }
-  }
-
-  ui_.depth_editor->setValue(0.0);
-  selected_point_ = -1;
-  dragged_point_ = -1;
-  ui_.depth_editor->setEnabled(false);
-  PrintInfo("Cleared waypoints");
 }
 
 void CougWaypointsPlugin::DepthChanged(double value)
 {
-  if (selected_point_ >= 0 && static_cast<size_t>(selected_point_) < waypoints_.size()) {
-    waypoints_[selected_point_].position.z = value;
+  if (current_topic_.empty()) {return;}
+
+  auto wps = manager_.getWaypoints(current_topic_);
+  if (selected_point_ >= 0 &&
+    static_cast<size_t>(selected_point_) < wps.size())
+  {
+    wps[selected_point_].position.z = value;
+    manager_.setWaypoints(current_topic_, wps);
   }
-}
-
-void CougWaypointsPlugin::PrintError(const std::string & message)
-{
-  PrintErrorHelper(ui_.status, message, 1.0);
-}
-
-void CougWaypointsPlugin::PrintInfo(const std::string & message)
-{
-  PrintInfoHelper(ui_.status, message, 1.0);
-}
-
-void CougWaypointsPlugin::PrintWarning(const std::string & message)
-{
-  PrintWarningHelper(ui_.status, message, 1.0);
-}
-
-QWidget * CougWaypointsPlugin::GetConfigWidget(QWidget * parent)
-{
-  config_widget_->setParent(parent);
-
-  return config_widget_;
-}
-
-bool CougWaypointsPlugin::Initialize(QGLWidget * canvas)
-{
-  map_canvas_ = dynamic_cast<mapviz::MapCanvas *>(canvas);
-  map_canvas_->installEventFilter(this);
-
-  // Initialize discovery
-  discovery_timer_->start(1000);
-  DiscoverTopics();
-
-  initialized_ = true;
-  return true;
 }
 
 bool CougWaypointsPlugin::eventFilter(QObject * object, QEvent * event)
@@ -450,12 +514,45 @@ bool CougWaypointsPlugin::eventFilter(QObject * object, QEvent * event)
   }
 }
 
+int CougWaypointsPlugin::GetClosestPoint(
+  const QPointF & point,
+  double & distance)
+{
+  swri_transform_util::Transform transform;
+  if (!tf_manager_->GetTransform(
+      target_frame_,
+      swri_transform_util::_wgs84_frame,
+      transform))
+  {
+    return -1;
+  }
+
+  int closest = -1;
+  distance = std::numeric_limits<double>::max();
+  auto wps = manager_.getWaypoints(current_topic_);
+
+  for (size_t i = 0; i < wps.size(); i++) {
+    tf2::Vector3 waypoint(wps[i].position.x, wps[i].position.y, 0);
+    waypoint = transform * waypoint;
+    QPointF transformed = map_canvas_->FixedFrameToMapGlCoord(
+      QPointF(waypoint.x(), waypoint.y()));
+
+    double d = QLineF(transformed, point).length();
+    if (d < distance) {
+      distance = d;
+      closest = static_cast<int>(i);
+    }
+  }
+  return closest;
+}
+
 bool CougWaypointsPlugin::handleMousePress(QMouseEvent * event)
 {
+  if (current_topic_.empty()) {return false;}
+
   dragged_point_ = -1;
   double distance = 0.0;
-  QPointF point = event->localPos();
-  int closest_point = GetClosestPoint(point, distance);
+  int closest_point = GetClosestPoint(event->localPos(), distance);
 
   if (event->button() == Qt::LeftButton) {
     is_mouse_down_ = true;
@@ -468,7 +565,10 @@ bool CougWaypointsPlugin::handleMousePress(QMouseEvent * event)
     }
   } else if (event->button() == Qt::RightButton) {
     if (distance < 15) {
-      waypoints_.erase(waypoints_.begin() + closest_point);
+      auto wps = manager_.getWaypoints(current_topic_);
+      wps.erase(wps.begin() + closest_point);
+      manager_.setWaypoints(current_topic_, wps);
+
       if (selected_point_ == closest_point) {
         selected_point_ = -1;
         ui_.depth_editor->setEnabled(false);
@@ -476,49 +576,51 @@ bool CougWaypointsPlugin::handleMousePress(QMouseEvent * event)
       return true;
     }
   }
-
   return false;
 }
 
 bool CougWaypointsPlugin::handleMouseRelease(QMouseEvent * event)
 {
+  if (current_topic_.empty()) {return false;}
+
   qreal distance = QLineF(mouse_down_pos_, event->localPos()).length();
   qint64 msecsDiff = QDateTime::currentMSecsSinceEpoch() - mouse_down_time_;
 
-  constexpr qint64 kMaxClickDuration = 500;
-  constexpr double kMaxClickDistance = 5.0;
-
   if (dragged_point_ != -1) {
-    if (distance <= kMaxClickDistance && msecsDiff < kMaxClickDuration) {
-      // This was a click, not a drag. Select the point.
+    if (distance <= 5.0 && msecsDiff < 500) {
       selected_point_ = dragged_point_;
       ui_.depth_editor->setEnabled(true);
       ui_.depth_editor->blockSignals(true);
-      ui_.depth_editor->setValue(waypoints_[selected_point_].position.z);
+      auto wps = manager_.getWaypoints(current_topic_);
+      ui_.depth_editor->setValue(wps[selected_point_].position.z);
       ui_.depth_editor->blockSignals(false);
     }
-    // If it was a drag, the point is already moved. We just stop dragging.
     dragged_point_ = -1;
     return true;
   }
 
   if (is_mouse_down_) {
-    if (msecsDiff < kMaxClickDuration && distance <= kMaxClickDistance) {
-      QPointF transformed = map_canvas_->MapGlCoordToFixedFrame(event->localPos());
+    if (msecsDiff < 500 && distance <= 5.0) {
+      QPointF transformed =
+        map_canvas_->MapGlCoordToFixedFrame(event->localPos());
       swri_transform_util::Transform transform;
-      if (tf_manager_->GetTransform(swri_transform_util::_wgs84_frame, target_frame_, transform)) {
+      if (tf_manager_->GetTransform(
+          swri_transform_util::_wgs84_frame,
+          target_frame_, transform))
+      {
         tf2::Vector3 position(transformed.x(), transformed.y(), 0.0);
         position = transform * position;
+
         geometry_msgs::msg::Pose pose;
         pose.position.x = position.x();
         pose.position.y = position.y();
         pose.position.z = ui_.depth_editor->value();
 
-        waypoints_.push_back(pose);
-        waypoint_map_[current_topic_] = waypoints_;
+        manager_.addWaypoint(current_topic_, pose);
       }
     }
   }
+
   is_mouse_down_ = false;
   dragged_point_ = -1;
   return false;
@@ -526,166 +628,69 @@ bool CougWaypointsPlugin::handleMouseRelease(QMouseEvent * event)
 
 bool CougWaypointsPlugin::handleMouseMove(QMouseEvent * event)
 {
+  if (current_topic_.empty()) {return false;}
+
   if (dragged_point_ >= 0) {
     if (selected_point_ != -1) {
       selected_point_ = -1;
       ui_.depth_editor->setEnabled(false);
     }
 
-    QPointF point = event->localPos();
     swri_transform_util::Transform transform;
-    if (tf_manager_->GetTransform(swri_transform_util::_wgs84_frame, target_frame_, transform)) {
-      QPointF transformed = map_canvas_->MapGlCoordToFixedFrame(point);
+    if (tf_manager_->GetTransform(
+        swri_transform_util::_wgs84_frame,
+        target_frame_, transform))
+    {
+      QPointF transformed =
+        map_canvas_->MapGlCoordToFixedFrame(event->localPos());
       tf2::Vector3 position(transformed.x(), transformed.y(), 0.0);
       position = transform * position;
-      waypoints_[dragged_point_].position.x = position.x();
 
-      waypoints_[dragged_point_].position.y = position.y();
-      waypoint_map_[current_topic_] = waypoints_;
+      auto wps = manager_.getWaypoints(current_topic_);
+      wps[dragged_point_].position.x = position.x();
+      wps[dragged_point_].position.y = position.y();
+      manager_.setWaypoints(current_topic_, wps);
     }
     return true;
   }
   return false;
 }
 
-void CougWaypointsPlugin::Draw(double x, double y, double scale)
-{
-  (void)x;
-  (void)y;
-  (void)scale;
-
-  swri_transform_util::Transform transform;
-  if (!tf_manager_->GetTransform(target_frame_, swri_transform_util::_wgs84_frame, transform)) {
-    return;
-  }
-
-  glLineWidth(2);
-
-  // Draw Ghost Paths
-  for (auto const & [topic, wps] : waypoint_map_) {
-    if (topic == current_topic_) {continue;}
-    DrawLines(wps, 1.0, 1.0, 1.0, 1.0, transform);  // White
-  }
-
-  // Draw Current Path
-  DrawLines(waypoints_, 0.0, 0.0, 1.0, 1.0, transform);  // Blue
-
-  // Draw Ghost Points
-  for (auto const & [topic, wps] : waypoint_map_) {
-    if (topic == current_topic_) {continue;}
-    DrawPoints(wps, 0.5, 0.5, 0.5, 1.0, transform);  // Gray
-  }
-
-  // Draw Current Points
-  DrawPoints(waypoints_, 0.0, 1.0, 1.0, 1.0, transform, selected_point_);  // Cyan (Yellow selected)
-}
-
-void CougWaypointsPlugin::Paint(QPainter * painter, double x, double y, double scale)
-{
-  (void)x;
-  (void)y;
-  (void)scale;
-
-  swri_transform_util::Transform transform;
-  if (!tf_manager_->GetTransform(target_frame_, swri_transform_util::_wgs84_frame, transform)) {
-    return;
-  }
-
-  painter->save();
-  painter->resetTransform();
-  painter->setFont(QFont("DejaVu Sans Mono", 10, QFont::Bold));
-
-  // Paint Ghost Labels
-  for (auto const & [topic, wps] : waypoint_map_) {
-    if (topic == current_topic_) {continue;}
-    PaintLabels(painter, wps, transform, QColor(255, 255, 255, 200));
-  }
-
-  // Paint Current Labels
-  PaintLabels(painter, waypoints_, transform, Qt::white);
-
-  painter->restore();
-}
-
-void CougWaypointsPlugin::DrawLines(
-  const std::vector<geometry_msgs::msg::Pose> & wps,
-  float r, float g, float b, float a,
-  const swri_transform_util::Transform & transform)
-{
-  glColor4f(r, g, b, a);
-  glBegin(GL_LINE_STRIP);
-  for (const auto & wp : wps) {
-    tf2::Vector3 point(wp.position.x, wp.position.y, 0);
-    point = transform * point;
-    glVertex2d(point.x(), point.y());
-  }
-  glEnd();
-}
-
-void CougWaypointsPlugin::DrawPoints(
-  const std::vector<geometry_msgs::msg::Pose> & wps,
-  float r, float g, float b, float a,
-  const swri_transform_util::Transform & transform,
-  int selected_index)
-{
-  glPointSize(20);
-  glBegin(GL_POINTS);
-  for (size_t i = 0; i < wps.size(); ++i) {
-    if (static_cast<int>(i) == selected_index) {
-      glColor4f(1.0, 1.0, 0.0, 1.0);  // Yellow
-    } else {
-      glColor4f(r, g, b, a);
-    }
-
-    tf2::Vector3 point(wps[i].position.x, wps[i].position.y, 0);
-    point = transform * point;
-    glVertex2d(point.x(), point.y());
-  }
-  glEnd();
-}
-
-void CougWaypointsPlugin::PaintLabels(
-  QPainter * painter,
-  const std::vector<geometry_msgs::msg::Pose> & wps,
-  const swri_transform_util::Transform & transform,
-  const QColor & color)
-{
-  for (size_t i = 0; i < wps.size(); i++) {
-    tf2::Vector3 point(wps[i].position.x, wps[i].position.y, 0);
-    point = transform * point;
-    QPointF gl_point = map_canvas_->FixedFrameToMapGlCoord(QPointF(point.x(), point.y()));
-
-    painter->setPen(QPen(color));
-
-    // Depth Text
-    QPointF depth_text_corner(gl_point.x() - 50, gl_point.y() + 15);
-    QRectF depth_text_rect(depth_text_corner, QSizeF(100, 20));
-    QString depth_text = QString::number(wps[i].position.z, 'f', 1) + "m";
-    painter->drawText(depth_text_rect, Qt::AlignHCenter | Qt::AlignTop, depth_text);
-
-    // Number
-    if (color == Qt::white) {
-      painter->setPen(QPen(Qt::black));
-    } else {
-      painter->setPen(QPen(color));
-    }
-
-    QPointF num_corner(gl_point.x() - 20, gl_point.y() - 20);
-    QRectF num_rect(num_corner, QSizeF(40, 40));
-    painter->drawText(num_rect, Qt::AlignHCenter | Qt::AlignVCenter, QString::number(i + 1));
-  }
-}
-
-void CougWaypointsPlugin::LoadConfig(const YAML::Node & node, const std::string & path)
+void CougWaypointsPlugin::LoadConfig(
+  const YAML::Node & node,
+  const std::string & path)
 {
   (void)node;
   (void)path;
 }
 
-void CougWaypointsPlugin::SaveConfig(YAML::Emitter & emitter, const std::string & path)
+void CougWaypointsPlugin::SaveConfig(
+  YAML::Emitter & emitter,
+  const std::string & path)
 {
   (void)emitter;
   (void)path;
+}
+
+QWidget * CougWaypointsPlugin::GetConfigWidget(QWidget * parent)
+{
+  config_widget_->setParent(parent);
+  return config_widget_;
+}
+
+void CougWaypointsPlugin::PrintError(const std::string & message)
+{
+  PrintErrorHelper(ui_.status, message, 1.0);
+}
+
+void CougWaypointsPlugin::PrintInfo(const std::string & message)
+{
+  PrintInfoHelper(ui_.status, message, 1.0);
+}
+
+void CougWaypointsPlugin::PrintWarning(const std::string & message)
+{
+  PrintWarningHelper(ui_.status, message, 1.0);
 }
 
 }  // namespace coug_mapviz

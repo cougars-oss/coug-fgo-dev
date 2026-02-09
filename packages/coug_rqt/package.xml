@@ -3,7 +3,7 @@
 <package format="3">
   <name>coug_rqt</name>
   <version>0.0.0</version>
-  <description>Rqt GUI for the CougUV</description>
+  <description>RQT GUI for the CougUV</description>
   <maintainer email="snelsondurrant@gmail.com">Nelson Durrant</maintainer>
   <license>Apache-2.0</license>
 

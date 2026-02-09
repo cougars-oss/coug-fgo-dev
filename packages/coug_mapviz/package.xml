@@ -3,7 +3,7 @@
 <package format="3">
   <name>coug_mapviz</name>
   <version>0.0.0</version>
-  <description>Mapviz GUI for the CougUV</description>
+  <description>MapViz GUI for the CougUV</description>
   <maintainer email="snelsondurrant@gmail.com">Nelson Durrant</maintainer>
   <license>Apache-2.0</license>
 

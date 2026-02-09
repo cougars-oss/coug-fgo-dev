@@ -1,17 +1,4 @@
 waypoint_follower_node:
-  capture_radius:
-    type: double
-    default_value: 25.0
-  slip_radius:
-    type: double
-    default_value: 50.0
-  desired_speed_rpm:
-    type: double
-    default_value: 1500.0
-  odom_timeout_sec:
-    type: double
-    default_value: 2.0
-  
   waypoint_topic:
     type: string
     default_value: "waypoints"
@@ -27,3 +14,19 @@ waypoint_follower_node:
   depth_topic:
     type: string
     default_value: "depth"
+
+  capture_radius:
+    type: double
+    default_value: 25.0
+  slip_radius:
+    type: double
+    default_value: 50.0
+  desired_speed_rpm:
+    type: double
+    default_value: 1500.0
+  odom_timeout_sec:
+    type: double
+    default_value: 2.0
+  invert_z:
+    type: bool
+    default_value: true

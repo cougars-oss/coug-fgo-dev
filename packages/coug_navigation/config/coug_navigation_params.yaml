@@ -14,3 +14,5 @@
       slip_radius: 50.0 # [m] (typically 2x capture_radius)
       desired_speed_rpm: 1500.0 # [RPM] Constant thruster speed to command when moving.
       odom_timeout_sec: 2.0 # [s] Time to wait for odometry before stopping.
+      invert_z: true
+        

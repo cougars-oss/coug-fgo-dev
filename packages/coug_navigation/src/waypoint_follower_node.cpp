@@ -140,7 +140,8 @@ void WaypointFollowerNode::processWaypointLogic(double current_x, double current
   double dy = target.position.y - current_y;
   double heading = std::atan2(dy, dx) * 180.0 / M_PI;
 
-  publishCommands(heading, params_.desired_speed_rpm, target.position.z);
+  double depth_cmd = params_.invert_z ? -target.position.z : target.position.z;
+  publishCommands(heading, params_.desired_speed_rpm, depth_cmd);
 }
 
 double WaypointFollowerNode::calculateDistance(double x1, double y1, double x2, double y2)

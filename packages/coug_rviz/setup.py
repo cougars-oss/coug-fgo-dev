@@ -18,7 +18,7 @@ setup(
     zip_safe=True,
     maintainer="Nelson Durrant",
     maintainer_email="snelsondurrant@gmail.com",
-    description="Rviz GUI for the CougUV",
+    description="RViz GUI for the CougUV",
     license="Apache-2.0",
     extras_require={
         "test": [

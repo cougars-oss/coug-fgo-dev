@@ -16,28 +16,35 @@
  * @file coug_waypoints_plugin.hpp
  * @brief MapViz plugin for multi-agent waypoint mission planning.
  * @author Nelson Durrant
- * @date Jan 2026
+ * @date Feb 2026
  */
 
 #pragma once
 
 #include <ui_coug_waypoints_config.h>
 
-#include <mapviz/map_canvas.h>
-#include <mapviz/mapviz_plugin.h>
+#include <swri_transform_util/transform.h>
+
 #include <QGLWidget>
+#include <QMouseEvent>
 #include <QObject>
+#include <QPainter>
 #include <QTimer>
 #include <QWidget>
 
+#include <mapviz/map_canvas.h>
+#include <mapviz/mapviz_plugin.h>
+
+#include <map>
 #include <string>
 #include <vector>
-#include <map>
 
 #include <geometry_msgs/msg/pose.hpp>
 #include <geometry_msgs/msg/pose_array.hpp>
 #include <rclcpp/rclcpp.hpp>
-#include <tf2/transform_datatypes.hpp>
+
+#include <coug_mapviz/coug_waypoint_manager.hpp>
+
 
 namespace coug_mapviz
 {
@@ -45,113 +52,103 @@ namespace coug_mapviz
 /**
  * @class CougWaypointsPlugin
  * @brief A MapViz plugin that allows users to place, edit, and publish waypoints for multiple agents.
- *
- * This plugin supports:
- * - Geometric placement of waypoints on a map.
- * - Multi-agent support via ROS 2 topic discovery.
- * - Saving and loading mission plans to/from JSON.
- * - Modifying waypoint depth.
- * - Visualization of active and ghost (non-selected agent) paths.
  */
 class CougWaypointsPlugin : public mapviz::MapvizPlugin
 {
   Q_OBJECT
 
 public:
-  /**
-   * @brief Constructor.
-   */
+  // --- Lifecycle & Mapviz Interface ---
   CougWaypointsPlugin();
-
-  /**
-   * @brief Destructor.
-   */
   ~CougWaypointsPlugin() override;
 
   /**
-   * @brief Initializes the plugin with the MapViz canvas.
-   * @param canvas The OpenGL widget used for drawing.
-   * @return True if initialization was successful.
+   * @brief Initializes the plugin with the map canvas.
+   * @param canvas The OpenGL widget to draw on.
+   * @return True if initialization succeeds.
    */
   bool Initialize(QGLWidget * canvas) override;
 
   /**
-   * @brief Shuts down the plugin.
+   * @brief Shuts down the plugin and releases resources.
    */
   void Shutdown() override {}
 
   /**
-   * @brief Draws the waypoints and paths on the map using OpenGL.
+   * @brief Draws OpenGL content in the map frame.
    * @param x Camera X position.
    * @param y Camera Y position.
-   * @param scale Camera zoom scale.
+   * @param scale Map scale factor.
    */
   void Draw(double x, double y, double scale) override;
 
   /**
-   * @brief Paints 2D overlays (text labels) on top of the map.
-   * @param painter The QPainter object.
+   * @brief Paints 2D overlays (text, icons) using QPainter.
+   * @param painter The QPainter instance.
    * @param x Camera X position.
    * @param y Camera Y position.
-   * @param scale Camera zoom scale.
+   * @param scale Map scale factor.
    */
   void Paint(QPainter * painter, double x, double y, double scale) override;
 
   /**
-   * @brief Transforms coordinates (unused).
+   * @brief Handles coordinate transformations (unused).
    */
   void Transform() override {}
 
+  // --- Configuration ---
   /**
-   * @brief Loads configuration from YAML (unused, auto-discovery used instead).
-   * @param node The YAML node.
-   * @param path The path to the config file.
+   * @brief Loads plugin configuration from YAML.
+   * @param node The YAML node containing configuration.
+   * @param path Path to the configuration file.
    */
   void LoadConfig(const YAML::Node & node, const std::string & path) override;
 
   /**
-   * @brief Saves configuration to YAML (unused).
+   * @brief Saves plugin configuration to YAML.
    * @param emitter The YAML emitter.
-   * @param path The path to the config file.
+   * @param path Path to the configuration file.
    */
   void SaveConfig(YAML::Emitter & emitter, const std::string & path) override;
 
   /**
-   * @brief Gets the configuration widget for the plugin.
-   * @param parent The parent widget.
-   * @return The configuration widget.
+   * @brief Creates and returns the configuration widget.
+   * @param parent Parent widget.
+   * @return Pointer to the configuration widget.
    */
   QWidget * GetConfigWidget(QWidget * parent) override;
 
   /**
-   * @brief Checks if the plugin supports painting.
-   * @return True.
+   * @brief Indicates if the plugin uses QPainter.
+   * @return Always true.
    */
   bool SupportsPainting() override {return true;}
 
 protected:
+  // --- Error Handling ---
   /**
-   * @brief Prints an error message to the status label.
-   * @param message The message to print.
+   * @brief Displays an error message in the status widget.
+   * @param message The error message.
    */
   void PrintError(const std::string & message) override;
 
   /**
-   * @brief Prints an info message to the status label.
-   * @param message The message to print.
+   * @brief Displays an info message in the status widget.
+   * @param message The info message.
    */
   void PrintInfo(const std::string & message) override;
 
   /**
-   * @brief Prints a warning message to the status label.
-   * @param message The message to print.
+   * @brief Displays a warning message in the status widget.
+   * @param message The warning message.
    */
   void PrintWarning(const std::string & message) override;
 
+  // --- Event Handling ---
   /**
-   * @brief Event filter for handling mouse events on the canvas.
+   * @brief Filters Qt events for mouse interaction.
    * @param object The object receiving the event.
-   * @param event The event.
+   * @param event The event being processed.
    * @return True if the event was handled.
    */
   bool eventFilter(QObject * object, QEvent * event) override;
@@ -164,7 +161,7 @@ protected:
   bool handleMousePress(QMouseEvent * event);
 
   /**
-   * @brief Handles mouse release events.
+   * @brief Handles mouse release events for placing/modifying waypoints.
    * @param event The mouse event.
    * @return True if handled.
    */
@@ -178,74 +175,78 @@ protected:
   bool handleMouseMove(QMouseEvent * event);
 
 protected Q_SLOTS:
+  // --- UI Slots ---
   /**
-   * @brief Publishes the current agent's waypoints to ROS.
+   * @brief Publishes waypoints for the current topic.
    */
   void PublishWaypoints();
 
   /**
-   * @brief Publishes an empty path to stop the current agent.
+   * @brief Stops the current topic (publishes empty path).
    */
   void Stop();
 
   /**
-   * @brief Clears the current agent's waypoints (or all if "Apply to All" is checked).
+   * @brief Clears waypoints for the current topic.
    */
   void Clear();
 
   /**
-   * @brief Saves all mission plans to a JSON file.
+   * @brief Opens a dialog to save waypoints to a file.
    */
   void SaveWaypoints();
 
   /**
-   * @brief Loads mission plans from a JSON file.
+   * @brief Opens a dialog to load waypoints from a file.
    */
   void LoadWaypoints();
 
   /**
-   * @brief Handles agent selection changes.
+   * @brief Handles topic selection changes.
    * @param text The new topic name.
    */
   void TopicChanged(const QString & text);
 
   /**
-   * @brief Discovers new PoseArray topics and adds them to the selector.
+   * @brief Discovers available PoseArray topics.
    */
   void DiscoverTopics();
 
   /**
-   * @brief Publishes waypoints for all discovered agents.
+   * @brief Publishes waypoints for all topics.
    */
   void PublishAll();
 
   /**
-   * @brief Publishes empty paths for all discovered agents to stop them.
+   * @brief Stops all topics.
    */
   void StopAll();
 
   /**
-   * @brief Handles visibility changes for the plugin.
+   * @brief Toggles plugin visibility.
    * @param visible True if visible.
    */
   void VisibilityChanged(bool visible);
 
   /**
    * @brief Updates the depth of the selected waypoint.
-   * @param value The new depth value.
+   * @param value New depth value.
    */
   void DepthChanged(double value);
 
 private:
+  // --- Components ---
   Ui::coug_waypoints_config ui_;
   QWidget * config_widget_;
   mapviz::MapCanvas * map_canvas_;
 
+  // --- ROS Interface ---
+  // Publishers for each topic.
   std::map<std::string, rclcpp::Publisher<geometry_msgs::msg::PoseArray>::SharedPtr> publishers_;
-  std::map<std::string, std::vector<geometry_msgs::msg::Pose>> waypoint_map_;
+  CougWaypointManager manager_;
   std::string current_topic_;
-  std::vector<geometry_msgs::msg::Pose> waypoints_;
 
+  // --- Interaction State ---
   int selected_point_;
   int dragged_point_;
   bool is_mouse_down_;
@@ -254,9 +255,10 @@ private:
 
   QTimer * discovery_timer_;
 
+  // --- Helpers ---
   /**
-   * @brief Helper to publish waypoints to a specific topic.
-   * @param topic The topic name.
+   * @brief Publishes the waypoint list for a specific topic.
+   * @param topic The topic to publish to.
    * @param wps The waypoints to publish.
    */
   void PublishTopic(
@@ -264,49 +266,39 @@ private:
     const std::vector<geometry_msgs::msg::Pose> & wps);
 
   /**
-   * @brief Finds the closest waypoint to a point on the screen.
-   * @param point The screen point.
-   * @param distance Output reference for the distance to the closest point.
-   * @return The index of the closest point, or -1 if none found.
+   * @brief Checks if a topic is currently available in the topic selector.
+   * @param topic The topic name to check.
+   * @return True if the topic is available.
+   */
+  bool IsTopicAvailable(const std::string & topic);
+
+  /**
+   * @brief Finds the closest waypoint to a point on the canvas.
+   * @param point The point to check against (in GL coordinates).
+   * @param distance Output parameter for the distance found.
+   * @return Index of the closest waypoint, or -1 if none found.
    */
   int GetClosestPoint(const QPointF & point, double & distance);
 
   /**
-   * @brief Helper to draw lines connecting waypoints.
-   * @param wps Waypoints to draw.
-   * @param r Red component.
-   * @param g Green component.
-   * @param b Blue component.
-   * @param a Alpha component.
-   * @param transform The geometric transform to use.
+   * @brief Draws the path lines and points for a topic (GL interface).
+   * @param wps The waypoints to draw.
+   * @param color The color to draw with.
+   * @param transform The current transform to map frame.
+   * @param selected_index Index of the selected point (-1 for none).
    */
-  void DrawLines(
+  void DrawPath(
     const std::vector<geometry_msgs::msg::Pose> & wps,
-    float r, float g, float b, float a,
-    const swri_transform_util::Transform & transform);
-
-  /**
-   * @brief Helper to draw waypoint points.
-   * @param wps Waypoints to draw.
-   * @param r Red component.
-   * @param g Green component.
-   * @param b Blue component.
-   * @param a Alpha component.
-   * @param transform The geometric transform to use.
-   * @param selected_index Index of a selected point to highlight (optional).
-   */
-  void DrawPoints(
-    const std::vector<geometry_msgs::msg::Pose> & wps,
-    float r, float g, float b, float a,
+    const QColor & color,
     const swri_transform_util::Transform & transform,
     int selected_index = -1);
 
   /**
-   * @brief Helper to paint text labels (indices and depths) for waypoints.
-   * @param painter The QPainter.
-   * @param wps Waypoints to label.
-   * @param transform The geometric transform to use.
-   * @param color THe color of the text/box.
+   * @brief Paints the numeric labels and depth text for a topic (QPainter interface).
+   * @param painter The QPainter instance.
+   * @param wps The waypoints to label.
+   * @param transform The current transform.
+   * @param color The text color.
    */
   void PaintLabels(
     QPainter * painter,
@@ -315,9 +307,24 @@ private:
     const QColor & color);
 
   /**
+   * @brief Paints the path lines and points for a topic (QPainter interface).
+   * @param painter The QPainter instance.
+   * @param wps The waypoints to paint.
+   * @param color The color to paint with.
+   * @param transform The current transform.
+   * @param selected_index Index of the selected point (-1 for none).
+   */
+  void PaintPath(
+    QPainter * painter,
+    const std::vector<geometry_msgs::msg::Pose> & wps,
+    const QColor & color,
+    const swri_transform_util::Transform & transform,
+    int selected_index = -1);
+
+  /**
    * @brief Transforms local waypoints to the target frame for publishing.
-   * @param in Input waypoints.
-   * @param out Output transformed waypoints.
+   * @param in Input waypoints (local frame).
+   * @param out Output waypoints (target frame).
    * @param transform The transform to apply.
    */
   void TransformWaypoints(

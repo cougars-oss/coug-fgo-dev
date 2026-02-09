@@ -22,7 +22,7 @@ setup(
     zip_safe=True,
     maintainer="Nelson Durrant",
     maintainer_email="snelsondurrant@gmail.com",
-    description="Rqt GUI for the CougUV",
+    description="RQT GUI for the CougUV",
     license="Apache-2.0",
     extras_require={
         "test": [

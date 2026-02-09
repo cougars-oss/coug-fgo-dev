@@ -14,7 +14,7 @@
 
 /**
  * @file waypoint_follower_node.hpp
- * @brief ROS 2 node for waypoint navigation and command generation.
+ * @brief ROS 2 node for waypoint navigation and HSD command generation.
  * @author Nelson Durrant
  * @date Jan 2026
  */
