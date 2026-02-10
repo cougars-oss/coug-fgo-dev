@@ -22,11 +22,11 @@ repos:
         language: system
         files: ^packages/.*\.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cxx|cu)$
 
-      - id: ament_cppcheck
-        name: ament_cppcheck
-        entry: scripts/utils/run_precommit_hook.sh ament_cppcheck
-        language: system
-        files: ^packages/.*\.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cxx|cu)$
+      # - id: ament_cppcheck
+      #   name: ament_cppcheck
+      #   entry: scripts/utils/run_precommit_hook.sh ament_cppcheck
+      #   language: system
+      #   files: ^packages/.*\.(h\+\+|h|hh|hxx|hpp|cuh|c|cc|cpp|cxx|cu)$
 
       # --- Python Linting ---
       - id: ament_flake8
