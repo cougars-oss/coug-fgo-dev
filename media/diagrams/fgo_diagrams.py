@@ -203,7 +203,7 @@ for i in range(2):
 for i in range(4):
     x_pos = start_x + (i * col_spacing)
 
-    if i > 0 and i < 3:
+    if i < 3:
         mid_x = x_pos + (col_spacing / 2)
 
         pgm_dynamics.add_node(
