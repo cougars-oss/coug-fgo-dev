@@ -5,7 +5,7 @@ diagnostic_aggregator:
     auv0:
       type: diagnostic_aggregator/AnalyzerGroup
       path: auv0
-      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node']
+      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
@@ -28,10 +28,17 @@ diagnostic_aggregator:
         find_and_remove_prefix: ['waypoint_follower_node: [/auv0] ']
         timeout: 5.0
 
+      dvl_a50_twist_node:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: 'dvl_a50_twist_node'
+        regex: ['.*dvl_a50_twist_node.*auv0.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv0] ']
+        timeout: 5.0
+
     auv1:
       type: diagnostic_aggregator/AnalyzerGroup
       path: auv1
-      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node']
+      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
@@ -54,10 +61,17 @@ diagnostic_aggregator:
         find_and_remove_prefix: ['waypoint_follower_node: [/auv1] ']
         timeout: 5.0
 
+      dvl_a50_twist_node:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: 'dvl_a50_twist_node'
+        regex: ['.*dvl_a50_twist_node.*auv1.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv1] ']
+        timeout: 5.0
+
     auv2:
       type: diagnostic_aggregator/AnalyzerGroup
       path: auv2
-      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node']
+      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
@@ -78,4 +92,11 @@ diagnostic_aggregator:
         path: 'waypoint_follower_node'
         regex: ['.*waypoint_follower_node.*auv2.*']
         find_and_remove_prefix: ['waypoint_follower_node: [/auv2] ']
+        timeout: 5.0
+
+      dvl_a50_twist_node:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: 'dvl_a50_twist_node'
+        regex: ['.*dvl_a50_twist_node.*auv2.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv2] ']
         timeout: 5.0

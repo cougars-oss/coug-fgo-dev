@@ -5,7 +5,7 @@ diagnostic_aggregator:
     AUV_NS:
       type: diagnostic_aggregator/AnalyzerGroup
       path: AUV_NS
-      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node']
+      analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
@@ -26,4 +26,11 @@ diagnostic_aggregator:
         path: 'waypoint_follower_node'
         regex: ['.*waypoint_follower_node.*AUV_NS.*']
         find_and_remove_prefix: ['waypoint_follower_node: [/AUV_NS] ']
+        timeout: 5.0
+
+      dvl_a50_twist_node:
+        type: diagnostic_aggregator/GenericAnalyzer
+        path: 'dvl_a50_twist_node'
+        regex: ['.*dvl_a50_twist_node.*AUV_NS.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/AUV_NS] ']
         timeout: 5.0
