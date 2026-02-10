@@ -14,7 +14,7 @@
 
 /**
  * @file origin_manager_node.hpp
- * @brief ROS 2 node for managing the geographic origin of the AUV fleet.
+ * @brief ROS 2 node for AUV fleet origin management.
  * @author Nelson Durrant
  * @date Jan 2026
  */
@@ -45,7 +45,7 @@ namespace coug_fgo
  *
  * This node converts global geographic coordinates (latitude, longitude, altitude)
  * into a local East-North-Up (ENU) frame relative to a set origin. It also handles
- * setting the origin in multiagent fleet scenarios.
+ * origin handshakes in multi-agent fleet scenarios.
  */
 class OriginManagerNode : public rclcpp::Node
 {

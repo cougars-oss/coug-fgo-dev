@@ -176,7 +176,7 @@ void OriginManagerNode::navsatCallback(const sensor_msgs::msg::NavSatFix::Shared
       return;
     }
 
-    // Compute average
+    // Average GPS
     double lat_sum = 0.0;
     double lon_sum = 0.0;
     double alt_sum = 0.0;
