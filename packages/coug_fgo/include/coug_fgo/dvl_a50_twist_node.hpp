@@ -23,6 +23,8 @@
 
 #include <atomic>
 #include <memory>
+#include <string>
+
 #include <diagnostic_updater/diagnostic_updater.hpp>
 #include <dvl_msgs/msg/dvl.hpp>
 #include <geometry_msgs/msg/twist_with_covariance_stamped.hpp>
