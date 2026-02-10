@@ -34,9 +34,6 @@ class DvlConverterNode(Node):
         self.declare_parameter("dvl_frame", "dvl_link")
         self.declare_parameter("override_covariance", True)
         self.declare_parameter("noise_sigma", 0.02)
-        self.declare_parameter("simulate_dropout", False)
-        self.declare_parameter("dropout_frequency", 1.0 / 30.0)
-        self.declare_parameter("dropout_duration", 5.0)
 
         input_topic = (
             self.get_parameter("input_topic").get_parameter_value().string_value
@@ -52,15 +49,6 @@ class DvlConverterNode(Node):
         )
         self.noise_sigma = (
             self.get_parameter("noise_sigma").get_parameter_value().double_value
-        )
-        self.simulate_dropout = (
-            self.get_parameter("simulate_dropout").get_parameter_value().bool_value
-        )
-        self.dropout_frequency = (
-            self.get_parameter("dropout_frequency").get_parameter_value().double_value
-        )
-        self.dropout_duration = (
-            self.get_parameter("dropout_duration").get_parameter_value().double_value
         )
 
         self.subscription = self.create_subscription(
@@ -78,17 +66,6 @@ class DvlConverterNode(Node):
 
         :param msg: TwistWithCovarianceStamped message containing DVL data.
         """
-        if self.simulate_dropout and self.dropout_frequency > 0:
-            current_time = self.get_clock().now().nanoseconds / 1e9
-
-            cycle_period = 1.0 / self.dropout_frequency
-            if (current_time % cycle_period) < self.dropout_duration:
-                self.get_logger().warn(
-                    "Simulating DVL dropout...",
-                    throttle_duration_sec=cycle_period,
-                )
-                return
-
         msg.header.frame_id = self.dvl_frame
 
         dvl_msg = DVL()

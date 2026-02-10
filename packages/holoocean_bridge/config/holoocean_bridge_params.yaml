@@ -42,10 +42,6 @@
       input_topic: "DVLSensorVelocity"
       output_topic: "dvl/data"
 
-      simulate_dropout: true
-      dropout_frequency: 0.033 # [Hz] Frequency of the dropout cycle (1/30).
-      dropout_duration: 5.0 # [s] Duration of the dropout.
-
       override_covariance: true
       noise_sigma: 0.02 # [m/s] Standard deviation of DVL body-frame velocity measurements.
 
