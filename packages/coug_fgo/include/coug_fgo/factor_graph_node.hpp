@@ -63,11 +63,11 @@ namespace coug_fgo
 
 /**
  * @class FactorGraphNode
- * @brief Performs factor graph optimization for AUV navigation.
+ * @brief Performs factor graph optimization for robust AUV odometry.
  *
- * This node integrates measurements from IMU, DVL, GPS, depth, magnetometer, and AHRS
- * sensors into a global factor graph. It uses ISAM2 (fixed-lag or full) to estimate
- * the AUV's pose, velocity, and IMU biases in real-time.
+ * This node integrates data from IMU, DVL, GPS, depth, magnetometer, and AHRS sensors
+ * alongside actuator wrenches into a global factor graph. It uses ISAM2 (fixed-lag or full)
+ * to estimate the AUV's pose, velocity, and IMU biases in real-time.
  */
 class FactorGraphNode : public rclcpp::Node
 {
@@ -111,25 +111,25 @@ protected:
   configureImuPreintegration();
 
   /**
-   * @brief Updates the sensor data averages with new data from the queues.
+   * @brief Updates the running averages with new data from the sensor queues.
    */
   void incrementAverages();
 
   /**
-   * @brief Computes initial orientation using IMU, magnetometer, and AHRS sensor.
+   * @brief Computes initial orientation using IMU, magnetometer, and AHRS sensor data.
    * @return The initial GTSAM rotation.
    */
   gtsam::Rot3 computeInitialOrientation();
 
   /**
-   * @brief Computes initial position using GPS and depth sensor.
+   * @brief Computes initial position using GPS and depth sensor data.
    * @param initial_orientation The previously computed initial orientation.
    * @return The initial GTSAM translation.
    */
   gtsam::Point3 computeInitialPosition(const gtsam::Rot3 & initial_orientation);
 
   /**
-   * @brief Computes initial velocity using DVL measurements.
+   * @brief Computes initial velocity using DVL sensor data.
    * @param initial_orientation The previously computed initial orientation.
    * @return The initial GTSAM velocity.
    */
@@ -272,7 +272,7 @@ protected:
   void publishSmoothedPath(const gtsam::Values & results, const rclcpp::Time & timestamp);
 
   /**
-   * @brief Publishes the optimized body-frame velocity.
+   * @brief Publishes the optimized velocity (at the DVL frame in the map frame).
    * @param current_vel The estimated velocity.
    * @param vel_covariance The estimation error covariance.
    * @param timestamp The message timestamp.
@@ -305,7 +305,7 @@ protected:
   void checkGraphState(diagnostic_updater::DiagnosticStatusWrapper & stat);
 
   /**
-   * @brief Checks for performance issues like processing overflow.
+   * @brief Checks optimization times for processing overflow.
    * @param stat The diagnostic status wrapper.
    */
   void checkProcessingOverflow(diagnostic_updater::DiagnosticStatusWrapper & stat);
