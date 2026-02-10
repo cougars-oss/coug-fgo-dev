@@ -22,6 +22,7 @@
 #pragma once
 
 #include <atomic>
+#include <cmath>
 #include <string>
 #include <vector>
 #include <memory>
@@ -51,10 +52,17 @@ class WaypointFollowerNode : public rclcpp::Node
 public:
   /**
    * @brief WaypointFollowerNode constructor.
+   * @param options The node options.
    */
-  WaypointFollowerNode();
+  explicit WaypointFollowerNode(const rclcpp::NodeOptions & options);
 
-private:
+  enum class MissionState
+  {
+    IDLE,
+    ACTIVE
+  };
+
+protected:
   // --- Logic ---
   /**
    * @brief Callback for receiving a new list of waypoints.
@@ -115,13 +123,6 @@ private:
    * @param stat The diagnostic status wrapper to update.
    */
   void checkOdometryStatus(diagnostic_updater::DiagnosticStatusWrapper & stat);
-
-  // --- State ---
-  enum class MissionState
-  {
-    IDLE,
-    ACTIVE
-  };
 
   std::atomic<MissionState> state_{MissionState::IDLE};
 

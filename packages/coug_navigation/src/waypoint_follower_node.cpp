@@ -21,13 +21,13 @@
 
 #include "coug_navigation/waypoint_follower_node.hpp"
 
-#include <cmath>
+#include <rclcpp_components/register_node_macro.hpp>
 
 namespace coug_navigation
 {
 
-WaypointFollowerNode::WaypointFollowerNode()
-: Node("waypoint_follower_node"),
+WaypointFollowerNode::WaypointFollowerNode(const rclcpp::NodeOptions & options)
+: Node("waypoint_follower_node", options),
   diagnostic_updater_(this)
 {
   RCLCPP_INFO(get_logger(), "Starting Waypoint Follower Node...");
@@ -234,13 +234,4 @@ void WaypointFollowerNode::checkOdometryStatus(diagnostic_updater::DiagnosticSta
 
 }  // namespace coug_navigation
 
-int main(int argc, char * argv[])
-{
-  rclcpp::init(argc, argv);
-  auto node = std::make_shared<coug_navigation::WaypointFollowerNode>();
-  rclcpp::executors::MultiThreadedExecutor executor;
-  executor.add_node(node);
-  executor.spin();
-  rclcpp::shutdown();
-  return 0;
-}
+RCLCPP_COMPONENTS_REGISTER_NODE(coug_navigation::WaypointFollowerNode)

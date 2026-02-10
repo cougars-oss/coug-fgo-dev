@@ -11,6 +11,7 @@
   <buildtool_depend>generate_parameter_library</buildtool_depend>
 
   <depend>rclcpp</depend>
+  <depend>rclcpp_components</depend>
   <depend>nav_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
@@ -20,7 +21,6 @@
   <depend>tf2_geometry_msgs</depend>
   <depend>geodesy</depend>
   <depend>diagnostic_updater</depend>
-  <depend>rclcpp_components</depend>
 
   <!-- Using a custom GTSAM build for ARM compatibility -->
   <!-- <depend>gtsam</depend> -->
