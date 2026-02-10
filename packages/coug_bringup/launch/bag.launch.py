@@ -166,7 +166,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "use_sim_time",
                 default_value="true",
-                description="Use simulation (rosbag) clock if true",
+                description="Use simulation/rosbag clock if true",
             ),
             DeclareLaunchArgument(
                 "start_delay",
@@ -189,7 +189,7 @@ def generate_launch_description():
             ),
             DeclareLaunchArgument(
                 "auv_ns",
-                default_value="bluerov2",
+                default_value="auv0",
                 description="Namespace for the AUV (e.g. auv0)",
             ),
             DeclareLaunchArgument(

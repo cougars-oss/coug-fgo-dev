@@ -71,7 +71,7 @@ def generate_launch_description():
         DeclareLaunchArgument(
             "use_sim_time",
             default_value="false",
-            description="Use simulation (HoloOcean) clock if true",
+            description="Use simulation/rosbag clock if true",
         )
     )
     ld.add_action(

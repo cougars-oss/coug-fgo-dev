@@ -109,14 +109,12 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "use_sim_time",
                 default_value="true",
-                description="Use simulation (HoloOcean) clock if true",
+                description="Use simulation/rosbag clock if true",
             ),
             DeclareLaunchArgument(
                 "auv_ns",
                 default_value="auv0",
-                description=(
-                    "Namespace for the AUV (e.g. auv0), used for namespacing topics and frames"
-                ),
+                description="Namespace for the AUV (e.g. auv0)",
             ),
             DeclareLaunchArgument(
                 "main_agent",

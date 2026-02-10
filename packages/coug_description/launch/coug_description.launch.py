@@ -38,7 +38,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "use_sim_time",
                 default_value="false",
-                description="Use simulation (HoloOcean) clock if true",
+                description="Use simulation/rosbag clock if true",
             ),
             DeclareLaunchArgument(
                 "urdf_file",
@@ -54,9 +54,7 @@ def generate_launch_description():
             DeclareLaunchArgument(
                 "auv_ns",
                 default_value="auv0",
-                description=(
-                    "Namespace for the AUV (e.g. auv0), used for namespacing topics and frames"
-                ),
+                description="Namespace for the AUV (e.g. auv0)",
             ),
             Node(
                 package="robot_state_publisher",
