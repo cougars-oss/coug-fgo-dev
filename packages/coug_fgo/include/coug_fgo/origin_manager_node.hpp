@@ -56,7 +56,7 @@ public:
    */
   explicit OriginManagerNode(const rclcpp::NodeOptions & options);
 
-private:
+protected:
   // --- Logic ---
   /**
    * @brief Callback for incoming NavSatFix messages.
