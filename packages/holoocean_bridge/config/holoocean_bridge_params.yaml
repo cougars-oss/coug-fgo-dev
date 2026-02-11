@@ -34,12 +34,25 @@
       yaw_noise_sigma: 0.01745 # [rad] AHRS sensor yaw uncertainty sigma.
       roll_pitch_noise_sigma: 0.00349 # [rad] AHRS sensor roll and pitch uncertainty sigmas.
 
+  mag_converter_node:
+    ros__parameters:
+      input_topic: "MagnetometerSensor"
+      output_topic: "imu/mag"
+
+      noise_sigma: 0.003 # [normalized] Magnetic field uncertainty sigmas.
+
   dvl_converter_node:
     ros__parameters:
       input_topic: "DVLSensorVelocity"
       output_topic: "dvl/data"
 
       noise_sigma: 0.02 # [m/s] DVL body-velocity uncertainty sigmas.
+
+  wrench_converter_node:
+    ros__parameters:
+      agent_topic: "/command/agent"
+      control_topic: "ControlCommand"
+      output_topic: "cmd_wrench"
 
   truth_converter_node:
     ros__parameters:
@@ -66,16 +79,3 @@
       output_heading_topic: "/heading"
       output_speed_topic: "/speed"
       output_depth_topic: "/depth"
-
-  mag_converter_node:
-    ros__parameters:
-      input_topic: "MagnetometerSensor"
-      output_topic: "imu/mag"
-
-      noise_sigma: 0.003 # [normalized] Magnetic field uncertainty sigmas.
-
-  wrench_converter_node:
-    ros__parameters:
-      agent_topic: "/command/agent"
-      control_topic: "ControlCommand"
-      output_topic: "cmd_wrench"
