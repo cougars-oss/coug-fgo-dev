@@ -22,11 +22,13 @@ urdf="$coug_share/urdf/couguv_holoocean.urdf.xacro"
 agents=1
 bag_path=""
 compare="false"
+namespace="coug0sim"
 
 while getopts ":bcmr:" opt; do
     case $opt in
         b)
             urdf="$coug_share/urdf/bluerov2_holoocean/bluerov2_holoocean.urdf.xacro"
+            namespace="blue0sim"
             ;;
         c)
             compare="true"
@@ -60,7 +62,7 @@ if [ -n "$bag_path" ] && [ -d "$bag_path" ]; then
     fi
 fi
 
-args=("urdf_file:=$urdf" "num_agents:=$agents" "compare:=$compare")
+args=("urdf_file:=$urdf" "num_agents:=$agents" "compare:=$compare" "auv_ns:=$namespace")
 if [ -n "$bag_path" ]; then
     args+=("bag_path:=$bag_path")
 fi

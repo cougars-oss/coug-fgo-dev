@@ -4,9 +4,9 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /auv01
-        - /auv11
-        - /auv21
+        - /coug0sim1
+        - /coug1sim1
+        - /coug2sim1
       Splitter Ratio: 0.5
     Tree Height: 555
   - Class: rviz_common/Selection
@@ -72,7 +72,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv0/robot_description
+            Value: /coug0sim/robot_description
           Enabled: true
           Links:
             All Links Enabled: true
@@ -84,7 +84,7 @@ Visualization Manager:
             Inertia: false
             Mass: false
           Name: RobotModel
-          TF Prefix: auv0
+          TF Prefix: coug0sim
           Update Interval: 0
           Value: true
           Visual Enabled: true
@@ -125,7 +125,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv0/odometry/truth
+            Value: /coug0sim/odometry/truth
           Value: true
         - Angle Tolerance: 0.10000000149011612
           Class: rviz_default_plugins/Odometry
@@ -164,7 +164,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv0/odometry/global
+            Value: /coug0sim/odometry/global
           Value: true
         - Alpha: 1
           Buffer Length: 1
@@ -192,7 +192,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv0/smoothed_path
+            Value: /coug0sim/smoothed_path
           Value: true
         - Alpha: 1
           Arrow Length: 0.30000001192092896
@@ -213,10 +213,10 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv0/waypoints
+            Value: /coug0sim/waypoints
           Value: true
       Enabled: true
-      Name: auv0
+      Name: coug0sim
     - Class: rviz_common/Group
       Displays:
         - Alpha: 1
@@ -229,7 +229,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv1/robot_description
+            Value: /coug1sim/robot_description
           Enabled: true
           Links:
             All Links Enabled: true
@@ -241,7 +241,7 @@ Visualization Manager:
             Inertia: false
             Mass: false
           Name: RobotModel
-          TF Prefix: auv1
+          TF Prefix: coug1sim
           Update Interval: 0
           Value: true
           Visual Enabled: true
@@ -282,7 +282,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv1/odometry/truth
+            Value: /coug1sim/odometry/truth
           Value: true
         - Angle Tolerance: 0.10000000149011612
           Class: rviz_default_plugins/Odometry
@@ -321,7 +321,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv1/odometry/global
+            Value: /coug1sim/odometry/global
           Value: true
         - Alpha: 1
           Buffer Length: 1
@@ -349,7 +349,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv1/smoothed_path
+            Value: /coug1sim/smoothed_path
           Value: true
         - Alpha: 1
           Arrow Length: 0.30000001192092896
@@ -370,10 +370,10 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv1/waypoints
+            Value: /coug1sim/waypoints
           Value: true
       Enabled: true
-      Name: auv1
+      Name: coug1sim
     - Class: rviz_common/Group
       Displays:
         - Alpha: 1
@@ -386,7 +386,7 @@ Visualization Manager:
             Durability Policy: Volatile
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv2/robot_description
+            Value: /coug2sim/robot_description
           Enabled: true
           Links:
             All Links Enabled: true
@@ -398,7 +398,7 @@ Visualization Manager:
             Inertia: false
             Mass: false
           Name: RobotModel
-          TF Prefix: auv2
+          TF Prefix: coug2sim
           Update Interval: 0
           Value: true
           Visual Enabled: true
@@ -439,7 +439,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv2/odometry/truth
+            Value: /coug2sim/odometry/truth
           Value: true
         - Angle Tolerance: 0.10000000149011612
           Class: rviz_default_plugins/Odometry
@@ -478,7 +478,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv2/odometry/global
+            Value: /coug2sim/odometry/global
           Value: true
         - Alpha: 1
           Buffer Length: 1
@@ -506,7 +506,7 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv2/smoothed_path
+            Value: /coug2sim/smoothed_path
           Value: true
         - Alpha: 1
           Arrow Length: 0.30000001192092896
@@ -527,10 +527,10 @@ Visualization Manager:
             Filter size: 10
             History Policy: Keep Last
             Reliability Policy: Reliable
-            Value: /auv2/waypoints
+            Value: /coug2sim/waypoints
           Value: true
       Enabled: true
-      Name: auv2
+      Name: coug2sim
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -593,7 +593,7 @@ Visualization Manager:
       Name: Current View
       Near Clip Distance: 0.009999999776482582
       Pitch: 0.4000000059604645
-      Target Frame: auv0/base_link
+      Target Frame: coug0sim/base_link
       Value: Orbit (rviz_default_plugins)
       Yaw: 4.721399784088135
     Saved: ~

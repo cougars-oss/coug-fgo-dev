@@ -29,7 +29,7 @@ class DvlConverterNode(Node):
     def __init__(self):
         super().__init__("dvl_converter_node")
 
-        self.declare_parameter("input_topic", "auv0/DVLSensorVelocity")
+        self.declare_parameter("input_topic", "DVLSensorVelocity")
         self.declare_parameter("output_topic", "dvl/data")
         self.declare_parameter("dvl_frame", "dvl_link")
         self.declare_parameter("override_covariance", True)

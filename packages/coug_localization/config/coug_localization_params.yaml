@@ -128,7 +128,7 @@
       imu0_differential: false
       imu0_relative: false # Absolute heading in the map frame.
 
-/auv1/ekf_filter_node_map:
+/coug1sim/ekf_filter_node_map:
   ros__parameters:
     initial_state: [0.0, 20.0, 0.0,
                     0.0, 0.0, 0.0,
@@ -136,7 +136,7 @@
                     0.0, 0.0, 0.0,
                     0.0, 0.0, 0.0]
 
-/auv2/ekf_filter_node_map:
+/coug2sim/ekf_filter_node_map:
   ros__parameters:
     initial_state: [0.0, 40.0, 0.0,
                     0.0, 0.0, 0.0,
@@ -144,7 +144,7 @@
                     0.0, 0.0, 0.0,
                     0.0, 0.0, 0.0]
 
-/auv1/ukf_filter_node_map:
+/coug1sim/ukf_filter_node_map:
   ros__parameters:
     initial_state: [0.0, 20.0, 0.0,
                     0.0, 0.0, 0.0,
@@ -152,7 +152,7 @@
                     0.0, 0.0, 0.0,
                     0.0, 0.0, 0.0]
 
-/auv2/ukf_filter_node_map:
+/coug2sim/ukf_filter_node_map:
   ros__parameters:
     initial_state: [0.0, 40.0, 0.0,
                     0.0, 0.0, 0.0,

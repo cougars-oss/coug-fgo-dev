@@ -28,7 +28,7 @@ class MagConverterNode(Node):
     def __init__(self):
         super().__init__("mag_converter_node")
 
-        self.declare_parameter("input_topic", "auv0/MagnetometerSensor")
+        self.declare_parameter("input_topic", "MagnetometerSensor")
         self.declare_parameter("output_topic", "imu/mag")
         self.declare_parameter("mag_frame", "imu_link")
         self.declare_parameter("override_covariance", True)

@@ -1,102 +1,102 @@
 diagnostic_aggregator:
   ros__parameters:
-    analyzers: ['auv0', 'auv1', 'auv2']
+    analyzers: ['coug0sim', 'coug1sim', 'coug2sim']
 
-    auv0:
+    coug0sim:
       type: diagnostic_aggregator/AnalyzerGroup
-      path: auv0
+      path: coug0sim
       analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'factor_graph_node'
-        regex: ['.*factor_graph_node.*auv0.*']
-        find_and_remove_prefix: ['factor_graph_node: [/auv0]', 'factor_graph_node_tm: [/auv0] ']
+        regex: ['.*factor_graph_node.*coug0sim.*']
+        find_and_remove_prefix: ['factor_graph_node: [/coug0sim]', 'factor_graph_node_tm: [/coug0sim] ']
         timeout: 5.0
 
       origin_manager_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'origin_manager_node'
-        regex: ['.*origin_manager_node.*auv0.*']
-        find_and_remove_prefix: ['origin_manager_node: [/auv0] ']
+        regex: ['.*origin_manager_node.*coug0sim.*']
+        find_and_remove_prefix: ['origin_manager_node: [/coug0sim] ']
         timeout: 5.0
 
       waypoint_follower_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'waypoint_follower_node'
-        regex: ['.*waypoint_follower_node.*auv0.*']
-        find_and_remove_prefix: ['waypoint_follower_node: [/auv0] ']
+        regex: ['.*waypoint_follower_node.*coug0sim.*']
+        find_and_remove_prefix: ['waypoint_follower_node: [/coug0sim] ']
         timeout: 5.0
 
       dvl_a50_twist_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'dvl_a50_twist_node'
-        regex: ['.*dvl_a50_twist_node.*auv0.*']
-        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv0] ']
+        regex: ['.*dvl_a50_twist_node.*coug0sim.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/coug0sim] ']
         timeout: 5.0
 
-    auv1:
+    coug1sim:
       type: diagnostic_aggregator/AnalyzerGroup
-      path: auv1
+      path: coug1sim
       analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'factor_graph_node'
-        regex: ['.*factor_graph_node.*auv1.*']
-        find_and_remove_prefix: ['factor_graph_node: [/auv1]', 'factor_graph_node_tm: [/auv1] ']
+        regex: ['.*factor_graph_node.*coug1sim.*']
+        find_and_remove_prefix: ['factor_graph_node: [/coug1sim]', 'factor_graph_node_tm: [/coug1sim] ']
         timeout: 5.0
 
       origin_manager_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'origin_manager_node'
-        regex: ['.*origin_manager_node.*auv1.*']
-        find_and_remove_prefix: ['origin_manager_node: [/auv1] ']
+        regex: ['.*origin_manager_node.*coug1sim.*']
+        find_and_remove_prefix: ['origin_manager_node: [/coug1sim] ']
         timeout: 5.0
 
       waypoint_follower_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'waypoint_follower_node'
-        regex: ['.*waypoint_follower_node.*auv1.*']
-        find_and_remove_prefix: ['waypoint_follower_node: [/auv1] ']
+        regex: ['.*waypoint_follower_node.*coug1sim.*']
+        find_and_remove_prefix: ['waypoint_follower_node: [/coug1sim] ']
         timeout: 5.0
 
       dvl_a50_twist_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'dvl_a50_twist_node'
-        regex: ['.*dvl_a50_twist_node.*auv1.*']
-        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv1] ']
+        regex: ['.*dvl_a50_twist_node.*coug1sim.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/coug1sim] ']
         timeout: 5.0
 
-    auv2:
+    coug2sim:
       type: diagnostic_aggregator/AnalyzerGroup
-      path: auv2
+      path: coug2sim
       analyzers: ['factor_graph_node', 'origin_manager_node', 'waypoint_follower_node', 'dvl_a50_twist_node']
 
       factor_graph_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'factor_graph_node'
-        regex: ['.*factor_graph_node.*auv2.*']
-        find_and_remove_prefix: ['factor_graph_node: [/auv2]', 'factor_graph_node_tm: [/auv2] ']
+        regex: ['.*factor_graph_node.*coug2sim.*']
+        find_and_remove_prefix: ['factor_graph_node: [/coug2sim]', 'factor_graph_node_tm: [/coug2sim] ']
         timeout: 5.0
 
       origin_manager_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'origin_manager_node'
-        regex: ['.*origin_manager_node.*auv2.*']
-        find_and_remove_prefix: ['origin_manager_node: [/auv2] ']
+        regex: ['.*origin_manager_node.*coug2sim.*']
+        find_and_remove_prefix: ['origin_manager_node: [/coug2sim] ']
         timeout: 5.0
 
       waypoint_follower_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'waypoint_follower_node'
-        regex: ['.*waypoint_follower_node.*auv2.*']
-        find_and_remove_prefix: ['waypoint_follower_node: [/auv2] ']
+        regex: ['.*waypoint_follower_node.*coug2sim.*']
+        find_and_remove_prefix: ['waypoint_follower_node: [/coug2sim] ']
         timeout: 5.0
 
       dvl_a50_twist_node:
         type: diagnostic_aggregator/GenericAnalyzer
         path: 'dvl_a50_twist_node'
-        regex: ['.*dvl_a50_twist_node.*auv2.*']
-        find_and_remove_prefix: ['dvl_a50_twist_node: [/auv2] ']
+        regex: ['.*dvl_a50_twist_node.*coug2sim.*']
+        find_and_remove_prefix: ['dvl_a50_twist_node: [/coug2sim] ']
         timeout: 5.0

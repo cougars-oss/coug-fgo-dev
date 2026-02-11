@@ -8,36 +8,36 @@
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.194934" left="25.938627" top="0.004754" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/position/x"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/position/x"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/position/x"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/position/x"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/position/x"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/position/x"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/position/x"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/position/x"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/position/x"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/position/x"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/position/x"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/position/x"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.124519" left="25.938627" top="0.003037" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/position/y"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/position/y"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/position/y"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/position/y"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/position/y"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/position/y"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/position/y"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/position/y"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/position/y"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/position/y"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/position/y"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/position/y"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.022526" left="25.938627" top="0.078166" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/position/z"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/position/z"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/position/z"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/position/z"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/position/z"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/position/z"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/position/z"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/position/z"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/position/z"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/position/z"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/position/z"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/position/z"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -50,36 +50,36 @@
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.062796" left="25.938627" top="0.073316" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/orientation/roll"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/orientation/roll"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/orientation/roll"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/orientation/roll"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/orientation/roll"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/orientation/roll"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/orientation/roll"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/orientation/roll"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/orientation/roll"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/orientation/roll"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/orientation/roll"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/orientation/roll"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.069499" left="25.938627" top="0.070909" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/orientation/pitch"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/orientation/pitch"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/orientation/pitch"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/orientation/pitch"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/orientation/pitch"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/orientation/pitch"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/orientation/pitch"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/orientation/pitch"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/orientation/pitch"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/orientation/pitch"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/orientation/pitch"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/orientation/pitch"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.031951" left="25.938627" top="0.030409" right="30.957195"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/odometry/truth/pose/pose/orientation/yaw"/>
-       <curve color="#ffff00" name="/auv0/odometry/global_ekf/pose/pose/orientation/yaw"/>
-       <curve color="#ffaa00" name="/auv0/odometry/global_ukf/pose/pose/orientation/yaw"/>
-       <curve color="#ff0000" name="/auv0/odometry/global_iekf/pose/pose/orientation/yaw"/>
-       <curve color="#00ff00" name="/auv0/odometry/global/pose/pose/orientation/yaw"/>
-       <curve color="#55aaff" name="/auv0/odometry/global_tm/pose/pose/orientation/yaw"/>
+       <curve color="#000000" name="/coug0sim/odometry/truth/pose/pose/orientation/yaw"/>
+       <curve color="#ffff00" name="/coug0sim/odometry/global_ekf/pose/pose/orientation/yaw"/>
+       <curve color="#ffaa00" name="/coug0sim/odometry/global_ukf/pose/pose/orientation/yaw"/>
+       <curve color="#ff0000" name="/coug0sim/odometry/global_iekf/pose/pose/orientation/yaw"/>
+       <curve color="#00ff00" name="/coug0sim/odometry/global/pose/pose/orientation/yaw"/>
+       <curve color="#55aaff" name="/coug0sim/odometry/global_tm/pose/pose/orientation/yaw"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -92,30 +92,30 @@
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.082545" left="25.940986" top="0.077060" right="30.956643"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/VelocitySensor/twist/twist/linear/x"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/velocity/twist/twist/linear/x"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/velocity/twist/twist/linear/x"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/velocity/twist/twist/linear/x"/>
+       <curve color="#000000" name="/coug0sim/VelocitySensor/twist/twist/linear/x"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/velocity/twist/twist/linear/x"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/velocity/twist/twist/linear/x"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/velocity/twist/twist/linear/x"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.108010" left="25.940986" top="0.093046" right="30.956643"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/VelocitySensor/twist/twist/linear/y"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/velocity/twist/twist/linear/y"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/velocity/twist/twist/linear/y"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/velocity/twist/twist/linear/y"/>
+       <curve color="#000000" name="/coug0sim/VelocitySensor/twist/twist/linear/y"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/velocity/twist/twist/linear/y"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/velocity/twist/twist/linear/y"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/velocity/twist/twist/linear/y"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.019873" left="25.940986" top="0.026462" right="30.956643"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/VelocitySensor/twist/twist/linear/z"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/velocity/twist/twist/linear/z"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/velocity/twist/twist/linear/z"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/velocity/twist/twist/linear/z"/>
+       <curve color="#000000" name="/coug0sim/VelocitySensor/twist/twist/linear/z"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/velocity/twist/twist/linear/z"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/velocity/twist/twist/linear/z"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/velocity/twist/twist/linear/z"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -128,30 +128,30 @@
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.003079" left="25.941049" top="0.000075" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/linear/x"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/linear/x"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/linear/x"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/linear/x"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/linear/x"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/linear/x"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/linear/x"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/linear/x"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.004368" left="25.941049" top="0.000106" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/linear/y"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/linear/y"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/linear/y"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/linear/y"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/linear/y"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/linear/y"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/linear/y"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/linear/y"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.000036" left="25.941049" top="0.000584" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/linear/z"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/linear/z"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/linear/z"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/linear/z"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/linear/z"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/linear/z"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/linear/z"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/linear/z"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -164,30 +164,30 @@
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.001693" left="25.941049" top="0.000041" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/angular/x"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/angular/x"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/angular/x"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/angular/x"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/angular/x"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/angular/x"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/angular/x"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/angular/x"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.000354" left="25.941049" top="0.000014" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/angular/y"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/angular/y"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/angular/y"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/angular/y"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/angular/y"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/angular/y"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/angular/y"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/angular/y"/>
       </plot>
      </DockArea>
      <DockArea name="...">
       <plot flip_x="false" mode="TimeSeries" flip_y="false" line_width="1.0">
        <range bottom="-0.001157" left="25.941049" top="0.000028" right="30.956488"/>
        <limitY/>
-       <curve color="#000000" name="/auv0/IMUSensorBias/twist/twist/angular/z"/>
-       <curve color="#ff0000" name="/auv0/iekf_node/imu_bias/twist/twist/angular/z"/>
-       <curve color="#00ff00" name="/auv0/factor_graph_node/imu_bias/twist/twist/angular/z"/>
-       <curve color="#55aaff" name="/auv0/factor_graph_node_tm/imu_bias/twist/twist/angular/z"/>
+       <curve color="#000000" name="/coug0sim/IMUSensorBias/twist/twist/angular/z"/>
+       <curve color="#ff0000" name="/coug0sim/iekf_node/imu_bias/twist/twist/angular/z"/>
+       <curve color="#00ff00" name="/coug0sim/factor_graph_node/imu_bias/twist/twist/angular/z"/>
+       <curve color="#55aaff" name="/coug0sim/factor_graph_node_tm/imu_bias/twist/twist/angular/z"/>
       </plot>
      </DockArea>
     </DockSplitter>
@@ -218,7 +218,7 @@
    <max_array_size value="100"/>
    <boolean_strings_to_number value="true"/>
    <remove_suffix_from_strings value="true"/>
-   <selected_topics value="/auv0/IMUSensorBias;/auv0/VelocitySensor;/auv0/odometry/global;/auv0/odometry/global_ekf;/auv0/odometry/global_iekf;/auv0/odometry/global_tm;/auv0/odometry/global_ukf;/auv0/odometry/truth;/auv0/factor_graph_node/velocity;/auv0/factor_graph_node/imu_bias;/auv0/factor_graph_node_tm/imu_bias;/auv0/factor_graph_node_tm/velocity;/auv0/iekf_node/velocity;/auv0/iekf_node/imu_bias"/>
+   <selected_topics value="/coug0sim/IMUSensorBias;/coug0sim/VelocitySensor;/coug0sim/odometry/global;/coug0sim/odometry/global_ekf;/coug0sim/odometry/global_iekf;/coug0sim/odometry/global_tm;/coug0sim/odometry/global_ukf;/coug0sim/odometry/truth;/coug0sim/factor_graph_node/velocity;/coug0sim/factor_graph_node/imu_bias;/coug0sim/factor_graph_node_tm/imu_bias;/coug0sim/factor_graph_node_tm/velocity;/coug0sim/iekf_node/velocity;/coug0sim/iekf_node/imu_bias"/>
   </plugin>
   <plugin ID="UDP Server"/>
   <plugin ID="WebSocket Server"/>

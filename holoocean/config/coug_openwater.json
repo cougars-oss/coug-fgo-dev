@@ -2,12 +2,12 @@
     "name": "coug_openwater",
     "package_name": "Ocean",
     "world": "OpenWater",
-    "main_agent": "auv0",
+    "main_agent": "coug0sim",
     "ticks_per_sec": 200,
     "frames_per_sec": false,
     "agents": [
         {
-            "agent_name": "auv0",
+            "agent_name": "coug0sim",
             "agent_type": "CougUV",
             "sensors": [
                 {

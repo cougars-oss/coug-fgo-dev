@@ -31,7 +31,7 @@ class AhrsConverterNode(Node):
     def __init__(self):
         super().__init__("ahrs_converter_node")
 
-        self.declare_parameter("input_topic", "auv0/RotationSensor")
+        self.declare_parameter("input_topic", "RotationSensor")
         self.declare_parameter("output_topic", "imu/ahrs")
         self.declare_parameter("ahrs_frame", "modem_link")
         self.declare_parameter("yaw_noise_sigma", 0.01745)

@@ -22,9 +22,9 @@ from launch.substitutions import LaunchConfiguration
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    multiagent_viz = LaunchConfiguration("multiagent_viz", default="false")
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    multiagent_viz = LaunchConfiguration("multiagent_viz")
+    auv_ns = LaunchConfiguration("auv_ns")
 
     coug_mapviz_dir = get_package_share_directory("coug_mapviz")
     coug_mapviz_launch_dir = os.path.join(coug_mapviz_dir, "launch")

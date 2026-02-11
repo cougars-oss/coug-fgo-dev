@@ -42,7 +42,7 @@ fi
 evo_config reset &>/dev/null
 evo_config set save_traj_in_zip true &>/dev/null
 
-AGENTS=("auv0" "auv1" "auv2" "bluerov2")
+AGENTS=("coug0sim" "coug1sim" "coug2sim" "blue0sim" "bluerov2")
 SUFFIXES=("odometry/global" "odometry/global_tm" \
           "odometry/global_ekf" "odometry/global_ukf" \
           "odometry/global_iekf" "odometry/dvl")

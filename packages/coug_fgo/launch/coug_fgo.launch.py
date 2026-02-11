@@ -23,9 +23,9 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
-    set_origin = LaunchConfiguration("set_origin", default="true")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    auv_ns = LaunchConfiguration("auv_ns")
+    set_origin = LaunchConfiguration("set_origin")
 
     pkg_share = get_package_share_directory("coug_fgo")
     params_file = os.path.join(pkg_share, "config", "coug_fgo_params.yaml")

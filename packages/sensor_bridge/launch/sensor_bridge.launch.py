@@ -22,8 +22,8 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    auv_ns = LaunchConfiguration("auv_ns")
 
     pkg_share = get_package_share_directory("sensor_bridge")
     params_file = os.path.join(pkg_share, "config", "sensor_bridge_params.yaml")

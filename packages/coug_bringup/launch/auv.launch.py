@@ -23,20 +23,11 @@ from launch_ros.substitutions import FindPackageShare
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    urdf_file = LaunchConfiguration(
-        "urdf_file",
-        default=PathJoinSubstitution(
-            [
-                FindPackageShare("coug_description"),
-                "urdf",
-                "couguv_holoocean.urdf.xacro",
-            ]
-        ),
-    )
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
-    set_origin = LaunchConfiguration("set_origin", default="true")
-    compare = LaunchConfiguration("compare", default="false")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    urdf_file = LaunchConfiguration("urdf_file")
+    auv_ns = LaunchConfiguration("auv_ns")
+    set_origin = LaunchConfiguration("set_origin")
+    compare = LaunchConfiguration("compare")
 
     coug_des_dir = get_package_share_directory("coug_description")
     coug_des_launch_dir = os.path.join(coug_des_dir, "launch")

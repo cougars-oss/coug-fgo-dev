@@ -33,7 +33,7 @@ class TruthConverterNode(Node):
     def __init__(self):
         super().__init__("truth_converter_node")
 
-        self.declare_parameter("input_topic", "auv0/DynamicsSensorOdom")
+        self.declare_parameter("input_topic", "DynamicsSensorOdom")
         self.declare_parameter("output_topic", "odometry/truth")
         self.declare_parameter("com_frame", "com_link")
         self.declare_parameter("base_frame", "base_link")

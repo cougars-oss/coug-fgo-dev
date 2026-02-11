@@ -1,5 +1,5 @@
 {
-    "/auv0/waypoints": [
+    "/coug0sim/waypoints": [
         {
             "lat": 40.34039845949225,
             "lon": -111.9051612543192,
@@ -61,7 +61,7 @@
             "z": -20
         }
     ],
-    "/auv1/waypoints": [
+    "/coug1sim/waypoints": [
         {
             "lat": 40.34039845949225,
             "lon": -111.9051612543192,
@@ -123,7 +123,7 @@
             "z": -20
         }
     ],
-    "/auv2/waypoints": [
+    "/coug2sim/waypoints": [
         {
             "lat": 40.34039845949225,
             "lon": -111.9051612543192,

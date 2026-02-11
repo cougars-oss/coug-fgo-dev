@@ -35,6 +35,7 @@ def launch_setup(context, *args, **kwargs):
     num_agents = LaunchConfiguration("num_agents")
     bag_path = LaunchConfiguration("bag_path")
     compare = LaunchConfiguration("compare")
+    auv_ns = LaunchConfiguration("auv_ns")
 
     num_agents_int = int(context.perform_substitution(num_agents))
     bag_path_str = context.perform_substitution(bag_path)
@@ -70,13 +71,16 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "use_sim_time": use_sim_time,
                 "multiagent_viz": "true" if num_agents_int > 1 else "false",
-                "auv_ns": "auv0",
+                "auv_ns": auv_ns,
             }.items(),
         )
     )
 
     for i in range(num_agents_int):
-        auv_ns = f"auv{i}"
+        if num_agents_int > 1:
+            multi_auv_ns = f"coug{i}sim"
+        else:
+            multi_auv_ns = auv_ns
 
         auv_launch = IncludeLaunchDescription(
             PythonLaunchDescriptionSource(
@@ -85,7 +89,7 @@ def launch_setup(context, *args, **kwargs):
             launch_arguments={
                 "use_sim_time": use_sim_time,
                 "urdf_file": urdf_file,
-                "auv_ns": auv_ns,
+                "auv_ns": multi_auv_ns,
                 "set_origin": "true" if i == 0 else "false",
                 "compare": compare,
             }.items(),
@@ -97,13 +101,13 @@ def launch_setup(context, *args, **kwargs):
             ),
             launch_arguments={
                 "use_sim_time": use_sim_time,
-                "auv_ns": auv_ns,
+                "auv_ns": multi_auv_ns,
                 "main_agent": "true" if i == 0 else "false",
             }.items(),
         )
 
         agent_actions = [
-            PushRosNamespace(auv_ns),
+            PushRosNamespace(multi_auv_ns),
             auv_launch,
             bridge_launch,
         ]
@@ -146,6 +150,11 @@ def generate_launch_description():
                 "compare",
                 default_value="false",
                 description="Launch additional localization nodes if true",
+            ),
+            DeclareLaunchArgument(
+                "auv_ns",
+                default_value="auv0",
+                description="Namespace for the AUV (e.g. auv0)",
             ),
             OpaqueFunction(function=launch_setup),
         ]

@@ -23,8 +23,8 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="false")
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    auv_ns = LaunchConfiguration("auv_ns")
 
     pkg_share = get_package_share_directory("coug_localization")
     params_file = os.path.join(pkg_share, "config", "coug_localization_params.yaml")

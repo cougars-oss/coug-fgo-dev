@@ -23,9 +23,9 @@ from launch.substitutions import LaunchConfiguration, PythonExpression
 
 def generate_launch_description():
 
-    use_sim_time = LaunchConfiguration("use_sim_time", default="true")
-    auv_ns = LaunchConfiguration("auv_ns", default="auv0")
-    main_agent = LaunchConfiguration("main_agent", default="true")
+    use_sim_time = LaunchConfiguration("use_sim_time")
+    auv_ns = LaunchConfiguration("auv_ns")
+    main_agent = LaunchConfiguration("main_agent")
 
     pkg_share = get_package_share_directory("holoocean_bridge")
     params_file = os.path.join(pkg_share, "config", "holoocean_bridge_params.yaml")

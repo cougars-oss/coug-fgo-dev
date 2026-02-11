@@ -35,11 +35,11 @@ displays:
       visible: true
       collapsed: false
   - type: mapviz_plugins/tf_frame
-    name: auv0
+    name: coug0sim
     config:
       visible: true
       collapsed: true
-      frame: auv0/base_link
+      frame: coug0sim/base_link
       color: "#00ff00"
       draw_style: arrows
       position_tolerance: 0
@@ -47,11 +47,11 @@ displays:
       static_arrow_sizes: true
       arrow_size: 53
   - type: mapviz_plugins/navsat
-    name: auv0
+    name: coug0sim
     config:
       visible: true
       collapsed: true
-      topic: /auv0/gps/fix
+      topic: /coug0sim/gps/fix
       color: "#55aaff"
       draw_style: points
       position_tolerance: 0
@@ -61,22 +61,22 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/path
-    name: auv0
+    name: coug0sim
     config:
       visible: true
       collapsed: true
-      topic: /auv0/smoothed_path
+      topic: /coug0sim/smoothed_path
       color: "#ff55ff"
       qos_depth: 10
       qos_history: 1
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv0, GT
+    name: coug0sim, GT
     config:
       visible: true
       collapsed: true
-      topic: /auv0/odometry/truth
+      topic: /coug0sim/odometry/truth
       color: "#ffffff"
       draw_style: lines
       position_tolerance: 0
@@ -92,11 +92,11 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv0, FGO
+    name: coug0sim, FGO
     config:
       visible: true
       collapsed: true
-      topic: /auv0/odometry/global
+      topic: /coug0sim/odometry/global
       color: "#00ff00"
       draw_style: lines
       position_tolerance: 0
@@ -112,11 +112,11 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/tf_frame
-    name: auv1
+    name: coug1sim
     config:
       visible: true
       collapsed: true
-      frame: auv1/base_link
+      frame: coug1sim/base_link
       color: "#00ff00"
       draw_style: arrows
       position_tolerance: 0
@@ -124,11 +124,11 @@ displays:
       static_arrow_sizes: true
       arrow_size: 53
   - type: mapviz_plugins/navsat
-    name: auv1
+    name: coug1sim
     config:
       visible: true
       collapsed: true
-      topic: /auv1/gps/fix
+      topic: /coug1sim/gps/fix
       color: "#55aaff"
       draw_style: points
       position_tolerance: 0
@@ -138,22 +138,22 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/path
-    name: auv1
+    name: coug1sim
     config:
       visible: true
       collapsed: true
-      topic: /auv1/smoothed_path
+      topic: /coug1sim/smoothed_path
       color: "#ff00ff"
       qos_depth: 10
       qos_history: 1
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv1, GT
+    name: coug1sim, GT
     config:
       visible: true
       collapsed: true
-      topic: /auv1/odometry/truth
+      topic: /coug1sim/odometry/truth
       color: "#ffffff"
       draw_style: lines
       position_tolerance: 0
@@ -169,11 +169,11 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv1, FGO
+    name: coug1sim, FGO
     config:
       visible: true
       collapsed: true
-      topic: /auv1/odometry/global
+      topic: /coug1sim/odometry/global
       color: "#00ff00"
       draw_style: lines
       position_tolerance: 0
@@ -189,11 +189,11 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/tf_frame
-    name: auv2
+    name: coug2sim
     config:
       visible: true
       collapsed: true
-      frame: auv2/base_link
+      frame: coug2sim/base_link
       color: "#00ff00"
       draw_style: arrows
       position_tolerance: 0
@@ -201,11 +201,11 @@ displays:
       static_arrow_sizes: true
       arrow_size: 53
   - type: mapviz_plugins/navsat
-    name: auv2
+    name: coug2sim
     config:
       visible: true
       collapsed: true
-      topic: /auv2/gps/fix
+      topic: /coug2sim/gps/fix
       color: "#55aaff"
       draw_style: points
       position_tolerance: 0
@@ -215,22 +215,22 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/path
-    name: auv2
+    name: coug2sim
     config:
       visible: true
       collapsed: true
-      topic: /auv2/smoothed_path
+      topic: /coug2sim/smoothed_path
       color: "#aa00ff"
       qos_depth: 10
       qos_history: 1
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv2, GT
+    name: coug2sim, GT
     config:
       visible: true
       collapsed: true
-      topic: /auv2/odometry/truth
+      topic: /coug2sim/odometry/truth
       color: "#ffffff"
       draw_style: lines
       position_tolerance: 0
@@ -246,11 +246,11 @@ displays:
       qos_reliability: 1
       qos_durability: 2
   - type: mapviz_plugins/odometry
-    name: auv2, FGO
+    name: coug2sim, FGO
     config:
       visible: true
       collapsed: true
-      topic: /auv2/odometry/global
+      topic: /coug2sim/odometry/global
       color: "#00ff00"
       draw_style: lines
       position_tolerance: 0

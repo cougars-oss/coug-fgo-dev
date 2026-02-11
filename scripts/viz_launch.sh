@@ -30,7 +30,7 @@ if [ ! -d "$play_bag_path" ]; then
 fi
 
 delay="0.0"
-namespace="auv0"
+namespace="coug0sim"
 multiagent="false"
 
 while getopts ":d:n:m" opt; do

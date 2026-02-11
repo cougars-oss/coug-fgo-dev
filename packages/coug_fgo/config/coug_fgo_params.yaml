@@ -131,12 +131,6 @@
       mass: [32.0, 62.0, 62.0] # [kg] Mass of the vehicle (diagonal)
       linear_drag: [25.0, 3.1, 3.1] # Linear drag coefficient (diagonal)
       quad_drag: [6.1, 154.0, 154.0] # Quadratic drag coefficient (diagonal)
-
-      # HoloOcean BlueROV2 values
-      # mass: [11.5, 11.5, 11.5]
-      # linear_drag: [11.5, 11.5, 11.5]
-      # quad_drag: [1.8, 1.8, 1.8]
-
       timeout_threshold: 1.0 # [s]
       robust_kernel: "None"
       robust_k: 1.345
@@ -210,23 +204,28 @@
 
     use_parameter_frame: true
 
-/auv0/**:
-  ros__parameters:
-    prior:
-      parameter_priors:
-        initial_position: [0.0, 0.0, 0.0] # -0.833] # [m]
-
-/auv1/**:
+/coug1sim/**:
   ros__parameters:
     prior:
       parameter_priors:
         initial_position: [0.0, 20.0, 0.0] # [m]
 
-/auv2/**:
+/coug2sim/**:
   ros__parameters:
     prior:
       parameter_priors:
         initial_position: [0.0, 40.0, 0.0] # [m]
+
+/blue0sim/**:
+  ros__parameters:
+    dynamics:
+      mass: [11.5, 11.5, 11.5]
+      linear_drag: [11.5, 11.5, 11.5]
+      quad_drag: [1.8, 1.8, 1.8]
+
+    prior:
+      parameter_priors:
+        initial_position_sigmas: [0.001, 0.001, 1.0] # [m] Initial position uncertainty.
 
 /bluerov2/**:
   ros__parameters:
