@@ -63,7 +63,9 @@ COPY --from=cacher --chown=frostlab-docker:frostlab-docker /tmp/packages .
 
 # Install custom ROS package dependencies (rosdep)
 USER frostlab-docker
-RUN vcs import . < cougars.repos \
+ARG VCS_VERSION=unknown
+RUN echo "VCS_VERSION: $VCS_VERSION" \
+    && vcs import . < cougars.repos \
     && vcs custom --git --args submodule update --init --recursive \
     && rosdep update \
     && sudo apt update \
