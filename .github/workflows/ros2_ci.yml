@@ -38,7 +38,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     container:
       image: snelsondurrant/cougars:latest
-      options: --user root
+      options: --user frostlab-docker
     steps:
       - name: Display trigger info
         if: github.event_name == 'repository_dispatch'
@@ -54,31 +54,26 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os }}-${{ matrix.runner }}-
       - name: Install ccache
-        run: apt update && apt install -y ccache
-      - name: Fix permissions
+        run: sudo apt update && sudo apt install -y ccache
+      - name: Setup workspace
         run: |
           mkdir -p coug_ws/.ccache
           mkdir -p coug_ws/src
           cp -r packages/* coug_ws/src/
-          chown -R frostlab-docker:frostlab-docker .
+          sudo chown -R frostlab-docker:frostlab-docker .
       - name: Save package list
         run: |
-          su frostlab-docker << 'EOF'
           source /opt/ros/humble/setup.bash
           colcon list --names-only --base-paths coug_ws/src > coug_ws/packages_to_test.txt
-          EOF
       - name: Install ROS dependencies
         run: |
-          su frostlab-docker << 'EOF'
           vcs import coug_ws/src < coug_ws/src/cougars.repos
           cd coug_ws/src && vcs custom --git --args submodule update --init --recursive
           rosdep update
-          EOF
-          apt update
-          su frostlab-docker -c "rosdep install --from-paths coug_ws/src --ignore-src -y"
+          sudo apt update
+          rosdep install --from-paths coug_ws/src --ignore-src -y --sudo
       - name: Build workspace
         run: |
-          su frostlab-docker << 'EOF'
           source /opt/ros/humble/setup.bash
           cd coug_ws
           rm -rf build/ install/ log/
@@ -90,14 +85,11 @@ jobs:
             -DCMAKE_C_COMPILER_LAUNCHER=ccache \
             -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
           ccache -s
-          EOF
       - name: Run tests
         run: |
-          su frostlab-docker << 'EOF'
           source /opt/ros/humble/setup.bash
           cd coug_ws
           colcon test \
             --packages-select $(cat packages_to_test.txt) \
             --event-handlers console_direct+
           colcon test-result --verbose
-          EOF
