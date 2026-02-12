@@ -33,8 +33,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # TODO: Enable the other runner when we move to a public repo
-        runner: [ubuntu-latest] # , ubuntu-24.04-arm]
+        runner: [ubuntu-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.runner }}
     container:
       image: snelsondurrant/cougars:latest
