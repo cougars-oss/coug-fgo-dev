@@ -33,7 +33,7 @@ jobs:
   changes:
     runs-on: ubuntu-latest
     outputs:
-      gtsam: ${{ steps.filter.outputs.gtsam }}
+      gtsam: ${{ steps.filter.outputs.gtsam == 'true' && github.event_name != 'repository_dispatch' }}
       cougars: ${{ steps.filter.outputs.cougars == 'true' || github.event_name == 'repository_dispatch' }}
     steps:
       - uses: actions/checkout@v4
