@@ -1,8 +1,8 @@
-# 🌊 CoUGARs FGO Development
+# 🌊 CoUGARs: Configurable Underwater Group of Autonomous Robots
 
 [![arXiv](https://img.shields.io/badge/arXiv-2511.08822-b31b1b.svg)](https://arxiv.org/pdf/2511.08822)
-[![ROS 2 CI](https://github.com/cougars-oss/coug-fgo-dev/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-oss/coug-fgo-dev/actions/workflows/ros2_ci.yml)
-[![Docker CI](https://github.com/cougars-oss/coug-fgo-dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-oss/coug-fgo-dev/actions/workflows/docker_ci.yml)
+[![ROS 2 CI](https://github.com/cougars-oss/cougars-dev/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-oss/cougars-dev/actions/workflows/ros2_ci.yml)
+[![Docker CI](https://github.com/cougars-oss/cougars-dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-oss/cougars-dev/actions/workflows/docker_ci.yml)
 
 CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autonomy research by the [Field Robotic Systems Lab (FROST Lab)](https://frostlab.byu.edu) at [Brigham Young University](https://byu.edu).
 
@@ -24,16 +24,16 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
 
   - Install [Docker Desktop](https://docs.docker.com/desktop/) and enable the [WSL2 backend](https://docs.docker.com/desktop/windows/wsl/).
 
-- Open a new terminal and clone the `coug-fgo-dev` repository.
+- Open a new terminal and clone the `cougars-dev` repository.
 
   ```bash
-  git clone https://github.com/cougars-oss/coug-fgo-dev.git
+  git clone https://github.com/cougars-oss/cougars-dev.git
   ```
 
 - Enter the repository and run `./deploy.sh dev` to pull the latest image from Docker Hub and launch the `coug_dev` tmux window inside the `cougars-ct` container.
 
   ```bash
-  cd coug-fgo-dev && ./deploy.sh dev
+  cd cougars-dev && ./deploy.sh dev
   ```
 
 - Choose a development workflow:
@@ -45,7 +45,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
   - When finished, launch the default HoloOcean scenario in the resulting `holoocean-ct` container using `./holoocean/launch.sh`.
 
     ```bash
-    cd coug-fgo-dev && ./holoocean/launch.sh
+    cd cougars-dev && ./holoocean/launch.sh
     ```
 
   - Open a new terminal, attach to the `coug_dev` tmux window using `./deploy.sh dev`, build the `coug_ws` workspace, and launch the simulation stack using `./sim_launch.sh`.
