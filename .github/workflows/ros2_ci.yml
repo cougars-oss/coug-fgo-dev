@@ -41,7 +41,8 @@ jobs:
       options: --user root
     steps:
 
-      - if: github.event_name == 'repository_dispatch'
+      - name: Display trigger info
+        if: github.event_name == 'repository_dispatch'
         run: |
           echo "Trigger: ${{ github.event.client_payload.repo }}"
           echo "Trigger SHA: ${{ github.event.client_payload.sha }}"
@@ -53,7 +54,7 @@ jobs:
           restore-keys: |
             ccache-${{ runner.os }}-
 
-      - name: Setup Workspace
+      - name: Setup ROS 2 workspace
         shell: bash
         run: |
           apt update && apt install -y ccache
@@ -72,7 +73,7 @@ jobs:
           rosdep update
           rosdep install --from-paths coug_ws/src packages --ignore-src -y
 
-      - name: Build and Test
+      - name: Build and test
         shell: bash
         run: |
           source /opt/ros/humble/setup.bash
