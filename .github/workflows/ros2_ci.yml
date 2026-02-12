@@ -40,26 +40,24 @@ jobs:
       image: snelsondurrant/cougars:latest
       options: --user root
     steps:
-      - name: Display trigger info
-        if: github.event_name == 'repository_dispatch'
-        run: |
-          echo "Trigger: ${{ github.event.client_payload.repo }}"
-          echo "Trigger SHA: ${{ github.event.client_payload.sha }}"
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/display-trigger-info
+        if: github.event_name == 'repository_dispatch'
+        with:
+          trigger-repo: ${{ github.event.client_payload.repo }}
+          trigger-sha: ${{ github.event.client_payload.sha }}
       - uses: actions/cache@v4
         with:
           path: ${{ github.workspace }}/coug_ws/.ccache
           key: ccache-${{ runner.os }}-${{ github.run_id }}
           restore-keys: |
             ccache-${{ runner.os }}-
-      - name: Setup ROS 2 workspace
-        uses: ./.github/actions/setup-ros2-workspace
+      - uses: ./.github/actions/setup-ros2-workspace
         with:
           repos-file: 'packages/cougars.repos'
           packages-path: 'packages'
           trigger-repo: ${{ github.event.client_payload.repo }}
           trigger-sha: ${{ github.event.client_payload.sha }}
-      - name: Build and test
-        uses: ./.github/actions/build-test-ros2
+      - uses: ./.github/actions/build-test-ros2
         with:
           packages-path: 'packages'
