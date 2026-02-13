@@ -18,8 +18,6 @@ services:
     build:
       context: ..
       dockerfile: docker/gtsam/Dockerfile
-      args:
-        - DOCKER_USER=${DOCKER_USER}
     profiles:
       - build-reqs
 
@@ -39,8 +37,6 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-      args:
-        - DOCKER_USER=${DOCKER_USER}
       ssh:
         - default
     container_name: cougars-ct
@@ -50,6 +46,7 @@ services:
     environment:
       - DISPLAY=$DISPLAY
       - QT_X11_NO_MITSHM=1
+      - SSH_AUTH_SOCK=/ssh_agent
     volumes:
       - ../bags:/home/${DOCKER_USER}/bags
       - ../config:/home/${DOCKER_USER}/config
@@ -59,7 +56,7 @@ services:
       - ./.tmux.conf:/home/${DOCKER_USER}/.tmux.conf
       - ./entrypoint.sh:/entrypoint.sh
       - ./completions.sh:/completions.sh
-      - ~/.ssh:/home/${DOCKER_USER}/.ssh:ro
+      - ${SSH_AUTH_SOCK}:/ssh_agent
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /etc/localtime:/etc/localtime:ro
       - /etc/udev:/etc/udev
