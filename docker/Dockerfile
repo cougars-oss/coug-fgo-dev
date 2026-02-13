@@ -70,7 +70,8 @@ RUN --mount=type=ssh \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/home/$DOCKER_USER/.ros/rosdep,uid=1000,gid=1000 \
-    mkdir -p /etc/ssh && ssh-keyscan github.com >> /etc/ssh/ssh_known_hosts \
+    git config --system --add safe.directory "*" \
+    && mkdir -p /etc/ssh && ssh-keyscan github.com >> /etc/ssh/ssh_known_hosts \
     && export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
     && vcs import . < cougars.repos \
     && vcs custom --git --args submodule update --init --recursive \
@@ -87,17 +88,19 @@ RUN --mount=type=ssh \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/home/$DOCKER_USER/.ros/rosdep,uid=1000,gid=1000 \
     if [ -n "$TRIGGER_REPO" ]; then \
-    export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
-    && git config --system --add safe.directory "*" \
-    && echo "TRIGGER_REPO: $TRIGGER_REPO" \
-    && echo "CACHE_BUST: $CACHE_BUST" \
-    && git -C "${TRIGGER_REPO##*/}" fetch --all \
-    && git -C "${TRIGGER_REPO##*/}" reset --hard "@{u}" \
-    && git -C "${TRIGGER_REPO##*/}" submodule update --init --recursive \
-    && chown -R $DOCKER_USER:$DOCKER_USER . \
-    && apt update \
-    && gosu $DOCKER_USER rosdep update \
-    && gosu $DOCKER_USER rosdep install --from-paths . --ignore-src -y; \
+        export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
+        && echo "TRIGGER_REPO: $TRIGGER_REPO" \
+        && echo "CACHE_BUST: $CACHE_BUST" \
+        && REPO_PATH=$(find . -maxdepth 4 -type d -name "${TRIGGER_REPO##*/}" | head -n 1) \
+        && if [ -n "$REPO_PATH" ]; then \
+            git -C "$REPO_PATH" fetch --all \
+            && git -C "$REPO_PATH" reset --hard "@{u}" \
+            && git -C "$REPO_PATH" submodule update --init --recursive \
+            && chown -R $DOCKER_USER:$DOCKER_USER . \
+            && apt update \
+            && gosu $DOCKER_USER rosdep update \
+            && gosu $DOCKER_USER rosdep install --from-paths . --ignore-src -y; \
+        fi \
     fi \
     && rm -rf ./*
 
@@ -106,8 +109,7 @@ USER $DOCKER_USER
 RUN echo "" >> ~/.bashrc \
     && echo "# Source ROS 2 environment" >> ~/.bashrc \
     && echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc \
-    && echo "[ -f ~/ros2_ws/install/setup.bash ] \
-    && source ~/ros2_ws/install/setup.bash" >> ~/.bashrc \
+    && echo "[ -f ~/ros2_ws/install/setup.bash ] && source ~/ros2_ws/install/setup.bash" >> ~/.bashrc \
     && echo "" >> ~/.bashrc \
     && echo "# Script tab completions" >> ~/.bashrc \
     && echo "[ -f /completions.sh ] && source /completions.sh" >> ~/.bashrc \
