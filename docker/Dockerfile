@@ -25,10 +25,9 @@ FROM snelsondurrant/cougars:gtsam
 ARG DEBIAN_FRONTEND=noninteractive
 ARG TARGETARCH
 
-ENV RCUTILS_COLORIZED_OUTPUT=1
-
 # Used to skip building architecture-incompatible packages
 ENV ROS_BUILD_ARCH=$TARGETARCH
+ENV RCUTILS_COLORIZED_OUTPUT=1
 
 # Install ROS packages
 USER root
@@ -72,18 +71,35 @@ RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     && gosu frostlab-docker rosdep install --from-paths . --ignore-src -y
 
 # Install external ROS package dependencies (vcs, rosdep)
-ARG CACHE_VERSION=unknown
 RUN --mount=type=ssh \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
-    && echo "CACHE_VERSION: $CACHE_VERSION" \
     && vcs import . < cougars.repos \
     && vcs custom --git --args submodule update --init --recursive \
     && chown -R frostlab-docker:frostlab-docker . \
     && apt update \
     && gosu frostlab-docker rosdep update \
-    && gosu frostlab-docker rosdep install --from-paths . --ignore-src -y \
+    && gosu frostlab-docker rosdep install --from-paths . --ignore-src -y
+
+# Handle Docker CI triggered repository updates
+ARG TRIGGER_REPO=""
+ARG CACHE_BUST=1
+RUN --mount=type=ssh \
+    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    if [ -n "$TRIGGER_REPO" ]; then \
+    export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
+    && echo "TRIGGER_REPO: $TRIGGER_REPO" \
+    && echo "CACHE_BUST: $CACHE_BUST" \
+    && cd "$TRIGGER_REPO" \
+    && git fetch --all && git reset --hard "@{u}" && git submodule update --init --recursive \
+    && cd .. \
+    && chown -R frostlab-docker:frostlab-docker . \
+    && apt update \
+    && gosu frostlab-docker rosdep update \
+    && gosu frostlab-docker rosdep install --from-paths "$TRIGGER_REPO" --ignore-src -y; \
+    fi \
     && rm -rf ./*
 
 # Configure bash environment

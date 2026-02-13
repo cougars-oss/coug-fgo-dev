@@ -111,7 +111,8 @@ jobs:
           ssh: |
             default=${{ env.SSH_AUTH_SOCK }}
           build-args: |
-            CACHE_VERSION=${{ github.event.client_payload.sha || github.sha }}
+            TRIGGER_REPO=${{ github.event.client_payload.repo || '' }}
+            CACHE_BUST=${{ github.run_id }}
           cache-from: |
             type=registry,ref=snelsondurrant/cougars:buildcache-latest
             type=registry,ref=snelsondurrant/cougars:latest
