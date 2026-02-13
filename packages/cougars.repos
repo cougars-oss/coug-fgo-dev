@@ -1,7 +1,7 @@
 repositories:
   coug_fgo:
     type: git
-    url: https://github.com/cougars-auv/coug_fgo.git
+    url: git@github.com:cougars-auv/coug_fgo.git
     version: main
   holoocean_interfaces:
     type: zip

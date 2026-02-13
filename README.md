@@ -27,7 +27,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
 - Open a new terminal and clone the `cougars-dev` repository.
 
   ```bash
-  git clone https://github.com/cougars-auv/cougars-dev.git
+  git clone git@github.com:cougars-auv/cougars-dev.git
   ```
 
 - Enter the repository and run `./deploy.sh dev` to pull the latest image from Docker Hub and launch the `coug_dev` tmux window inside the `cougars-ct` container.

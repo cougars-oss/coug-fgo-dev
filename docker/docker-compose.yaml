@@ -52,7 +52,7 @@ services:
       - ./.tmux.conf:/home/frostlab-docker/.tmux.conf
       - ./entrypoint.sh:/entrypoint.sh
       - ./completions.sh:/completions.sh
-      # - ~/.ssh:/home/frostlab-docker/.ssh:ro
+      - ~/.ssh:/home/frostlab-docker/.ssh:ro
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /etc/localtime:/etc/localtime:ro
       - /etc/udev:/etc/udev
