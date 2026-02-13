@@ -102,6 +102,14 @@ RUN --mount=type=ssh \
     fi \
     && rm -rf ./*
 
+# Set up SSH on port 2222
+RUN mkdir -p /var/run/sshd \
+    && sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config \
+    && mkdir -p /home/$DOCKER_USER/.ssh \
+    && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > /home/$DOCKER_USER/.ssh/config \
+    && chown -R $DOCKER_USER:$DOCKER_USER /home/$DOCKER_USER/.ssh \
+    && chmod 600 /home/$DOCKER_USER/.ssh/config
+
 # Configure bash environment
 USER $DOCKER_USER
 RUN echo "" >> ~/.bashrc \

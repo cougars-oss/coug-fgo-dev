@@ -39,5 +39,11 @@ else
 fi
 cd $current_dir
 
+# Start SSH server
+if [ -x /usr/sbin/sshd ]; then
+    echo "Starting SSH server on port 2222..."
+    sudo /usr/sbin/sshd
+fi
+
 touch /tmp/ready
 exec "$@"
