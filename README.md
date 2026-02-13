@@ -1,8 +1,8 @@
 # 🌊 CoUGARs: Configurable Underwater Group of Autonomous Robots
 
 [![arXiv](https://img.shields.io/badge/arXiv-2511.08822-b31b1b.svg)](https://arxiv.org/pdf/2511.08822)
-[![ROS 2 CI](https://github.com/cougars-oss/cougars-dev/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-oss/cougars-dev/actions/workflows/ros2_ci.yml)
-[![Docker CI](https://github.com/cougars-oss/cougars-dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-oss/cougars-dev/actions/workflows/docker_ci.yml)
+[![ROS 2 CI](https://github.com/cougars-auv/cougars-dev/actions/workflows/ros2_ci.yml/badge.svg)](https://github.com/cougars-auv/cougars-dev/actions/workflows/ros2_ci.yml)
+[![Docker CI](https://github.com/cougars-auv/cougars-dev/actions/workflows/docker_ci.yml/badge.svg)](https://github.com/cougars-auv/cougars-dev/actions/workflows/docker_ci.yml)
 
 CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autonomy research by the [Field Robotic Systems Lab (FROST Lab)](https://frostlab.byu.edu) at [Brigham Young University](https://byu.edu).
 
@@ -27,7 +27,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
 - Open a new terminal and clone the `cougars-dev` repository.
 
   ```bash
-  git clone https://github.com/cougars-oss/cougars-dev.git
+  git clone https://github.com/cougars-auv/cougars-dev.git
   ```
 
 - Enter the repository and run `./deploy.sh dev` to pull the latest image from Docker Hub and launch the `coug_dev` tmux window inside the `cougars-ct` container.
