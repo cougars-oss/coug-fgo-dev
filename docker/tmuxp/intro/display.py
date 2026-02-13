@@ -32,7 +32,7 @@ class Background(Effect):
 
 def display(screen):
     """
-    Displays a spinning gif of a wave and the text "COUG FGO" in ASCII art.
+    Displays a spinning gif of a wave and the text "COUGARS" in ASCII art.
 
     :author: Nelson Durrant (w Gemini 3 Pro)
     :date: Feb 2026
@@ -54,7 +54,7 @@ def display(screen):
         Background(screen),
         Print(
             screen,
-            FigletText("COUG FGO", font="banner3" if screen.width > 80 else "banner"),
+            FigletText("COUGARS", font="banner3" if screen.width > 80 else "banner"),
             screen.height // 4,
             colour=7,
             bg=7 if screen.unicode_aware else 0,
