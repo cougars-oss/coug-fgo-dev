@@ -32,8 +32,13 @@ ENV DOCKER_USER=$DOCKER_USER
 ENV ROS_BUILD_ARCH=$TARGETARCH
 ENV RCUTILS_COLORIZED_OUTPUT=1
 
-ENV GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no"
-RUN git config --system --add safe.directory "*"
+# Set up SSH on port 2222
+RUN mkdir -p /var/run/sshd \
+    && sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config \
+    && mkdir -p /home/$DOCKER_USER/.ssh \
+    && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > /home/$DOCKER_USER/.ssh/config \
+    && chown -R $DOCKER_USER:$DOCKER_USER /home/$DOCKER_USER/.ssh \
+    && chmod 600 /home/$DOCKER_USER/.ssh/config
 
 # Install ROS packages
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
@@ -57,7 +62,8 @@ RUN --mount=type=cache,target=/home/$DOCKER_USER/.cache/pip,uid=1000,gid=1000 \
     tmuxp asciimatics Pillow
 
 # Install tmux plugins
-RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+RUN git config --system --add safe.directory "*" \
+    && git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 COPY --chown=$DOCKER_USER:$DOCKER_USER docker/.tmux.conf /home/$DOCKER_USER/.tmux.conf
 RUN ~/.tmux/plugins/tpm/bin/install_plugins
 
@@ -101,14 +107,6 @@ RUN --mount=type=ssh \
         fi \
     fi \
     && rm -rf ./*
-
-# Set up SSH on port 2222
-RUN mkdir -p /var/run/sshd \
-    && sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config \
-    && mkdir -p /home/$DOCKER_USER/.ssh \
-    && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > /home/$DOCKER_USER/.ssh/config \
-    && chown -R $DOCKER_USER:$DOCKER_USER /home/$DOCKER_USER/.ssh \
-    && chmod 600 /home/$DOCKER_USER/.ssh/config
 
 # Configure bash environment
 USER $DOCKER_USER
