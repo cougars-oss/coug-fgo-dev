@@ -51,7 +51,7 @@ runs:
           fi
         fi
 
-        vcs custom --path ros2_ws/src --git --args submodule update --init --recursive
+        vcs custom ros2_ws/src --git --args submodule update --init --recursive
         apt update
         rosdep update
         rosdep install --from-paths ros2_ws/src "${{ inputs.packages-path }}" --ignore-src -y
