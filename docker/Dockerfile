@@ -86,13 +86,13 @@ RUN --mount=type=ssh \
     export GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" \
     && echo "TRIGGER_REPO: $TRIGGER_REPO" \
     && echo "CACHE_BUST: $CACHE_BUST" \
-    && cd "$TRIGGER_REPO" \
+    && cd "${TRIGGER_REPO##*/}" \
     && git fetch --all && git reset --hard "@{u}" && git submodule update --init --recursive \
     && cd .. \
     && chown -R frostlab-docker:frostlab-docker . \
     && apt update \
     && gosu frostlab-docker rosdep update \
-    && gosu frostlab-docker rosdep install --from-paths "$TRIGGER_REPO" --ignore-src -y; \
+    && gosu frostlab-docker rosdep install --from-paths "${TRIGGER_REPO##*/}" --ignore-src -y; \
     fi \
     && rm -rf ./*
 
