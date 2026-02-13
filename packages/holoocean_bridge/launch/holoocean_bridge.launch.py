@@ -27,7 +27,6 @@ def generate_launch_description():
     auv_ns = LaunchConfiguration("auv_ns")
     main_agent = LaunchConfiguration("main_agent")
 
-    pkg_share = get_package_share_directory("holoocean_bridge")
     fleet_params = os.path.join(
         os.path.expanduser("~"), "config", "fleet", "holoocean_bridge_params.yaml"
     )
@@ -149,7 +148,8 @@ def generate_launch_description():
                 executable="gps_converter",
                 name="gps_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "gps_frame": com_link_frame},
                 ],
             ),
@@ -158,7 +158,8 @@ def generate_launch_description():
                 executable="cmd_vel_converter",
                 name="cmd_vel_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "agent_name": agent_name},
                 ],
             ),
@@ -167,7 +168,8 @@ def generate_launch_description():
                 executable="dvl_converter",
                 name="dvl_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "dvl_frame": dvl_link_frame},
                 ],
             ),
@@ -176,7 +178,8 @@ def generate_launch_description():
                 executable="ahrs_converter",
                 name="ahrs_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "ahrs_frame": imu_link_frame},
                 ],
             ),
@@ -211,7 +214,8 @@ def generate_launch_description():
                 executable="hsd_converter",
                 name="hsd_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "agent_name": agent_name},
                 ],
             ),
@@ -220,7 +224,8 @@ def generate_launch_description():
                 executable="imu_converter",
                 name="imu_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "imu_frame": imu_link_frame},
                 ],
             ),
@@ -229,7 +234,8 @@ def generate_launch_description():
                 executable="mag_converter",
                 name="mag_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time, "mag_frame": imu_link_frame},
                 ],
             ),

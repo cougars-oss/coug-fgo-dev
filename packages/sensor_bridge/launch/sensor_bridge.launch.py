@@ -25,7 +25,6 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time")
     auv_ns = LaunchConfiguration("auv_ns")
 
-    pkg_share = get_package_share_directory("sensor_bridge")
     fleet_params = os.path.join(
         os.path.expanduser("~"), "config", "fleet", "sensor_bridge_params.yaml"
     )

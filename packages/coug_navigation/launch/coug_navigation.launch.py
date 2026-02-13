@@ -17,7 +17,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 
 
 def generate_launch_description():
@@ -25,7 +25,6 @@ def generate_launch_description():
     use_sim_time = LaunchConfiguration("use_sim_time")
     auv_ns = LaunchConfiguration("auv_ns")
 
-    pkg_share = get_package_share_directory("coug_navigation")
     fleet_params = os.path.join(
         os.path.expanduser("~"), "config", "fleet", "coug_navigation_params.yaml"
     )
