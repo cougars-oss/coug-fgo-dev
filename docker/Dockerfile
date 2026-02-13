@@ -64,9 +64,11 @@ COPY --from=cacher --chown=frostlab-docker:frostlab-docker /tmp/packages .
 # Install custom ROS package dependencies (rosdep)
 USER frostlab-docker
 ARG CACHE_VERSION=unknown
-RUN echo "CACHE_VERSION: $CACHE_VERSION" \
-    && vcs import . < cougars.repos \
-    && vcs custom --git --args submodule update --init --recursive \
+RUN --mount=type=ssh \
+    mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts \
+    && echo "CACHE_VERSION: $CACHE_VERSION" \
+    && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" vcs import . < cougars.repos \
+    && GIT_SSH_COMMAND="ssh -o StrictHostKeyChecking=no" vcs custom --git --args submodule update --init --recursive \
     && rosdep update \
     && sudo apt update \
     && rosdep install --from-paths . --ignore-src -y \

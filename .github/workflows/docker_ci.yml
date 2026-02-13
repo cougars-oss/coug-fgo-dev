@@ -36,12 +36,12 @@ jobs:
       gtsam: ${{ steps.filter.outputs.gtsam == 'true' && github.event_name != 'repository_dispatch' }}
       cougars: ${{ steps.filter.outputs.cougars == 'true' || github.event_name == 'repository_dispatch' }}
     steps:
-      - name: Display trigger info
-        if: github.event_name == 'repository_dispatch'
-        run: |
-          echo "Trigger: ${{ github.event.client_payload.repo }}"
-          echo "Trigger SHA: ${{ github.event.client_payload.sha }}"
       - uses: actions/checkout@v4
+      - uses: ./.github/actions/display-trigger-info
+        if: github.event_name == 'repository_dispatch'
+        with:
+          trigger-repo: ${{ github.event.client_payload.repo }}
+          trigger-sha: ${{ github.event.client_payload.sha }}
       - uses: dorny/paths-filter@v3
         id: filter
         with:
@@ -90,11 +90,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/display-trigger-info
-        if: github.event_name == 'repository_dispatch'
+      - uses: webfactory/ssh-agent@v0.9.0
         with:
-          trigger-repo: ${{ github.event.client_payload.repo }}
-          trigger-sha: ${{ github.event.client_payload.sha }}
+          ssh-private-key: ${{ secrets.SSH_KEY }}
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3
       - uses: docker/login-action@v3
@@ -108,6 +106,8 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: snelsondurrant/cougars:latest
+          ssh: |
+            default=${{ env.SSH_AUTH_SOCK }}
           build-args: |
             CACHE_VERSION=${{ github.event.client_payload.sha || github.sha }}
           cache-from: type=registry,ref=snelsondurrant/cougars:buildcache-latest
