@@ -28,7 +28,16 @@ def generate_launch_description():
     main_agent = LaunchConfiguration("main_agent")
 
     pkg_share = get_package_share_directory("holoocean_bridge")
-    params_file = os.path.join(pkg_share, "config", "holoocean_bridge_params.yaml")
+    fleet_params = os.path.join(
+        os.path.expanduser("~"), "config", "fleet", "holoocean_bridge_params.yaml"
+    )
+    auv_params = PythonExpression(
+        [
+            "os.path.join(os.path.expanduser('~'), 'config', '",
+            auv_ns,
+            "' + '_params.yaml')",
+        ]
+    )
 
     base_link_frame = PythonExpression(
         [
@@ -126,7 +135,8 @@ def generate_launch_description():
                 executable="depth_converter",
                 name="depth_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "depth_frame": depth_link_frame,
@@ -174,14 +184,19 @@ def generate_launch_description():
                 package="holoocean_bridge",
                 executable="fin_state_publisher",
                 name="fin_state_publisher_node",
-                parameters=[params_file, {"use_sim_time": use_sim_time}],
+                parameters=[
+                    fleet_params,
+                    auv_params,
+                    {"use_sim_time": use_sim_time},
+                ],
             ),
             Node(
                 package="holoocean_bridge",
                 executable="truth_converter",
                 name="truth_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         # Fix for HoloOcean offset bug
@@ -223,7 +238,8 @@ def generate_launch_description():
                 executable="wrench_converter",
                 name="wrench_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "wrench_frame": com_link_frame,

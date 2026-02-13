@@ -27,7 +27,16 @@ def generate_launch_description():
     auv_ns = LaunchConfiguration("auv_ns")
 
     pkg_share = get_package_share_directory("coug_localization")
-    params_file = os.path.join(pkg_share, "config", "coug_localization_params.yaml")
+    fleet_params = os.path.join(
+        os.path.expanduser("~"), "config", "fleet", "coug_localization_params.yaml"
+    )
+    auv_params = PythonExpression(
+        [
+            "os.path.join(os.path.expanduser('~'), 'config', '",
+            auv_ns,
+            "' + '_params.yaml')",
+        ]
+    )
 
     odom_frame = PythonExpression(
         ["'", auv_ns, "/odom' if '", auv_ns, "' != '' else 'odom'"]
@@ -66,7 +75,8 @@ def generate_launch_description():
                 executable="imu_filter_madgwick_node",
                 name="imu_filter_madgwick_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                     },
@@ -82,7 +92,8 @@ def generate_launch_description():
                 executable="ekf_node",
                 name="ekf_filter_node_odom",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "odom_frame": odom_frame,
@@ -99,7 +110,8 @@ def generate_launch_description():
                 name="ekf_filter_node_map",
                 condition=IfCondition(LaunchConfiguration("compare")),
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "map_frame": "map",
@@ -119,7 +131,8 @@ def generate_launch_description():
                 name="ukf_filter_node_map",
                 condition=IfCondition(LaunchConfiguration("compare")),
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "map_frame": "map",

@@ -26,7 +26,16 @@ def generate_launch_description():
     auv_ns = LaunchConfiguration("auv_ns")
 
     pkg_share = get_package_share_directory("sensor_bridge")
-    params_file = os.path.join(pkg_share, "config", "sensor_bridge_params.yaml")
+    fleet_params = os.path.join(
+        os.path.expanduser("~"), "config", "fleet", "sensor_bridge_params.yaml"
+    )
+    auv_params = PythonExpression(
+        [
+            "os.path.join(os.path.expanduser('~'), 'config', '",
+            auv_ns,
+            "' + '_params.yaml')",
+        ]
+    )
 
     dvl_link_frame = PythonExpression(
         [
@@ -75,7 +84,8 @@ def generate_launch_description():
                 executable="dvl_odom_converter",
                 name="dvl_odom_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "base_frame": base_link_frame,
@@ -89,7 +99,8 @@ def generate_launch_description():
                 executable="gps_odom_converter",
                 name="gps_odom_converter_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {
                         "use_sim_time": use_sim_time,
                         "base_frame": base_link_frame,

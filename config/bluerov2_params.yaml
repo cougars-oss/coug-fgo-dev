@@ -1,0 +1,40 @@
+/bluerov2/**:
+  ros__parameters:
+    imu_topic: "imu/data"
+    ahrs_topic: "imu/data"
+
+    imu:
+      gravity: [0.0, 0.0, -9.81]
+
+    gps:
+      enable_gps: false
+      enable_gps_init_only: true
+
+    mag:
+      enable_mag: false
+      use_parameter_covariance: true
+
+    ahrs:
+      enable_ahrs: false
+      enable_ahrs_init_only: true
+
+    dynamics:
+      enable_dynamics: false
+
+    prior:
+      use_parameter_priors: false
+
+/bluerov2/origin_manager_node:
+  ros__parameters:
+    use_parameter_child_frame: true
+    use_parameter_origin: false
+
+/bluerov2/ekf_filter_node_map:
+  ros__parameters:
+    odom2: odometry/gps_null
+    imu0: imu/data_null
+
+/bluerov2/ukf_filter_node_map:
+  ros__parameters:
+    odom2: odometry/gps_null
+    imu0: imu/data_null

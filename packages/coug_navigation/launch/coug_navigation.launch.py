@@ -23,9 +23,19 @@ from launch.substitutions import LaunchConfiguration
 def generate_launch_description():
 
     use_sim_time = LaunchConfiguration("use_sim_time")
+    auv_ns = LaunchConfiguration("auv_ns")
 
     pkg_share = get_package_share_directory("coug_navigation")
-    params_file = os.path.join(pkg_share, "config", "coug_navigation_params.yaml")
+    fleet_params = os.path.join(
+        os.path.expanduser("~"), "config", "fleet", "coug_navigation_params.yaml"
+    )
+    auv_params = PythonExpression(
+        [
+            "os.path.join(os.path.expanduser('~'), 'config', '",
+            auv_ns,
+            "' + '_params.yaml')",
+        ]
+    )
 
     return LaunchDescription(
         [
@@ -34,12 +44,18 @@ def generate_launch_description():
                 default_value="false",
                 description="Use simulation/rosbag clock if true",
             ),
+            DeclareLaunchArgument(
+                "auv_ns",
+                default_value="auv0",
+                description="Namespace for the AUV (e.g. auv0)",
+            ),
             Node(
                 package="coug_navigation",
                 executable="waypoint_follower",
                 name="waypoint_follower_node",
                 parameters=[
-                    params_file,
+                    fleet_params,
+                    auv_params,
                     {"use_sim_time": use_sim_time},
                 ],
             ),

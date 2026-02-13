@@ -52,6 +52,7 @@ services:
       - QT_X11_NO_MITSHM=1
     volumes:
       - ../bags:/home/${DOCKER_USER}/bags
+      - ../config:/home/${DOCKER_USER}/config
       - ../packages:/home/${DOCKER_USER}/ros2_ws/src
       - ../scripts:/home/${DOCKER_USER}/scripts
       - ./tmuxp:/home/${DOCKER_USER}/.tmuxp

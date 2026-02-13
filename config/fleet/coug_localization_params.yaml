@@ -127,4 +127,3 @@
       imu0_queue_size: 2
       imu0_differential: false
       imu0_relative: false # Absolute heading in the map frame.
-

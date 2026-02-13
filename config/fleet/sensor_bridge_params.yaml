@@ -3,9 +3,6 @@
     ros__parameters:
       input_topic: "dvl/position"
       output_topic: "odometry/dvl"
-      base_frame: "base_link"
-      dvl_frame: "dvl_link"
-      dvl_odom_frame: "dvl_odom"
 
       publish_local_tf: false # Whether to publish the dvl_odom->base_link transform
 
@@ -14,6 +11,5 @@
       gps_odom_topic: "odometry/gps"
       ahrs_topic: "imu/data"
       output_topic: "odometry/truth"
-      base_frame: "base_link"
 
       max_position_covariance: 0.01 # [m^2]

@@ -1,0 +1,25 @@
+/**:
+  waypoint_follower_node:
+    ros__parameters:
+      # --- Node Settings ---
+      # Waypoint reached if distance < capture_radius (direct hit).
+      capture_radius: 25.0 # [m]
+      # Waypoint reached if distance < slip_radius AND distance > prev_distance (overshoot).
+      slip_radius: 50.0 # [m] (typically 2x capture_radius)
+      desired_speed_rpm: 1500.0 # [RPM] Constant thruster speed to command when moving.
+      odom_timeout_sec: 2.0 # [s] Time to wait for odometry before stopping.
+      invert_z: true
+
+      publish_diagnostics: true # Publish diagnostic information.
+
+      # --- ROS Topics and Frames ---
+      waypoint_topic: "waypoints"
+      odom_topic: "odometry/global"
+      heading_topic: "heading"
+      speed_topic: "speed"
+      depth_topic: "depth"
+
+      # --- Random Walk ---
+      enable_rw_speed: false
+      rw_step_size: 5.0 # [RPM] Max change per step
+      rw_start_value: 1200.0 # [RPM] Starting speed

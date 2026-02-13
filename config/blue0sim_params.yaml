@@ -1,0 +1,10 @@
+/blue0sim/**:
+  ros__parameters:
+    dynamics:
+      mass: [11.5, 11.5, 11.5]
+      linear_drag: [11.5, 11.5, 11.5]
+      quad_drag: [1.8, 1.8, 1.8]
+
+    prior:
+      parameter_priors:
+        initial_position_sigmas: [0.001, 0.001, 1.0]

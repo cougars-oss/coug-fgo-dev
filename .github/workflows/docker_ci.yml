@@ -38,11 +38,9 @@ jobs:
       cougars: ${{ steps.filter.outputs.cougars == 'true' || github.event_name == 'repository_dispatch' }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./.github/actions/display-trigger-info
-        if: github.event_name == 'repository_dispatch'
-        with:
-          trigger-repo: ${{ github.event.client_payload.repo }}
-          trigger-sha: ${{ github.event.client_payload.sha }}
+      - if: github.event_name == 'repository_dispatch'
+        shell: bash
+        run: echo "Triggered by:${{ github.event.client_payload.repo }} @ ${{ github.event.client_payload.sha }}"
       - uses: dorny/paths-filter@v3
         id: filter
         with:

@@ -12,9 +12,8 @@
 #   -d <seconds>: Start offset in seconds
 #   -n <namespace>: Namespace for the AUV (e.g. auv0)
 
-script_dir="$(dirname "$(readlink -f "$0")")"
-source "$script_dir/utils/common.sh"
-source "$script_dir/../ros2_ws/install/setup.bash"
+source ~/scripts/utils/common.sh
+source ~/ros2_ws/install/setup.bash
 
 if [ -z "$1" ]; then
     print_error "Usage: $0 <bag_name> [-m] [-d <seconds>] [-n <namespace>]"
