@@ -1,7 +1,7 @@
 #!/bin/bash
 # Created by Nelson Durrant, Jan 2026
 #
-# Launches the configured scenario in HoloOcean
+# Launches the selected scenario in HoloOcean
 #
 # Usage:
 #   ./holoocean/launch.sh [-b] [-m]

@@ -89,9 +89,9 @@ jobs:
   build-cougars:
     needs: [build-gtsam, manifest-gtsam]
     if: |
-      always() && 
-      !cancelled() && 
-      !contains(needs.build-gtsam.result, 'failure') && 
+      always() &&
+      !cancelled() &&
+      !contains(needs.build-gtsam.result, 'failure') &&
       !contains(needs.manifest-gtsam.result, 'failure')
     strategy:
       matrix:

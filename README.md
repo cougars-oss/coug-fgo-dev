@@ -21,7 +21,7 @@ CoUGARs is a low-cost, configurable AUV platform designed for multi-agent autono
   - Install [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install).
 
   - Install [Docker Desktop](https://docs.docker.com/desktop/) and enable the [WSL2 backend](https://docs.docker.com/desktop/windows/wsl/).
- 
+
 - Generate and add a [GitHub SSH key](https://docs.github.com/en/authentication/connecting-to-github-with-ssh/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent?platform=linux).
 
 - Open a new terminal and clone the `cougars-dev` repository.

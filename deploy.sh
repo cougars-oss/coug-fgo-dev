@@ -47,7 +47,7 @@ case $target in
         if ! docker exec --user frostlab-docker cougars-ct \
             ssh -p 2222 -o StrictHostKeyChecking=no -i /home/frostlab-docker/.ssh_internal/id_ed25519 \
             frostlab-docker@"$target" "tmux has-session -t coug_auv" 2>/dev/null; then
-            
+
             print_warning "Creating a new 'coug_auv' tmux session on $target..."
             docker exec --user frostlab-docker cougars-ct \
                 ssh -p 2222 -o StrictHostKeyChecking=no -i /home/frostlab-docker/.ssh_internal/id_ed25519 \

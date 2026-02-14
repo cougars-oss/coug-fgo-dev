@@ -76,9 +76,9 @@ RUN ~/.tmux/plugins/tpm/bin/install_plugins || true
 
 # Configure bash environment
 RUN mkdir -p ~/.ssh && chmod 700 ~/.ssh \
+    && echo 'source /completions.sh' >> ~/.bashrc \
     && echo 'source /opt/ros/humble/setup.bash' >> ~/.bashrc \
     && echo '[ -f ~/ros2_ws/install/setup.bash ] && source ~/ros2_ws/install/setup.bash' >> ~/.bashrc \
-    && echo '[ -f /completions.sh ] && source /completions.sh' >> ~/.bashrc \
     && touch ~/.hushlogin
 
 # Install ROS dependencies (rosdep)
