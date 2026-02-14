@@ -11,10 +11,10 @@ repositories:
     type: git
     url: https://github.com/paagutie/dvl_msgs.git
     version: master
-  # dvl-a50:
-  #   type: git
-  #   url: https://github.com/paagutie/dvl-a50.git
-  #   version: master
+  dvl-a50:
+    type: git
+    url: https://github.com/paagutie/dvl-a50.git
+    version: master
   # time_sync_utils:
   #   type: git
   #   url: https://github.com/BYU-FROST-Lab/time_sync_utils.git
