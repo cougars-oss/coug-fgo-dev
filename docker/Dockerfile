@@ -17,7 +17,8 @@ FROM ubuntu:22.04 AS cacher
 
 WORKDIR /tmp/packages
 COPY packages .
-RUN find . -type f \! -name "package.xml" \! -name "*.repos" -delete
+# Flattened find command for readability
+RUN find . -type f \! \( -name "package.xml" -o -name "*.repos" \) -delete
 
 # --- Main Stage ---
 FROM snelsondurrant/cougars:gtsam
@@ -32,6 +33,24 @@ ENV DOCKER_USER=$DOCKER_USER
 ENV ROS_BUILD_ARCH=$TARGETARCH
 ENV RCUTILS_COLORIZED_OUTPUT=1
 
+# Create the user
+RUN useradd -ms /bin/bash "$DOCKER_USER" \
+    && usermod -aG sudo "$DOCKER_USER" \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && echo "$DOCKER_USER:$DOCKER_USER" | chpasswd
+
+# Install system dependencies
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
+    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
+    apt update && apt install -y --no-install-recommends \
+    gosu procps curl wget vim nano \
+    python3-pip python3-venv \
+    openssh-server mosh tmux xclip \
+    x11-apps x11-utils x11-xserver-utils xauth \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp ros-${ROS_DISTRO}-rmw-zenoh-cpp \
+    ros-${ROS_DISTRO}-joy ros-${ROS_DISTRO}-teleop-twist-joy ros-${ROS_DISTRO}-teleop-twist-keyboard \
+    ros-${ROS_DISTRO}-rosbag2-storage-mcap
+
 # Set up SSH on port 2222
 RUN mkdir -p /var/run/sshd \
     && sed -i 's/#Port 22/Port 2222/' /etc/ssh/sshd_config \
@@ -39,17 +58,6 @@ RUN mkdir -p /var/run/sshd \
     && echo "Host *\n\tStrictHostKeyChecking no\n\tUserKnownHostsFile /dev/null" > /home/$DOCKER_USER/.ssh/config \
     && chown -R $DOCKER_USER:$DOCKER_USER /home/$DOCKER_USER/.ssh \
     && chmod 600 /home/$DOCKER_USER/.ssh/config
-
-# Install ROS packages
-RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    apt update && apt install -y --no-install-recommends \
-    # Experimental DDS options - Nelson Durrant, Jan 2026
-    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp ros-${ROS_DISTRO}-rmw-zenoh-cpp \
-    # Drive the AUV with a joystick or keyboard - Nelson Durrant, Jan 2026
-    ros-${ROS_DISTRO}-joy ros-${ROS_DISTRO}-teleop-twist-joy ros-${ROS_DISTRO}-teleop-twist-keyboard \
-    # Better rosbag2 storage format - Nelson Durrant, Jan 2026
-    ros-${ROS_DISTRO}-rosbag2-storage-mcap
 
 # Install Python dependencies
 USER $DOCKER_USER
@@ -64,47 +72,23 @@ RUN --mount=type=cache,target=/home/$DOCKER_USER/.cache/pip,uid=1000,gid=1000 \
 # Install tmux plugins
 RUN git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 COPY --chown=$DOCKER_USER:$DOCKER_USER docker/.tmux.conf /home/$DOCKER_USER/.tmux.conf
-RUN ~/.tmux/plugins/tpm/bin/install_plugins
+RUN ~/.tmux/plugins/tpm/bin/install_plugins || true
 
+# Prepare workspace
 USER root
 RUN mkdir -p /home/$DOCKER_USER/ros2_ws/src \
     && chown -R $DOCKER_USER:$DOCKER_USER /home/$DOCKER_USER/ros2_ws
 WORKDIR /home/$DOCKER_USER/ros2_ws/src
 COPY --from=cacher --chown=$DOCKER_USER:$DOCKER_USER /tmp/packages .
 
-# Install ROS package dependencies (rosdep)
+# Install dependencies from assembled packages
 USER $DOCKER_USER
-RUN --mount=type=ssh \
-    --mount=type=cache,target=/var/cache/apt,sharing=locked \
+RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     --mount=type=cache,target=/home/$DOCKER_USER/.ros/rosdep,uid=1000,gid=1000 \
-    git config --system --add safe.directory "*" \
-    && vcs import . < cougars.repos \
-    && vcs custom --git --args submodule update --init --recursive \
-    && sudo apt update \
+    sudo apt-get update \
     && rosdep update \
-    && rosdep install --from-paths . --ignore-src -y
-
-# Handle Docker CI triggers
-ARG TRIGGER_REPO=""
-ARG CACHE_BUST=1
-RUN --mount=type=ssh \
-    --mount=type=cache,target=/var/cache/apt,sharing=locked \
-    --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
-    --mount=type=cache,target=/home/$DOCKER_USER/.ros/rosdep,uid=1000,gid=1000 \
-    if [ -n "$TRIGGER_REPO" ]; then \
-        echo "TRIGGER_REPO: $TRIGGER_REPO" \
-        && echo "CACHE_BUST: $CACHE_BUST" \
-        && REPO_PATH=$(find . -maxdepth 4 -type d -name "${TRIGGER_REPO##*/}" | head -n 1) \
-        && if [ -n "$REPO_PATH" ]; then \
-            git -C "$REPO_PATH" fetch --all \
-            && git -C "$REPO_PATH" reset --hard "@{u}" \
-            && git -C "$REPO_PATH" submodule update --init --recursive \
-            && sudo apt update \
-            && rosdep update \
-            && rosdep install --from-paths . --ignore-src -y; \
-        fi \
-    fi \
+    && rosdep install --from-paths . --ignore-src -y \
     && rm -rf ./*
 
 # Configure bash environment
