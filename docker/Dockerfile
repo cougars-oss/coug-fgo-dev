@@ -73,6 +73,7 @@ WORKDIR /home/$DOCKER_USER/ros2_ws/src
 COPY --from=cacher --chown=$DOCKER_USER:$DOCKER_USER /tmp/packages .
 
 # Install ROS package dependencies (rosdep)
+USER $DOCKER_USER
 RUN --mount=type=ssh \
     --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
@@ -80,10 +81,9 @@ RUN --mount=type=ssh \
     git config --system --add safe.directory "*" \
     && vcs import . < cougars.repos \
     && vcs custom --git --args submodule update --init --recursive \
-    && chown -R $DOCKER_USER:$DOCKER_USER . \
-    && apt update \
-    && gosu $DOCKER_USER rosdep update \
-    && gosu $DOCKER_USER rosdep install --from-paths . --ignore-src -y
+    && sudo apt update \
+    && rosdep update \
+    && rosdep install --from-paths . --ignore-src -y
 
 # Handle Docker CI triggers
 ARG TRIGGER_REPO=""
@@ -100,16 +100,14 @@ RUN --mount=type=ssh \
             git -C "$REPO_PATH" fetch --all \
             && git -C "$REPO_PATH" reset --hard "@{u}" \
             && git -C "$REPO_PATH" submodule update --init --recursive \
-            && chown -R $DOCKER_USER:$DOCKER_USER . \
-            && apt update \
-            && gosu $DOCKER_USER rosdep update \
-            && gosu $DOCKER_USER rosdep install --from-paths . --ignore-src -y; \
+            && sudo apt update \
+            && rosdep update \
+            && rosdep install --from-paths . --ignore-src -y; \
         fi \
     fi \
     && rm -rf ./*
 
 # Configure bash environment
-USER $DOCKER_USER
 RUN echo "" >> ~/.bashrc \
     && echo "# Source ROS 2 environment" >> ~/.bashrc \
     && echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc \
