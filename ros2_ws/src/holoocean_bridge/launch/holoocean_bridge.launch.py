@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
 from launch import LaunchDescription
 from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
@@ -31,8 +30,13 @@ def generate_launch_description():
     auv_ns = LaunchConfiguration("auv_ns")
     main_agent = LaunchConfiguration("main_agent")
 
-    fleet_params = os.path.join(
-        os.path.expanduser("~"), "config", "fleet", "holoocean_bridge_params.yaml"
+    fleet_params = PathJoinSubstitution(
+        [
+            EnvironmentVariable("HOME"),
+            "config",
+            "fleet",
+            "holoocean_bridge_params.yaml",
+        ]
     )
     auv_params = PathJoinSubstitution(
         [

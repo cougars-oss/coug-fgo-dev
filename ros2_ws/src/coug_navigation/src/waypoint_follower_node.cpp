@@ -147,7 +147,7 @@ void WaypointFollowerNode::processWaypointLogic(double current_x, double current
 
   double dx = target.position.x - current_x;
   double dy = target.position.y - current_y;
-  double heading = std::atan2(dy, dx) * 180.0 / M_PI;
+  double heading = std::atan2(dy, dx) * 180.0 / std::acos(-1.0);
 
   double speed_cmd = params_.desired_speed_rpm;
   if (params_.enable_rw_speed) {
@@ -204,11 +204,11 @@ void WaypointFollowerNode::stopMission()
 void WaypointFollowerNode::checkMissionStatus(diagnostic_updater::DiagnosticStatusWrapper & stat)
 {
   if (state_ == MissionState::IDLE) {
-    stat.summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "No mission recieved.");
+    stat.summary(diagnostic_msgs::msg::DiagnosticStatus::OK, "No mission received.");
   } else {
     stat.summary(
       diagnostic_msgs::msg::DiagnosticStatus::OK,
-      "Mission recieved. Navigating to waypoint " + std::to_string(current_waypoint_index_ + 1) +
+      "Mission received. Navigating to waypoint " + std::to_string(current_waypoint_index_ + 1) +
       "/" + std::to_string(total_waypoints_.load()));
 
     stat.add("Distance to Target (m)", current_dist_to_target_.load());
@@ -218,7 +218,7 @@ void WaypointFollowerNode::checkMissionStatus(diagnostic_updater::DiagnosticStat
 void WaypointFollowerNode::checkOdometryStatus(diagnostic_updater::DiagnosticStatusWrapper & stat)
 {
   if (last_odom_time_seconds_ == 0.0) {
-    stat.summary(diagnostic_msgs::msg::DiagnosticStatus::WARN, "No Odometry recieved.");
+    stat.summary(diagnostic_msgs::msg::DiagnosticStatus::WARN, "No Odometry received.");
     return;
   }
 
