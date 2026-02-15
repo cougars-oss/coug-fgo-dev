@@ -35,7 +35,7 @@ ENV DOCKER_USER=$DOCKER_USER \
 RUN --mount=type=cache,target=/var/cache/apt,sharing=locked \
     --mount=type=cache,target=/var/lib/apt/lists,sharing=locked \
     apt-get update && apt-get install -y --no-install-recommends \
-    gosu procps curl wget python3-pip python3-venv
+    gosu procps curl wget python3-pip python3-venv openssh-client
 
 # Create user
 RUN useradd -ms /bin/bash "$DOCKER_USER" \
